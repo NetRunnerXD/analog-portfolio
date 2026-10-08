@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "erfoud_tafilalt_morocco_mars2013_site",
+ "name": "Erfoud, Tafilalt (Morocco), MARS2013 site",
+ "lat": 31.4361,
+ "lon": -4.2328,
+ "cell_id": 84591,
+ "country": null,
+ "summary": "Northern Saharan hammada and dunes chosen by the Austrian Space Forum for the MARS2013 integrated Mars field simulation; also used for ESA/ExoMars testing.",
+ "known_analog": "Erfoud, Tafilalt (Morocco), MARS2013 site",
+ "earth_features": {
+  "ts_mean_k": 278.79,
+  "dt_k": 6.32,
+  "ati": 0.1344,
+  "ti_class": 5.0,
+  "slope_lt5_frac": 0.896,
+  "slope_lt8_frac": 1.0,
+  "slope_mean_deg": 0.0,
+  "relief_m": 386.0,
+  "lith_class": 6.0,
+  "aridity_index": 3.3977,
+  "barren_frac": 0.0,
+  "ice_index": 0.0,
+  "noon_sun_elev_deg": 59.0,
+  "column_mass_gcm2": 1030.0,
+  "cutoff_rigidity_gv": 8.0,
+  "uv_index": 9.5,
+  "geomorph_flags": 0.0,
+  "elevation_m": 25.0,
+  "albedo": 0.152,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 1675.0,
+  "airport_km": 34.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://oewf.org/en/portfolio/morocco-mars-2013/"
+ ],
+ "attribution": []
+}

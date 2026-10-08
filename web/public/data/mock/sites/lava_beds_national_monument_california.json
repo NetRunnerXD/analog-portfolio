@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "lava_beds_national_monument_california",
+ "name": "Lava Beds National Monument (California)",
+ "lat": 41.7139,
+ "lon": -121.5083,
+ "cell_id": 69236,
+ "country": null,
+ "summary": "Extensive basaltic lava-tube caves with ice and mineral deposits; NASA BRAILLE project tested cave-exploration robotics and biosignature detection. Covers the challenge's 'caves'.",
+ "known_analog": "Lava Beds National Monument (California)",
+ "earth_features": {
+  "ts_mean_k": 263.23,
+  "dt_k": 8.15,
+  "ati": 0.1043,
+  "ti_class": 5.0,
+  "slope_lt5_frac": 1.0,
+  "slope_lt8_frac": 1.0,
+  "slope_mean_deg": 0.5,
+  "relief_m": 405.0,
+  "lith_class": 9.0,
+  "aridity_index": 1.9535,
+  "barren_frac": 0.0,
+  "ice_index": 0.66,
+  "noon_sun_elev_deg": 48.0,
+  "column_mass_gcm2": 1011.7,
+  "cutoff_rigidity_gv": 4.6,
+  "uv_index": 7.8,
+  "geomorph_flags": 4.0,
+  "elevation_m": 175.0,
+  "albedo": 0.152,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 709.0,
+  "airport_km": 146.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.nasa-braille.org/about-braille/the-field-site/lava-tubes"
+ ],
+ "attribution": []
+}

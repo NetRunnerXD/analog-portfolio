@@ -1,0 +1,523 @@
+{
+ "contract_version": "1.0.0",
+ "grid": {
+  "resolution_deg": 0.5,
+  "ncols": 720,
+  "nrows": 360,
+  "lon_range": [
+   -180,
+   180
+  ],
+  "lat_range": [
+   -90,
+   90
+  ],
+  "lon_convention": "east-positive, -180..180, all bodies",
+  "cell_registration": "cell-centre",
+  "lon_centre_first": -179.75,
+  "lat_centre_first": 89.75,
+  "row_order": "north-to-south (row 0 = 89.75)",
+  "cell_id": "row * 720 + col, where col = floor((lon + 180) / 0.5), row = floor((90 - lat) / 0.5)"
+ },
+ "factors": [
+  {
+   "id": "F1",
+   "name": "Mean surface temperature",
+   "tier": "core",
+   "units": "K",
+   "feature": "ts_mean_k",
+   "normalization": "ratio",
+   "direction": "match",
+   "earth_clip": true,
+   "layers": {
+    "earth": "NASA POWER TS climatology (annual mean)",
+    "moon": "Diviner GCP 0.5 deg Tbol mean over local time; polar targets from GCP 90S-80S band",
+    "mars": "Mars Climate Database v6.2 tsurf, mean over Ls x local time"
+   },
+   "ui_label": "How cold is it?",
+   "ui_copy": "The average temperature of the ground over a full day and year. Cold limits how batteries, rovers and people work, and it controls whether water stays frozen. The Moon's shadowed polar craters are far colder than anywhere on Earth, so we match as closely as Earth allows and show what's left over."
+  },
+  {
+   "id": "F2",
+   "name": "Diurnal temperature amplitude",
+   "tier": "core",
+   "units": "K",
+   "feature": "dt_k",
+   "normalization": "ratio",
+   "direction": "match",
+   "earth_clip": true,
+   "layers": {
+    "earth": "NASA POWER TS_MAX - TS_MIN climatology (upgrade: MOD11C3 day-night LST)",
+    "moon": "Diviner GCP max - min over local time",
+    "mars": "MCD tsurf max - min over local time"
+   },
+   "ui_label": "Daily temperature swing",
+   "ui_copy": "How much the ground heats up and cools down between day and night. Big swings stress materials, seals and electronics. The Moon's equator swings by roughly 300 °C, which no place on Earth comes close to. Mars swings less, and some Earth deserts get closer to it."
+  },
+  {
+   "id": "F3",
+   "name": "Regolith thermophysics (thermal inertia class)",
+   "tier": "core",
+   "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+   "feature": "ti_class",
+   "normalization": "ordinal_class",
+   "direction": "match",
+   "earth_clip": false,
+   "params": {
+    "n_classes": 5,
+    "class_edges_percentile": [
+     20,
+     40,
+     60,
+     80
+    ]
+   },
+   "layers": {
+    "earth": "Apparent thermal inertia ATI = (1 - albedo) / dT (Price 1977), within-Earth percentile classes",
+    "moon": "Diviner rock abundance + regolith temperature anomaly, within-Moon percentile classes",
+    "mars": "TES thermal inertia 2007 (Putzig & Mellon), within-Mars percentile classes"
+   },
+   "note": "Never pool raw units across bodies; only within-body classes are compared.",
+   "ui_label": "Dusty, sandy or rocky ground",
+   "ui_copy": "How quickly the surface heats and cools, which tells us whether the ground is fine dust, sand, gravel or solid rock. That matters for safe landing, for driving rovers and for digging. Earth uses a different measurement method, so we compare each site's *rank* within its own world, not raw numbers."
+  },
+  {
+   "id": "F4",
+   "name": "Slope / landability",
+   "tier": "core",
+   "units": "fraction of area with slope < 5 deg",
+   "feature": "slope_lt5_frac",
+   "normalization": "bounded_fraction",
+   "direction": "match",
+   "earth_clip": false,
+   "layers": {
+    "earth": "Copernicus GLO-90 overview reads (~360 m baseline); fallback ETOPO 2022 1 arc-min",
+    "moon": "LOLA LDSM_16 (global); PGDA 90 / polar 240 m for targets",
+    "mars": "MOLA MEGDR (463 m strided)"
+   },
+   "note": "Slope baseline is recorded per body in provenance.json.",
+   "ui_label": "Flat enough to land",
+   "ui_copy": "The share of the area flat enough for a lander to set down safely. NASA's lunar lander requirement is a tilt of 8° or less, with 5° as the goal. Steep, broken ground is risky for landers, rovers and walking astronauts."
+  },
+  {
+   "id": "F5",
+   "name": "Local relief",
+   "tier": "core",
+   "units": "m (P95 - P5 elevation over ~30 km windows)",
+   "feature": "relief_m",
+   "normalization": "ratio",
+   "direction": "match",
+   "earth_clip": true,
+   "layers": {
+    "earth": "ETOPO 2022 60 arc-sec; mean of P95-P5 over the four 0.25 deg sub-blocks of the cell",
+    "moon": "LOLA LDEM_16; targets from polar DEM, P95-P5 within a 15 km radius",
+    "mars": "MOLA MEGDR meg016; targets P95-P5 within a 15 km radius"
+   },
+   "ui_label": "Hills and hollows",
+   "ui_copy": "How much the ground rises and falls nearby, such as ridges, crater rims and valleys. Relief shapes shadows, line of sight for radios, and how hard a site is to traverse. We compare relief rather than altitude, because \"sea level\" means nothing on the Moon or Mars."
+  },
+  {
+   "id": "F6",
+   "name": "Lithology",
+   "tier": "core",
+   "units": "lithology class code (see lithology_classes)",
+   "feature": "lith_class",
+   "normalization": "categorical_matrix",
+   "direction": "match",
+   "earth_clip": false,
+   "layers": {
+    "earth": "GLiM 0.5 deg (CC BY 3.0), dominant class",
+    "moon": "Unified Geologic Map of the Moon 1:5M rasterized + Lunar Prospector GRS FeO",
+    "mars": "USGS SIM 3292 rasterized + Mars Odyssey GRS"
+   },
+   "ui_label": "Rock type",
+   "ui_copy": "The main kind of rock at the surface, for example dark volcanic basalt or the pale anorthosite of the lunar highlands. Matching rock type lets geologists rehearse sampling and lets engineers test drills and tools on realistic material. Lunar-highland rock is rare on Earth, so expect fewer good matches here for Moon targets."
+  },
+  {
+   "id": "F7",
+   "name": "Aridity",
+   "tier": "core",
+   "units": "Aridity Index (P/PET, dimensionless)",
+   "feature": "aridity_index",
+   "normalization": "directional_percentile",
+   "direction": "lower_is_better",
+   "earth_clip": false,
+   "layers": {
+    "earth": "Global Aridity Index v3.1 (Zomer et al. 2022, CC BY 4.0)",
+    "moon": "constant target: hyper-arid (AI = 0)",
+    "mars": "constant target: hyper-arid (AI = 0)"
+   },
+   "ui_label": "How dry is it?",
+   "ui_copy": "How little water the land receives compared with how much the air could evaporate. The Moon and Mars are bone-dry at the surface, so the driest deserts on Earth, such as the Atacama, are the best stand-ins. Dryness matters for testing life-detection instruments and for how soil behaves."
+  },
+  {
+   "id": "F8",
+   "name": "Barrenness",
+   "tier": "core",
+   "units": "fraction of cell bare/sparse + snow/ice",
+   "feature": "barren_frac",
+   "normalization": "bounded_fraction",
+   "direction": "match",
+   "earth_clip": false,
+   "layers": {
+    "earth": "ESA WorldCover 2021 bare/sparse + snow/ice fraction (CC BY 4.0)",
+    "moon": "constant target 1.0 (lifeless)",
+    "mars": "constant target 1.0 (lifeless)"
+   },
+   "ui_label": "Bare ground",
+   "ui_copy": "How much of the land is bare rock, sand, snow or ice instead of plants, crops or buildings. A lifeless-looking surface is closer to the Moon and Mars, and it keeps vegetation from confusing tests of cameras, spectrometers and robots."
+  },
+  {
+   "id": "F9",
+   "name": "Ground ice / cold-trap access",
+   "tier": "core",
+   "units": "ice-access index 0-1",
+   "feature": "ice_index",
+   "normalization": "bounded_fraction",
+   "direction": "match",
+   "earth_clip": false,
+   "layers": {
+    "earth": "ESA CCI Permafrost extent fraction; fallback NSIDC GGD318, then POWER mean annual TS < 273.15 K",
+    "moon": "min(1, PSR area fraction in target window / 0.10), raised to >= Ice Favorability Index (0-1 rescaled)",
+    "mars": "SWIM v4 depth band: 0-1 m -> 1.0, 1-5 m -> 0.67, >5 m -> 0.33, none -> 0; fallback Odyssey GRS WEH"
+   },
+   "ui_label": "Frozen water nearby",
+   "ui_copy": "Whether water ice is likely just below the surface, as in permanently frozen ground on Earth or shadowed \"cold traps\" on the Moon. Ice is the key resource for drinking water, oxygen and rocket fuel. Arctic and Antarctic permafrost lets teams practise finding and extracting it."
+  },
+  {
+   "id": "F10",
+   "name": "Illumination regime (sun elevation)",
+   "tier": "core",
+   "units": "deg (median local-noon solar elevation over a year)",
+   "feature": "noon_sun_elev_deg",
+   "normalization": "gaussian",
+   "direction": "match",
+   "earth_clip": true,
+   "params": {
+    "tau": 5.0
+   },
+   "layers": {
+    "earth": "Analytic solar geometry (daily noon elevation, median over 365 days); POWER SW down as secondary",
+    "moon": "Analytic (obliquity 1.54 deg); target card shows PGDA AVGVISIB illumination %",
+    "mars": "Analytic (obliquity 25.19 deg); MCD fluxsurf_dn_sw as cross-check"
+   },
+   "ui_label": "Sunlight and shadows",
+   "ui_copy": "How high the Sun climbs and how daylight changes through the year. At the Moon's south pole the Sun skims the horizon, casting very long shadows that challenge solar power and camera vision. High-latitude Earth sites get a similar low Sun in summer, though never the airless, black-sky contrast."
+  },
+  {
+   "id": "F11",
+   "name": "Atmospheric shielding (radiation + pressure), capped",
+   "tier": "secondary",
+   "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+   "feature": "column_mass_gcm2",
+   "normalization": "capped_directional_percentile",
+   "direction": "lower_is_better",
+   "earth_clip": false,
+   "params": {
+    "earth_score": "mean of within-Earth percentiles of (lower column_mass_gcm2) and (lower cutoff_rigidity_gv)",
+    "cap": {
+     "moon": 0.006,
+     "mars": 0.1
+    },
+    "cap_rule": "ratio similarity of Earth's minimum land column (~320 g/cm^2, Everest) to the target column (Mars ~17 g/cm^2; Moon floored at 1 g/cm^2)"
+   },
+   "layers": {
+    "earth": "Column mass from elevation (barometric, P/g) + IGRF dipole Stormer cutoff 14.9 cos^4(lambda_m) GV",
+    "moon": "constant 0 (no atmosphere, no global field); 1369 uSv/d [R20] on the gap panel",
+    "mars": "MCD surface pressure / g_mars; checked against MSL RAD 0.64 mSv/d at Gale [R31]"
+   },
+   "ui_label": "Radiation and thin air (tie-breaker)",
+   "ui_copy": "How much air and magnetic field sit overhead to block cosmic radiation. The Moon has neither, and Mars has very thin air. Their surfaces receive roughly 100–200 times the natural radiation dose on Earth, so no Earth site truly matches. This factor only breaks ties between places that already score well, and the real gap appears in the Fidelity Gap panel."
+  },
+  {
+   "id": "F12",
+   "name": "Surface UV, capped",
+   "tier": "secondary",
+   "units": "UV index (annual mean, all-sky)",
+   "feature": "uv_index",
+   "normalization": "capped_directional_percentile",
+   "direction": "higher_is_better",
+   "earth_clip": false,
+   "params": {
+    "cap": {
+     "moon": 0.005,
+     "mars": 0.006
+    },
+    "cap_rule": "ratio similarity of Earth's P99.5 UV to the target's Earth-equivalent UV (~10^3 x Earth mean, inferred from [R46])"
+   },
+   "layers": {
+    "earth": "NASA POWER ALLSKY_SFC_UV_INDEX climatology",
+    "moon": "unshielded (not scored on target side)",
+    "mars": "~10^3 x present Earth DNA-weighted (inferred) [R46]"
+   },
+   "ui_label": "Ultraviolet light (tie-breaker)",
+   "ui_copy": "How strong the Sun's ultraviolet light is at the ground. The Moon gets it unfiltered and Mars gets far more than Earth because its thin air has almost no ozone. High, dry Earth sites get closer but never match, so this factor only breaks ties."
+  },
+  {
+   "id": "F13",
+   "name": "Geomorphic flags",
+   "tier": "secondary",
+   "units": "bitmask (see geomorph_flags)",
+   "feature": "geomorph_flags",
+   "normalization": "flag_match",
+   "direction": "match",
+   "earth_clip": false,
+   "layers": {
+    "earth": "Hand-curated cited lists: impact structures, lava tubes/caves, periglacial terrain, debris-covered glaciers, massifs",
+    "moon": "craters, PSRs, massifs from target context",
+    "mars": "craters, MGC3 caves, debris-covered glaciers, periglacial terrain"
+   },
+   "ui_label": "Special landforms",
+   "ui_copy": "Whether the site has telltale landforms shared with the target: impact craters, lava tubes and caves, or frozen-ground patterns. These features let crews rehearse specific tasks, such as exploring a cave or sampling crater rocks, and the challenge names caves explicitly."
+  }
+ ],
+ "logistics": {
+  "tier": "separate_axis",
+  "features": [
+   "travel_time_min",
+   "airport_km"
+  ],
+  "layers": {
+   "earth": "MAP travel time to cities 2015 (CC BY, verify) + Natural Earth airports (public domain)"
+  },
+  "cost_rule": "cost_j = 0.5 * min(1, travel_time_min / 1440) + 0.5 * min(1, airport_km / 1000)"
+ },
+ "not_scored": [
+  "gravity",
+  "vacuum",
+  "earth_visibility"
+ ],
+ "lithology_classes": [
+  {
+   "code": 0,
+   "id": "nd",
+   "name": "No data / unknown"
+  },
+  {
+   "code": 1,
+   "id": "vb",
+   "name": "Basic (mafic) volcanic / basalt"
+  },
+  {
+   "code": 2,
+   "id": "vi",
+   "name": "Intermediate volcanic"
+  },
+  {
+   "code": 3,
+   "id": "va",
+   "name": "Acid volcanic"
+  },
+  {
+   "code": 4,
+   "id": "pb",
+   "name": "Basic plutonic (gabbro, anorthosite)"
+  },
+  {
+   "code": 5,
+   "id": "pi",
+   "name": "Intermediate plutonic"
+  },
+  {
+   "code": 6,
+   "id": "pa",
+   "name": "Acid plutonic"
+  },
+  {
+   "code": 7,
+   "id": "mt",
+   "name": "Metamorphic"
+  },
+  {
+   "code": 8,
+   "id": "ss",
+   "name": "Siliciclastic sedimentary"
+  },
+  {
+   "code": 9,
+   "id": "sm",
+   "name": "Mixed sedimentary"
+  },
+  {
+   "code": 10,
+   "id": "sc",
+   "name": "Carbonate sedimentary"
+  },
+  {
+   "code": 11,
+   "id": "ev",
+   "name": "Evaporite"
+  },
+  {
+   "code": 12,
+   "id": "su",
+   "name": "Unconsolidated sediments"
+  },
+  {
+   "code": 13,
+   "id": "py",
+   "name": "Pyroclastic"
+  },
+  {
+   "code": 14,
+   "id": "ig",
+   "name": "Ice and glacier"
+  },
+  {
+   "code": 15,
+   "id": "wb",
+   "name": "Water body"
+  },
+  {
+   "code": 16,
+   "id": "an",
+   "name": "Anorthositic highland regolith (Moon)"
+  },
+  {
+   "code": 17,
+   "id": "ib",
+   "name": "Impact breccia / melt"
+  }
+ ],
+ "lithology_similarity": {
+  "default_same": 1.0,
+  "default_other": 0.0,
+  "pairs": [
+   [
+    "vb",
+    "vi",
+    0.5
+   ],
+   [
+    "vb",
+    "py",
+    0.6
+   ],
+   [
+    "vb",
+    "pb",
+    0.5
+   ],
+   [
+    "vi",
+    "va",
+    0.5
+   ],
+   [
+    "vi",
+    "py",
+    0.5
+   ],
+   [
+    "pb",
+    "an",
+    0.8
+   ],
+   [
+    "pb",
+    "pi",
+    0.5
+   ],
+   [
+    "pi",
+    "pa",
+    0.5
+   ],
+   [
+    "mt",
+    "an",
+    0.3
+   ],
+   [
+    "mt",
+    "ib",
+    0.3
+   ],
+   [
+    "ss",
+    "sm",
+    0.6
+   ],
+   [
+    "ss",
+    "su",
+    0.5
+   ],
+   [
+    "sm",
+    "sc",
+    0.5
+   ],
+   [
+    "sm",
+    "ev",
+    0.4
+   ],
+   [
+    "su",
+    "ig",
+    0.3
+   ],
+   [
+    "ib",
+    "an",
+    0.5
+   ],
+   [
+    "ib",
+    "vb",
+    0.3
+   ],
+   [
+    "py",
+    "su",
+    0.3
+   ]
+  ],
+  "note": "Provisional matrix (symmetric). Owner: Researcher; finalize before first scoring run."
+ },
+ "geomorph_flags": [
+  {
+   "bit": 1,
+   "id": "impact",
+   "name": "Impact structure / crater"
+  },
+  {
+   "bit": 2,
+   "id": "cave",
+   "name": "Lava tube or cave"
+  },
+  {
+   "bit": 4,
+   "id": "periglacial",
+   "name": "Periglacial / patterned ground"
+  },
+  {
+   "bit": 8,
+   "id": "dcg",
+   "name": "Debris-covered glacier / buried ice"
+  },
+  {
+   "bit": 16,
+   "id": "massif",
+   "name": "Massif / ridge crest"
+  },
+  {
+   "bit": 32,
+   "id": "cold_trap",
+   "name": "Permanent shadow / cold trap"
+  },
+  {
+   "bit": 64,
+   "id": "volcanic",
+   "name": "Volcanic field / lava flow"
+  }
+ ],
+ "aggregation": {
+  "floor": 0.01,
+  "core": "S_core = prod(max(s_i, floor) ^ (w_i / sum(w))) over F1-F10 with w_i > 0",
+  "secondary": "S_sec = arithmetic mean of F11-F13",
+  "final": "S = S_core * (0.9 + 0.1 * S_sec)",
+  "earth_clip": "t* = clip(t, Earth P0.5, Earth P99.5) over land cells; gap = |t - t*|"
+ }
+}

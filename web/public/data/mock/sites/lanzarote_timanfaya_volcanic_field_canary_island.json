@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "lanzarote_timanfaya_volcanic_field_canary_island",
+ "name": "Lanzarote, Timanfaya volcanic field (Canary Islands)",
+ "lat": 28.9942,
+ "lon": -13.7933,
+ "cell_id": 88172,
+ "country": null,
+ "summary": "Young barren basaltic lava fields and lava tubes; ESA PANGAEA astronaut planetary-geology training ground.",
+ "known_analog": "Lanzarote, Timanfaya volcanic field (Canary Islands)",
+ "earth_features": {
+  "ts_mean_k": 295.0,
+  "dt_k": 12.0,
+  "ati": 0.0588,
+  "ti_class": 4.0,
+  "slope_lt5_frac": 0.5,
+  "slope_lt8_frac": 0.964,
+  "slope_mean_deg": 1.5,
+  "relief_m": 600.0,
+  "lith_class": 1.0,
+  "aridity_index": 0.1,
+  "barren_frac": 0.7,
+  "ice_index": 0.0,
+  "noon_sun_elev_deg": 61.0,
+  "column_mass_gcm2": 1008.7,
+  "cutoff_rigidity_gv": 8.8,
+  "uv_index": 10.3,
+  "geomorph_flags": 66.0,
+  "elevation_m": 200.0,
+  "albedo": 0.296,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 418.0,
+  "airport_km": 344.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/CAVES_and_Pangaea/What_is_PANGAEA"
+ ],
+ "attribution": []
+}

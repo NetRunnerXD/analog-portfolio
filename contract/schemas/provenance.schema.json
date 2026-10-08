@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NetRunnerXD/analog-portfolio/contract/schemas/provenance.schema.json",
+  "type": "object",
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "mock": {
+      "type": "boolean",
+      "description": "true for mock/demo data that is not derived from real layers"
+    },
+    "layers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+          },
+          "body": {
+            "enum": [
+              "earth",
+              "moon",
+              "mars"
+            ]
+          },
+          "factors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^F([1-9]|1[0-3])$"
+            }
+          },
+          "dataset": {
+            "type": "string"
+          },
+          "provider": {
+            "type": "string"
+          },
+          "agency_group": {
+            "enum": [
+              "nasa",
+              "partner",
+              "other"
+            ]
+          },
+          "url": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "accessed": {
+            "type": "string"
+          },
+          "native_resolution": {
+            "type": "string"
+          },
+          "license": {
+            "type": "string"
+          },
+          "citation": {
+            "type": "string"
+          },
+          "sha256": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "how_used": {
+            "type": "string"
+          },
+          "slope_baseline_m": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "body",
+          "factors",
+          "dataset",
+          "provider",
+          "agency_group",
+          "url",
+          "license",
+          "how_used"
+        ]
+      }
+    },
+    "pipeline": {
+      "type": "object",
+      "properties": {
+        "git_sha": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "run_at": {
+          "type": "string"
+        },
+        "python": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "layers"
+  ],
+  "title": "provenance.json"
+}

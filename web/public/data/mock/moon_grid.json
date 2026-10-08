@@ -1,0 +1,242 @@
+{
+ "contract_version": "1.0.0",
+ "body": "moon",
+ "mock": true,
+ "grid": {
+  "resolution_deg": 0.5,
+  "ncols": 720,
+  "nrows": 360,
+  "lon_centre_first": -179.75,
+  "lat_centre_first": 89.75,
+  "row_order": "north-to-south"
+ },
+ "layout": "sparse",
+ "n_cells": 8,
+ "binary": "moon_grid.bin",
+ "byte_order": "little",
+ "arrays": [
+  {
+   "name": "cell_id",
+   "factor": null,
+   "dtype": "uint32",
+   "byte_offset": 0,
+   "length": 8,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": null,
+   "units": "cell id (sparse layout only)",
+   "stats": null,
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "ts_mean_k",
+   "factor": "F1",
+   "dtype": "uint16",
+   "byte_offset": 32,
+   "length": 8,
+   "scale": 0.01,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "K",
+   "stats": {
+    "p005": 112.1,
+    "p50": 200.0,
+    "p995": 200.0,
+    "min": 110.0,
+    "max": 200.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "dt_k",
+   "factor": "F2",
+   "dtype": "uint16",
+   "byte_offset": 48,
+   "length": 8,
+   "scale": 0.01,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "K",
+   "stats": {
+    "p005": 60.7,
+    "p50": 80.0,
+    "p995": 109.3,
+    "min": 60.0,
+    "max": 110.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "ti_class",
+   "factor": "F3",
+   "dtype": "uint8",
+   "byte_offset": 64,
+   "length": 8,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "class 1-5",
+   "stats": {
+    "p005": 2.0,
+    "p50": 3.0,
+    "p995": 3.0,
+    "min": 2.0,
+    "max": 3.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "slope_lt5_frac",
+   "factor": "F4",
+   "dtype": "uint8",
+   "byte_offset": 72,
+   "length": 8,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.25175,
+    "p50": 0.5,
+    "p995": 0.5,
+    "min": 0.25,
+    "max": 0.5
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "relief_m",
+   "factor": "F5",
+   "dtype": "uint16",
+   "byte_offset": 80,
+   "length": 8,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "m",
+   "stats": {
+    "p005": 1000.0,
+    "p50": 1000.0,
+    "p995": 2482.5,
+    "min": 1000.0,
+    "max": 2500.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "lith_class",
+   "factor": "F6",
+   "dtype": "uint8",
+   "byte_offset": 96,
+   "length": 8,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "lithology code",
+   "stats": {
+    "p005": 16.0,
+    "p50": 16.0,
+    "p995": 16.0,
+    "min": 16.0,
+    "max": 16.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "ice_index",
+   "factor": "F9",
+   "dtype": "uint8",
+   "byte_offset": 104,
+   "length": 8,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "index 0-1",
+   "stats": {
+    "p005": 0.2,
+    "p50": 0.2,
+    "p995": 0.8895,
+    "min": 0.2,
+    "max": 0.9
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "noon_sun_elev_deg",
+   "factor": "F10",
+   "dtype": "uint8",
+   "byte_offset": 112,
+   "length": 8,
+   "scale": 0.5,
+   "add_offset": -30,
+   "nodata": 255,
+   "units": "deg",
+   "stats": {
+    "p005": 0.6182500000000001,
+    "p50": 10.0,
+    "p995": 10.0,
+    "min": 0.55,
+    "max": 10.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "column_mass_gcm2",
+   "factor": "F11",
+   "dtype": "uint16",
+   "byte_offset": 120,
+   "length": 8,
+   "scale": 0.01,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "g/cm^2",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 0.0,
+    "min": 0.0,
+    "max": 0.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "geomorph_flags",
+   "factor": "F13",
+   "dtype": "uint8",
+   "byte_offset": 136,
+   "length": 8,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "bitmask",
+   "stats": {
+    "p005": 1.525,
+    "p50": 25.0,
+    "p995": 48.44,
+    "min": 1.0,
+    "max": 49.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "elevation_m",
+   "factor": null,
+   "dtype": "uint16",
+   "byte_offset": 144,
+   "length": 8,
+   "scale": 1,
+   "add_offset": -10000,
+   "nodata": 65535,
+   "units": "m",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 0.0,
+    "min": 0.0,
+    "max": 0.0
+   },
+   "source": "MOCK synthetic"
+  }
+ ],
+ "generated_at": "2026-10-08T07:11:54+00:00"
+}

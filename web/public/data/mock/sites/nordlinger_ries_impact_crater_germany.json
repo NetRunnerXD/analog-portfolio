@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "nordlinger_ries_impact_crater_germany",
+ "name": "Nordlinger Ries impact crater (Germany)",
+ "lat": 48.8833,
+ "lon": 10.5667,
+ "cell_id": 59421,
+ "country": null,
+ "summary": "Complex impact crater with suevite and impact breccias; Apollo 14 crew geology training (August 1970).",
+ "known_analog": "Nordlinger Ries impact crater (Germany)",
+ "earth_features": {
+  "ts_mean_k": 283.0,
+  "dt_k": 10.0,
+  "ati": 0.085,
+  "ti_class": 3.0,
+  "slope_lt5_frac": 0.8,
+  "slope_lt8_frac": 0.992,
+  "slope_mean_deg": 1.25,
+  "relief_m": 200.0,
+  "lith_class": 17.0,
+  "aridity_index": 0.9,
+  "barren_frac": 0.048,
+  "ice_index": 0.0,
+  "noon_sun_elev_deg": 41.0,
+  "column_mass_gcm2": 981.5,
+  "cutoff_rigidity_gv": 2.8,
+  "uv_index": 6.8,
+  "geomorph_flags": 1.0,
+  "elevation_m": 430.0,
+  "albedo": 0.152,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 713.0,
+  "airport_km": 156.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://apollojournals.org/alsj/ap-geotrips.pdf"
+ ],
+ "attribution": []
+}

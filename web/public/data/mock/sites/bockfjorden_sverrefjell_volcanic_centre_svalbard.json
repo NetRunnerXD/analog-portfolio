@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "bockfjorden_sverrefjell_volcanic_centre_svalbard",
+ "name": "Bockfjorden / Sverrefjell volcanic centre (Svalbard), AMASE",
+ "lat": 79.469,
+ "lon": 13.3287,
+ "cell_id": 15506,
+ "country": null,
+ "summary": "Arctic volcanic centre with carbonate globules analogous to Martian meteorite ALH84001, permafrost and glacial terrain; NASA/ESA AMASE instrument-testing expeditions.",
+ "known_analog": "Bockfjorden / Sverrefjell volcanic centre (Svalbard), AMASE",
+ "earth_features": {
+  "ts_mean_k": 262.0,
+  "dt_k": 8.0,
+  "ati": 0.075,
+  "ti_class": 3.0,
+  "slope_lt5_frac": 0.4,
+  "slope_lt8_frac": 0.984,
+  "slope_mean_deg": 1.25,
+  "relief_m": 900.0,
+  "lith_class": 1.0,
+  "aridity_index": 0.3,
+  "barren_frac": 0.8,
+  "ice_index": 1.0,
+  "noon_sun_elev_deg": 11.0,
+  "column_mass_gcm2": 996.8,
+  "cutoff_rigidity_gv": 0.0,
+  "uv_index": 1.3,
+  "geomorph_flags": 68.0,
+  "elevation_m": 300.0,
+  "albedo": 0.4,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 1882.0,
+  "airport_km": 77.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://science.gsfc.nasa.gov/699/projects/247"
+ ],
+ "attribution": []
+}

@@ -1,0 +1,222 @@
+{
+ "contract_version": "1.0.0",
+ "note": "Engine-side priors keyed by Researcher target IDs (pipeline/inputs/targets.json is the source of truth for IDs, anchors, sample radii and literature values). lith_class/geomorph_flags are provisional target-side codes (factors.json vocabularies); window_offset applies to targets that share an IAU anchor; citations are research.md [R#] keys.",
+ "targets": {
+  "moon_peak_near_cabeus_b": {
+   "status": "artemis-9",
+   "window_offset": null,
+   "lith_class": 16,
+   "geomorph_flags": 17,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "notes": "Cabeus crater (-85.33, -42.13) is the LCROSS ice site [R12]"
+  },
+  "moon_haworth": {
+   "status": "artemis-9",
+   "window_offset": null,
+   "lith_class": 16,
+   "geomorph_flags": 33,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "notes": "Large PSR crater; region lies on its rim"
+  },
+  "moon_malapert_massif": {
+   "status": "artemis-9",
+   "window_offset": null,
+   "lith_class": 16,
+   "geomorph_flags": 16,
+   "citations": [
+    "R4",
+    "R5",
+    "R29",
+    "R30"
+   ],
+   "notes": "Summit area has 100% Earth visibility near -85.95, +/-5 deg lon [R30]"
+  },
+  "moon_mons_mouton_plateau": {
+   "status": "artemis-9",
+   "window_offset": null,
+   "lith_class": 16,
+   "geomorph_flags": 16,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "notes": "Shares anchor with Mons Mouton; window centred on anchor (provisional)"
+  },
+  "moon_mons_mouton": {
+   "status": "artemis-9",
+   "window_offset": {
+    "bearing_deg": 180,
+    "distance_km": 20
+   },
+   "lith_class": 16,
+   "geomorph_flags": 16,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "notes": "Shares anchor with Mons Mouton Plateau; window offset 20 km grid-south of anchor (provisional, to verify against NASA region map [R4])"
+  },
+  "moon_nobile_rim_1": {
+   "status": "artemis-9",
+   "window_offset": {
+    "bearing_deg": 270,
+    "distance_km": 20
+   },
+   "lith_class": 16,
+   "geomorph_flags": 33,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "notes": "Shares anchor with Nobile Rim 2; window offset 20 km grid-west (provisional, to verify against NASA region map [R4])"
+  },
+  "moon_nobile_rim_2": {
+   "status": "artemis-9",
+   "window_offset": {
+    "bearing_deg": 90,
+    "distance_km": 20
+   },
+   "lith_class": 16,
+   "geomorph_flags": 33,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "notes": "Shares anchor with Nobile Rim 1; window offset 20 km grid-east (provisional, to verify against NASA region map [R4])"
+  },
+  "moon_de_gerlache_rim_2": {
+   "status": "artemis-9",
+   "window_offset": null,
+   "lith_class": 16,
+   "geomorph_flags": 33,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "notes": ""
+  },
+  "moon_slater_plain": {
+   "status": "artemis-9",
+   "window_offset": null,
+   "lith_class": 16,
+   "geomorph_flags": 1,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "notes": ""
+  },
+  "moon_shackleton_connecting_ridge": {
+   "status": "moon-base-i",
+   "window_offset": null,
+   "lith_class": 16,
+   "geomorph_flags": 49,
+   "citations": [
+    "R6",
+    "R10",
+    "R11"
+   ],
+   "notes": "Moon Base I target [R6]; best-illuminated spot at 10 m height 89.4516S, 222.7581E [R10]; sunlit 92.27% at 2 m [R10][R11]"
+  },
+  "mars_jezero": {
+   "status": "mission-site",
+   "window_offset": null,
+   "lith_class": 8,
+   "geomorph_flags": 1,
+   "citations": [
+    "R34",
+    "R35"
+   ],
+   "notes": "Delta and lake deposits; crater floor ~ -2.6 km"
+  },
+  "mars_gale": {
+   "status": "mission-site",
+   "window_offset": null,
+   "lith_class": 8,
+   "geomorph_flags": 1,
+   "citations": [
+    "R36",
+    "R37",
+    "R31"
+   ],
+   "notes": "Mt Sharp layered sediments; MSL RAD reference dose 0.64 mSv/d [R31]"
+  },
+  "mars_utopia_zhurong": {
+   "status": "mission-site",
+   "window_offset": null,
+   "lith_class": 12,
+   "geomorph_flags": 4,
+   "citations": [
+    "R38"
+   ],
+   "notes": "Ice-rich lowland plains"
+  },
+  "mars_arcadia_ap1": {
+   "status": "starship-candidate",
+   "window_offset": null,
+   "lith_class": 12,
+   "geomorph_flags": 12,
+   "citations": [
+    "R27",
+    "R42"
+   ],
+   "notes": "Starship human-landing candidate with shallow ice [R27]; SWIM best candidate region [R42]"
+  },
+  "mars_arcadia_ap9": {
+   "status": "starship-candidate",
+   "window_offset": null,
+   "lith_class": 12,
+   "geomorph_flags": 12,
+   "citations": [
+    "R27",
+    "R42"
+   ],
+   "notes": "Starship human-landing candidate [R27]"
+  },
+  "mars_erebus_em16": {
+   "status": "starship-candidate",
+   "window_offset": null,
+   "lith_class": 12,
+   "geomorph_flags": 28,
+   "citations": [
+    "R27"
+   ],
+   "notes": "Starship human-landing candidate [R27]"
+  },
+  "mars_phlegra_pm1": {
+   "status": "starship-candidate",
+   "window_offset": null,
+   "lith_class": 12,
+   "geomorph_flags": 28,
+   "citations": [
+    "R27",
+    "R39"
+   ],
+   "notes": "Debris-covered glaciers, ~182 +/- 91 m ice under 2-8 m debris [R39]"
+  },
+  "mars_phoenix": {
+   "status": "ground-truth",
+   "window_offset": null,
+   "lith_class": 12,
+   "geomorph_flags": 4,
+   "citations": [
+    "R40"
+   ],
+   "notes": "Ice table at 4.6 cm mean depth [R40]; used as ice ground truth"
+  }
+ }
+}

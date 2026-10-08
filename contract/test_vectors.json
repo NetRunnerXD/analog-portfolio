@@ -1,0 +1,296 @@
+{
+ "contract_version": "1.0.0",
+ "tolerance": 1e-09,
+ "note": "Known-answer vectors shared by pytest (pipeline/tests) and vitest (web/src/scoring). Owner: Code Optimizer.",
+ "ratio_sim": [
+  {
+   "x": 500,
+   "t": 6.36,
+   "expected": 0.025120467651473355,
+   "note": "Mars pressure cap at 0.5 bar (research.md 4.2-3)"
+  },
+  {
+   "x": 288,
+   "t": 214,
+   "expected": 0.852589641434263,
+   "note": "Earth mean T vs Mars mean"
+  },
+  {
+   "x": 200,
+   "t": 200,
+   "expected": 1.0,
+   "note": "identity"
+  },
+  {
+   "x": 0,
+   "t": 0,
+   "expected": 1.0,
+   "note": "both zero"
+  },
+  {
+   "x": 320,
+   "t": 17,
+   "expected": 0.10089020771513357,
+   "note": "F11 Mars cap: Everest column vs Mars column"
+  }
+ ],
+ "bounded_fraction": [
+  {
+   "x": 0.3,
+   "t": 0.35,
+   "expected": 0.95
+  },
+  {
+   "x": 1.0,
+   "t": 0.0,
+   "expected": 0.0
+  },
+  {
+   "x": 0.0,
+   "t": 1.0,
+   "expected": 0.0
+  },
+  {
+   "x": 0.5,
+   "t": 0.5,
+   "expected": 1.0
+  }
+ ],
+ "gaussian": [
+  {
+   "x": 10,
+   "t": 0.55,
+   "tau": 5,
+   "expected": 0.16762096655189973
+  },
+  {
+   "x": 0.55,
+   "t": 0.55,
+   "tau": 5,
+   "expected": 1.0
+  },
+  {
+   "x": 3,
+   "t": 0,
+   "tau": 3,
+   "expected": 0.6065306597126334
+  }
+ ],
+ "ordinal_class": [
+  {
+   "x": 1,
+   "t": 5,
+   "n_classes": 5,
+   "expected": 0.0
+  },
+  {
+   "x": 3,
+   "t": 3,
+   "n_classes": 5,
+   "expected": 1.0
+  },
+  {
+   "x": 2,
+   "t": 4,
+   "n_classes": 5,
+   "expected": 0.5
+  }
+ ],
+ "flag_match": [
+  {
+   "earth": 5,
+   "target": 49,
+   "expected": 0.3333333333333333
+  },
+  {
+   "earth": 0,
+   "target": 1,
+   "expected": 0.0
+  },
+  {
+   "earth": 7,
+   "target": 0,
+   "expected": 0.0
+  },
+  {
+   "earth": 127,
+   "target": 49,
+   "expected": 1.0
+  }
+ ],
+ "geometric_mean": [
+  {
+   "scores": {
+    "F1": 0.9,
+    "F2": 0.5,
+    "F3": 1.0,
+    "F4": 0.0,
+    "F5": 0.8
+   },
+   "weights": {
+    "F1": 20,
+    "F2": 20,
+    "F3": 5,
+    "F4": 0,
+    "F5": 5
+   },
+   "floor": 0.01,
+   "expected": 0.7105489535920729
+  },
+  {
+   "scores": {
+    "F1": 0.9,
+    "F2": 0.5,
+    "F3": 1.0,
+    "F4": 0.0,
+    "F5": 0.8
+   },
+   "weights": {
+    "F1": 1,
+    "F2": 1,
+    "F3": 1,
+    "F4": 1,
+    "F5": 1
+   },
+   "floor": 0.01,
+   "expected": 0.32453422231992085
+  }
+ ],
+ "total_score": [
+  {
+   "core": 0.8,
+   "secondary": [
+    0.1,
+    0.0,
+    0.5
+   ],
+   "expected": 0.7360000000000001
+  },
+  {
+   "core": 0.5,
+   "secondary": [
+    0,
+    0,
+    0
+   ],
+   "expected": 0.45
+  }
+ ],
+ "cell_id": [
+  {
+   "lat": 89.9,
+   "lon": -179.9,
+   "expected": 0
+  },
+  {
+   "lat": -89.9,
+   "lon": 179.9,
+   "expected": 259199
+  },
+  {
+   "lat": 0.1,
+   "lon": 0.1,
+   "expected": 129240
+  },
+  {
+   "lat": -89.4516,
+   "lon": -137.2419,
+   "expected": 257845
+  },
+  {
+   "lat": 18.4447,
+   "lon": 77.4508,
+   "expected": 103474
+  },
+  {
+   "lat": 40.02,
+   "lon": 203.35,
+   "expected": 71326
+  }
+ ],
+ "set_cover": [
+  {
+   "sites": [
+    {
+     "site_id": "a",
+     "factor_scores": {
+      "F1": 0.9,
+      "F2": 0.2,
+      "F3": 0.8
+     },
+     "cost": 0.9
+    },
+    {
+     "site_id": "b",
+     "factor_scores": {
+      "F1": 0.3,
+      "F2": 0.95,
+      "F3": 0.1
+     },
+     "cost": 0.1
+    },
+    {
+     "site_id": "c",
+     "factor_scores": {
+      "F1": 0.75,
+      "F2": 0.75,
+      "F3": 0.75
+     },
+     "cost": 0.5
+    }
+   ],
+   "weights": {
+    "F1": 10,
+    "F2": 10,
+    "F3": 10
+   },
+   "theta": 0.7,
+   "lam": 0.0,
+   "expected_ids": [
+    "c"
+   ]
+  },
+  {
+   "sites": [
+    {
+     "site_id": "a",
+     "factor_scores": {
+      "F1": 0.9,
+      "F2": 0.2,
+      "F3": 0.8
+     },
+     "cost": 0.9
+    },
+    {
+     "site_id": "b",
+     "factor_scores": {
+      "F1": 0.3,
+      "F2": 0.95,
+      "F3": 0.1
+     },
+     "cost": 0.1
+    },
+    {
+     "site_id": "c",
+     "factor_scores": {
+      "F1": 0.75,
+      "F2": 0.75,
+      "F3": 0.75
+     },
+     "cost": 0.5
+    }
+   ],
+   "weights": {
+    "F1": 10,
+    "F2": 10,
+    "F3": 10
+   },
+   "theta": 0.7,
+   "lam": 20.0,
+   "expected_ids": [
+    "b",
+    "c"
+   ]
+  }
+ ]
+}

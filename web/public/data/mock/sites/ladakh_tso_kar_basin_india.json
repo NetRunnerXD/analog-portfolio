@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "ladakh_tso_kar_basin_india",
+ "name": "Ladakh, Tso Kar basin (India)",
+ "lat": 33.3,
+ "lon": 77.9833,
+ "cell_id": 81875,
+ "country": null,
+ "summary": "Cold, arid, high-UV plateau at ~4.5 km with evaporites and hydrothermal springs (Puga nearby); used for Mars-analog and HABIT instrument studies.",
+ "known_analog": "Ladakh, Tso Kar basin (India)",
+ "earth_features": {
+  "ts_mean_k": 272.0,
+  "dt_k": 30.0,
+  "ati": 0.0258,
+  "ti_class": 3.0,
+  "slope_lt5_frac": 0.4,
+  "slope_lt8_frac": 0.468,
+  "slope_mean_deg": 7.0,
+  "relief_m": 1800.0,
+  "lith_class": 11.0,
+  "aridity_index": 0.08,
+  "barren_frac": 0.848,
+  "ice_index": 0.5,
+  "noon_sun_elev_deg": 57.0,
+  "column_mass_gcm2": 604.6,
+  "cutoff_rigidity_gv": 7.3,
+  "uv_index": 11.1,
+  "geomorph_flags": 4.0,
+  "elevation_m": 4500.0,
+  "albedo": 0.228,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 318.0,
+  "airport_km": 320.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.cambridge.org/core/journals/international-journal-of-astrobiology/article/ladakh-diverse-highaltitude-extreme-environments-for-offearth-analogue-and-astrobiology-research/F9FE95516A6B5D650333ABBCCF2F7512"
+ ],
+ "attribution": []
+}

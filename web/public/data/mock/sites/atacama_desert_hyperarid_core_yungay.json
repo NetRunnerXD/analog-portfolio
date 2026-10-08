@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "atacama_desert_hyperarid_core_yungay",
+ "name": "Atacama Desert hyperarid core, Yungay",
+ "lat": -24.0693,
+ "lon": -69.8663,
+ "cell_id": 164380,
+ "country": null,
+ "summary": "Hyper-arid, high-UV, oxidizing nitrate/perchlorate soils at ~1 km elevation; Viking-style experiments on Yungay soils gave Mars-like results (Navarro-Gonzalez 2003). Coordinates = sample AT02-03A.",
+ "known_analog": "Atacama Desert hyperarid core, Yungay",
+ "earth_features": {
+  "ts_mean_k": 291.0,
+  "dt_k": 35.0,
+  "ati": 0.0198,
+  "ti_class": 3.0,
+  "slope_lt5_frac": 0.6,
+  "slope_lt8_frac": 0.624,
+  "slope_mean_deg": 5.25,
+  "relief_m": 900.0,
+  "lith_class": 12.0,
+  "aridity_index": 0.002,
+  "barren_frac": 1.0,
+  "ice_index": 0.0,
+  "noon_sun_elev_deg": 66.0,
+  "column_mass_gcm2": 917.1,
+  "cutoff_rigidity_gv": 10.3,
+  "uv_index": 11.9,
+  "geomorph_flags": 0.0,
+  "elevation_m": 1000.0,
+  "albedo": 0.304,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 480.0,
+  "airport_km": 309.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.frontiersin.org/journals/astronomy-and-space-sciences/articles/10.3389/fspas.2021.810426/full"
+ ],
+ "attribution": []
+}

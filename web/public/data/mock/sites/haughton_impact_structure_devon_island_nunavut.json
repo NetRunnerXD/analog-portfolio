@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "haughton_impact_structure_devon_island_nunavut",
+ "name": "Haughton impact structure, Devon Island (Nunavut)",
+ "lat": 75.3833,
+ "lon": -89.6667,
+ "cell_id": 21060,
+ "country": null,
+ "summary": "~23 km impact structure in a cold polar desert with permafrost, ground ice and impact breccias; NASA Haughton-Mars Project site since 1997 and Flashline Mars Arctic Research Station.",
+ "known_analog": "Haughton impact structure, Devon Island (Nunavut)",
+ "earth_features": {
+  "ts_mean_k": 256.0,
+  "dt_k": 12.0,
+  "ati": 0.0708,
+  "ti_class": 3.0,
+  "slope_lt5_frac": 0.7,
+  "slope_lt8_frac": 1.0,
+  "slope_mean_deg": 0.25,
+  "relief_m": 300.0,
+  "lith_class": 10.0,
+  "aridity_index": 0.08,
+  "barren_frac": 0.948,
+  "ice_index": 1.0,
+  "noon_sun_elev_deg": 14.0,
+  "column_mass_gcm2": 1008.7,
+  "cutoff_rigidity_gv": 0.1,
+  "uv_index": 1.6,
+  "geomorph_flags": 5.0,
+  "elevation_m": 200.0,
+  "albedo": 0.152,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 1762.0,
+  "airport_km": 382.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.lpi.usra.edu/science/kring/epo_web/impact_cratering/World_Craters_web/northamericacraters/Haughton.html"
+ ],
+ "attribution": []
+}

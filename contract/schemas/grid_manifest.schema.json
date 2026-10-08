@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NetRunnerXD/analog-portfolio/contract/schemas/grid_manifest.schema.json",
+  "type": "object",
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "body": {
+      "enum": [
+        "earth",
+        "moon",
+        "mars"
+      ]
+    },
+    "mock": {
+      "type": "boolean",
+      "description": "true for mock/demo data that is not derived from real layers"
+    },
+    "grid": {
+      "type": "object",
+      "properties": {
+        "resolution_deg": {
+          "const": 0.5
+        },
+        "ncols": {
+          "const": 720
+        },
+        "nrows": {
+          "const": 360
+        },
+        "lon_centre_first": {
+          "const": -179.75
+        },
+        "lat_centre_first": {
+          "const": 89.75
+        },
+        "row_order": {
+          "const": "north-to-south"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "resolution_deg",
+        "ncols",
+        "nrows",
+        "lon_centre_first",
+        "lat_centre_first",
+        "row_order"
+      ]
+    },
+    "layout": {
+      "enum": [
+        "sparse",
+        "dense"
+      ],
+      "description": "sparse: a cell_id uint32 array lists the cells; dense: all 259200 cells in cell_id order"
+    },
+    "n_cells": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "binary": {
+      "type": "string",
+      "pattern": "^[a-z0-9_]+\\.bin$"
+    },
+    "byte_order": {
+      "const": "little"
+    },
+    "arrays": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "factor": {
+            "anyOf": [
+              {
+                "type": "string",
+                "pattern": "^F([1-9]|1[0-3])$"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "dtype": {
+            "enum": [
+              "uint8",
+              "uint16",
+              "uint32",
+              "int16",
+              "float32"
+            ]
+          },
+          "byte_offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "length": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "scale": {
+            "type": "number"
+          },
+          "add_offset": {
+            "type": "number"
+          },
+          "nodata": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "units": {
+            "type": "string"
+          },
+          "stats": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "p005": {
+                    "type": "number"
+                  },
+                  "p50": {
+                    "type": "number"
+                  },
+                  "p995": {
+                    "type": "number"
+                  },
+                  "min": {
+                    "type": "number"
+                  },
+                  "max": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "p005",
+                  "p50",
+                  "p995",
+                  "min",
+                  "max"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "source": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "factor",
+          "dtype",
+          "byte_offset",
+          "length",
+          "scale",
+          "add_offset",
+          "nodata",
+          "units"
+        ]
+      },
+      "minItems": 1
+    },
+    "generated_at": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "body",
+    "mock",
+    "grid",
+    "layout",
+    "n_cells",
+    "binary",
+    "byte_order",
+    "arrays",
+    "generated_at"
+  ],
+  "title": "Grid manifest (earth_features.json, moon_grid.json, mars_grid.json)"
+}

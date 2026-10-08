@@ -1,0 +1,2943 @@
+{
+ "_schema": "18 Moon/Mars target definitions matching plan.md §2.1 (10 Moon: 9 Artemis regions + Shackleton Connecting Ridge; 8 Mars: Jezero, Gale, Utopia/Zhurong, AP-1, AP-9, EM-16, PM-1, Phoenix). IDs are proposed snake_case (plan.md defines none); rename freely in the data contract. Each target: id, name, body, role, anchor{lat, lon (east-positive -180..180), source_url, note}, sample_radius_km (plan.md: Moon 15, Mars 25), values{temperature_range, illumination, slope, thermal_inertia, ice, elevation[, radiation]} where each value is {value (number, [min,max], string, or null), unit, citation_url, note}. null = not found in literature; the note says which dataset the pipeline should sample. context_values holds nearby or target-card-only facts that must not be scored as the target's own value. body_context holds body-wide reference values. Compiled 2026-10-08 IST by Researcher. Literature values only; nothing sampled or invented. Non-DOI URLs returned HTTP 200 on 2026-10-08; DOIs confirmed via the Crossref API (publishers often block automated fetches).",
+ "version": "1.0",
+ "generated": "2026-10-08T13:30+05:30",
+ "body_context": {
+  "moon": {
+   "lander_slope_requirement": {
+    "value": "0–8° threshold, 0–5° goal",
+    "unit": "deg",
+    "citation_url": "https://ntrs.nasa.gov/api/citations/20200001606/downloads/20200001606.pdf",
+    "note": "HLS-R-0071 vertical orientation."
+   },
+   "psr_ice_stability_temperature": {
+    "value": 110,
+    "unit": "K",
+    "citation_url": "https://www.hou.usra.edu/meetings/Artemis_III_2023/pdf/2040.pdf",
+    "note": "Surfaces below ~110 K keep water ice stable; nearly all PSRs in the Artemis regions are perpetually below 110 K."
+   },
+   "ridge_summer_temperature": {
+    "value": ">~120 K (ridge crests, summer); ~200 K summer on Connecting Ridge",
+    "unit": "K",
+    "citation_url": "https://www.hou.usra.edu/meetings/Artemis_III_2023/pdf/2040.pdf",
+    "note": "See also https://www.hou.usra.edu/meetings/lunarsurface2020/pdf/5105.pdf"
+   },
+   "equatorial_diurnal_range": {
+    "value": [
+     94.3,
+     392.3
+    ],
+    "unit": "K (Diviner global average min/max)",
+    "citation_url": "https://doi.org/10.1016/j.icarus.2016.08.012",
+    "note": "Williams et al. 2017; not representative of polar targets."
+   },
+   "illumination_seasonality": {
+    "value": "illumination shifts ~2–3 weeks per year",
+    "unit": "qualitative",
+    "citation_url": "https://www.hou.usra.edu/meetings/lpsc2026/pdf/1901.pdf"
+   },
+   "radiation_dose": {
+    "value": 1369,
+    "unit": "µSv/day dose equivalent",
+    "citation_url": "https://doi.org/10.1126/sciadv.aaz1334",
+    "note": "Chang'E-4 LND, far side; applies to first order at all sites."
+   },
+   "gravity": {
+    "value": 1.62,
+    "unit": "m/s^2",
+    "citation_url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
+   },
+   "surface_pressure_night": {
+    "value": 3e-15,
+    "unit": "bar",
+    "citation_url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
+   },
+   "regions_source": "https://www.nasa.gov/news-release/nasa-provides-update-on-artemis-iii-moon-landing-regions/"
+  },
+  "mars": {
+   "mean_surface_temperature": {
+    "value": 214,
+    "unit": "K",
+    "citation_url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+   },
+   "viking1_air_temperature_range": {
+    "value": [
+     184,
+     242
+    ],
+    "unit": "K",
+    "citation_url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+   },
+   "mean_surface_pressure": {
+    "value": 6.36,
+    "unit": "mb (4.0–8.7 seasonal)",
+    "citation_url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+   },
+   "gravity": {
+    "value": 3.73,
+    "unit": "m/s^2",
+    "citation_url": "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+   },
+   "starship_constraints": {
+    "value": "elevation < -2 km (< -3 km preferred); latitude < 40°; slopes < 5° over 10 m; < 5% chance of a 1 m rock; exclude TI < 100",
+    "unit": "mixed",
+    "citation_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf"
+   },
+   "hls_2015_constraints": {
+    "value": "±50° latitude; < +2 km MOLA; ~25 km² with slopes < ~10°; no thick fine dust",
+    "unit": "mixed",
+    "citation_url": "https://ntrs.nasa.gov/citations/20160001040"
+   }
+  }
+ },
+ "targets": [
+  {
+   "id": "moon_peak_near_cabeus_b",
+   "name": "Peak near Cabeus B",
+   "body": "moon",
+   "role": "Artemis candidate region (Oct 2024)",
+   "anchor": {
+    "lat": -82.26,
+    "lon": -54.58,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://planetarynames.wr.usgs.gov/",
+    "note": "Centre of IAU feature 'Cabeus B' (USGS/IAU Gazetteer), not an official region polygon; NASA published region outlines only as map images."
+   },
+   "sample_radius_km": 15,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "Per-region value not published; sample Diviner Polar Cumulative Products in the target window (see body_context.moon for regional ranges)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "% of time sunlit",
+     "citation_url": null,
+     "note": "Per-region value not published; sample PGDA product 69 (AVGVISIB) in the target window."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Per-region slope statistics not published; compute low-slope fraction from PGDA 90 / LOLA polar slope. Lander requirement ≤8° (goal ≤5°) is in body_context.moon."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "ordinal class",
+     "citation_url": null,
+     "note": "No published thermal inertia per region; plan uses Diviner rock abundance + regolith temperature anomaly (within-body classes)."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "No region-specific ice abundance published; use PSR fraction + Ice Favorability Index in the window. Nearly all PSRs in the Artemis regions stay below 110 K (Williams et al. 2023)."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
+    }
+   },
+   "context_values": {
+    "lcross_ice_cabeus": {
+     "value": 5.6,
+     "unit": "wt% water ice (±2.9)",
+     "citation_url": "https://doi.org/10.1126/science.1186986",
+     "note": "Measured in the LCROSS impact plume at Cabeus crater (IAU centre -85.33, -42.13), ~3° south of this anchor; context, not a value for the region itself."
+    },
+    "lend_hydrogen": {
+     "value": "strongest epithermal-neutron suppression at Cabeus",
+     "unit": "qualitative",
+     "citation_url": "https://doi.org/10.1029/2011JE003971",
+     "note": "Sanin et al. 2012; context for nearby Cabeus PSR."
+    }
+   },
+   "status": "artemis-9",
+   "window_offset": null,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 17,
+     "t_star": 17,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 1.62
+   }
+  },
+  {
+   "id": "moon_haworth",
+   "name": "Haworth",
+   "body": "moon",
+   "role": "Artemis candidate region",
+   "anchor": {
+    "lat": -87.45,
+    "lon": -5.17,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://planetarynames.wr.usgs.gov/",
+    "note": "Centre of IAU feature 'Haworth' (USGS/IAU Gazetteer), not an official region polygon; NASA published region outlines only as map images."
+   },
+   "sample_radius_km": 15,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "Per-region value not published; sample Diviner Polar Cumulative Products in the target window (see body_context.moon for regional ranges)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "% of time sunlit",
+     "citation_url": null,
+     "note": "Per-region value not published; sample PGDA product 69 (AVGVISIB) in the target window."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Per-region slope statistics not published; compute low-slope fraction from PGDA 90 / LOLA polar slope. Lander requirement ≤8° (goal ≤5°) is in body_context.moon."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "ordinal class",
+     "citation_url": null,
+     "note": "No published thermal inertia per region; plan uses Diviner rock abundance + regolith temperature anomaly (within-body classes)."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "No region-specific ice abundance published; use PSR fraction + Ice Favorability Index in the window. Nearly all PSRs in the Artemis regions stay below 110 K (Williams et al. 2023)."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
+    }
+   },
+   "context_values": {
+    "note": "Haworth is a large PSR-bearing crater; no region-specific numbers found."
+   },
+   "status": "artemis-9",
+   "window_offset": null,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "features": {
+    "F1": {
+     "value": 110,
+     "t_star": 217.97785000000002,
+     "gap": 107.978,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F2": {
+     "value": 60,
+     "t_star": 38.064900000000016,
+     "gap": 21.935,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F3": {
+     "value": 2,
+     "t_star": 2,
+     "gap": 0.0,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "MOCK"
+    },
+    "F4": {
+     "value": 0.3,
+     "t_star": 0.3,
+     "gap": 0.0,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "MOCK"
+    },
+    "F5": {
+     "value": 2000,
+     "t_star": 2000.0,
+     "gap": 0.0,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "MOCK"
+    },
+    "F6": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": 0.9,
+     "t_star": 0.9,
+     "gap": 0.0,
+     "units": "ice-access index 0-1",
+     "source": "MOCK"
+    },
+    "F10": {
+     "value": 2.5,
+     "t_star": 5.0,
+     "gap": 2.5,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "MOCK"
+    },
+    "F11": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "MOCK"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 33,
+     "t_star": 33,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 1.62
+   }
+  },
+  {
+   "id": "moon_malapert_massif",
+   "name": "Malapert Massif",
+   "body": "moon",
+   "role": "Artemis candidate region",
+   "anchor": {
+    "lat": -85.98,
+    "lon": -1.67,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://planetarynames.wr.usgs.gov/",
+    "note": "Centre of IAU feature 'Mons Malapert' (USGS/IAU Gazetteer), not an official region polygon; NASA published region outlines only as map images."
+   },
+   "sample_radius_km": 15,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "Per-region value not published; sample Diviner Polar Cumulative Products in the target window (see body_context.moon for regional ranges)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "% of time sunlit",
+     "citation_url": null,
+     "note": "Per-region value not published; sample PGDA product 69 (AVGVISIB) in the target window."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Per-region slope statistics not published; compute low-slope fraction from PGDA 90 / LOLA polar slope. Lander requirement ≤8° (goal ≤5°) is in body_context.moon."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "ordinal class",
+     "citation_url": null,
+     "note": "No published thermal inertia per region; plan uses Diviner rock abundance + regolith temperature anomaly (within-body classes)."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "No region-specific ice abundance published; use PSR fraction + Ice Favorability Index in the window. Nearly all PSRs in the Artemis regions stay below 110 K (Williams et al. 2023)."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
+    }
+   },
+   "context_values": {
+    "earth_visibility": {
+     "value": 100,
+     "unit": "% of time Earth visible",
+     "citation_url": "https://www.hou.usra.edu/meetings/lunarsurface12/pdf/8015.pdf",
+     "note": "Region with 100% Earth visibility lies at about -85.95° lat, ±5° lon near the summit (Petro & Moriarty 2021). Target-card attribute only."
+    },
+    "ambiguity_note": "Quinn et al. 2011 list 89.6% illumination for a point labelled 'Malapert Mountain' at 85.306°S, 36.986°E, ~38° of longitude from this anchor; NOT assigned here."
+   },
+   "status": "artemis-9",
+   "window_offset": null,
+   "citations": [
+    "R4",
+    "R5",
+    "R29",
+    "R30"
+   ],
+   "features": {
+    "F1": {
+     "value": 170,
+     "t_star": 217.97785000000002,
+     "gap": 47.978,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F2": {
+     "value": 110,
+     "t_star": 38.064900000000016,
+     "gap": 71.935,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F3": {
+     "value": 2,
+     "t_star": 2,
+     "gap": 0.0,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "MOCK"
+    },
+    "F4": {
+     "value": 0.25,
+     "t_star": 0.25,
+     "gap": 0.0,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "MOCK"
+    },
+    "F5": {
+     "value": 2500,
+     "t_star": 2500.0,
+     "gap": 0.0,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "MOCK"
+    },
+    "F6": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": 0.3,
+     "t_star": 0.3,
+     "gap": 0.0,
+     "units": "ice-access index 0-1",
+     "source": "MOCK"
+    },
+    "F10": {
+     "value": 4.0,
+     "t_star": 5.0,
+     "gap": 1.0,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "MOCK"
+    },
+    "F11": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "MOCK"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 1.62
+   }
+  },
+  {
+   "id": "moon_mons_mouton_plateau",
+   "name": "Mons Mouton Plateau",
+   "body": "moon",
+   "role": "Artemis candidate region",
+   "anchor": {
+    "lat": -84.6,
+    "lon": 31.0,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://planetarynames.wr.usgs.gov/",
+    "note": "Centre of IAU feature 'Mons Mouton' (USGS/IAU Gazetteer), not an official region polygon; NASA published region outlines only as map images."
+   },
+   "sample_radius_km": 15,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "Per-region value not published; sample Diviner Polar Cumulative Products in the target window (see body_context.moon for regional ranges)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "% of time sunlit",
+     "citation_url": null,
+     "note": "Per-region value not published; sample PGDA product 69 (AVGVISIB) in the target window."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Per-region slope statistics not published; compute low-slope fraction from PGDA 90 / LOLA polar slope. Lander requirement ≤8° (goal ≤5°) is in body_context.moon."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "ordinal class",
+     "citation_url": null,
+     "note": "No published thermal inertia per region; plan uses Diviner rock abundance + regolith temperature anomaly (within-body classes)."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "No region-specific ice abundance published; use PSR fraction + Ice Favorability Index in the window. Nearly all PSRs in the Artemis regions stay below 110 K (Williams et al. 2023)."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
+    }
+   },
+   "context_values": {
+    "note": "Shares the IAU Mons Mouton anchor with moon_mons_mouton; plan.md says paired regions get offset sample windows (to be documented by Project 1). Mons Mouton is a ~130 km feature. A Quinn et al. 2011 point labelled 'Malapert Mountain' (85.306°S, 36.986°E, 89.6% lit) may fall in this massif; unverified assignment."
+   },
+   "status": "artemis-9",
+   "window_offset": null,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 1.62
+   }
+  },
+  {
+   "id": "moon_mons_mouton",
+   "name": "Mons Mouton",
+   "body": "moon",
+   "role": "Artemis candidate region",
+   "anchor": {
+    "lat": -84.6,
+    "lon": 31.0,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://planetarynames.wr.usgs.gov/",
+    "note": "Centre of IAU feature 'Mons Mouton' (USGS/IAU Gazetteer), not an official region polygon; NASA published region outlines only as map images."
+   },
+   "sample_radius_km": 15,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "Per-region value not published; sample Diviner Polar Cumulative Products in the target window (see body_context.moon for regional ranges)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "% of time sunlit",
+     "citation_url": null,
+     "note": "Per-region value not published; sample PGDA product 69 (AVGVISIB) in the target window."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Per-region slope statistics not published; compute low-slope fraction from PGDA 90 / LOLA polar slope. Lander requirement ≤8° (goal ≤5°) is in body_context.moon."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "ordinal class",
+     "citation_url": null,
+     "note": "No published thermal inertia per region; plan uses Diviner rock abundance + regolith temperature anomaly (within-body classes)."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "No region-specific ice abundance published; use PSR fraction + Ice Favorability Index in the window. Nearly all PSRs in the Artemis regions stay below 110 K (Williams et al. 2023)."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
+    }
+   },
+   "context_values": {
+    "note": "Same anchor as moon_mons_mouton_plateau; offset window required."
+   },
+   "status": "artemis-9",
+   "window_offset": {
+    "bearing_deg": 180,
+    "distance_km": 20
+   },
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 1.62
+   }
+  },
+  {
+   "id": "moon_nobile_rim_1",
+   "name": "Nobile Rim 1",
+   "body": "moon",
+   "role": "Artemis candidate region",
+   "anchor": {
+    "lat": -85.28,
+    "lon": 53.27,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://planetarynames.wr.usgs.gov/",
+    "note": "Centre of IAU feature 'Nobile' (USGS/IAU Gazetteer), not an official region polygon; NASA published region outlines only as map images."
+   },
+   "sample_radius_km": 15,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "Per-region value not published; sample Diviner Polar Cumulative Products in the target window (see body_context.moon for regional ranges)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "% of time sunlit",
+     "citation_url": null,
+     "note": "Per-region value not published; sample PGDA product 69 (AVGVISIB) in the target window."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Per-region slope statistics not published; compute low-slope fraction from PGDA 90 / LOLA polar slope. Lander requirement ≤8° (goal ≤5°) is in body_context.moon."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "ordinal class",
+     "citation_url": null,
+     "note": "No published thermal inertia per region; plan uses Diviner rock abundance + regolith temperature anomaly (within-body classes)."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "No region-specific ice abundance published; use PSR fraction + Ice Favorability Index in the window. Nearly all PSRs in the Artemis regions stay below 110 K (Williams et al. 2023)."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
+    }
+   },
+   "context_values": {
+    "note": "Shares the Nobile anchor with moon_nobile_rim_2; offset window required."
+   },
+   "status": "artemis-9",
+   "window_offset": {
+    "bearing_deg": 270,
+    "distance_km": 20
+   },
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 33,
+     "t_star": 33,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 1.62
+   }
+  },
+  {
+   "id": "moon_nobile_rim_2",
+   "name": "Nobile Rim 2",
+   "body": "moon",
+   "role": "Artemis candidate region",
+   "anchor": {
+    "lat": -85.28,
+    "lon": 53.27,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://planetarynames.wr.usgs.gov/",
+    "note": "Centre of IAU feature 'Nobile' (USGS/IAU Gazetteer), not an official region polygon; NASA published region outlines only as map images."
+   },
+   "sample_radius_km": 15,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "Per-region value not published; sample Diviner Polar Cumulative Products in the target window (see body_context.moon for regional ranges)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "% of time sunlit",
+     "citation_url": null,
+     "note": "Per-region value not published; sample PGDA product 69 (AVGVISIB) in the target window."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Per-region slope statistics not published; compute low-slope fraction from PGDA 90 / LOLA polar slope. Lander requirement ≤8° (goal ≤5°) is in body_context.moon."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "ordinal class",
+     "citation_url": null,
+     "note": "No published thermal inertia per region; plan uses Diviner rock abundance + regolith temperature anomaly (within-body classes)."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "No region-specific ice abundance published; use PSR fraction + Ice Favorability Index in the window. Nearly all PSRs in the Artemis regions stay below 110 K (Williams et al. 2023)."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
+    }
+   },
+   "context_values": {
+    "note": "Same anchor as moon_nobile_rim_1; offset window required."
+   },
+   "status": "artemis-9",
+   "window_offset": {
+    "bearing_deg": 90,
+    "distance_km": 20
+   },
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 33,
+     "t_star": 33,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 1.62
+   }
+  },
+  {
+   "id": "moon_de_gerlache_rim_2",
+   "name": "de Gerlache Rim 2",
+   "body": "moon",
+   "role": "Artemis candidate region",
+   "anchor": {
+    "lat": -88.48,
+    "lon": -88.34,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://planetarynames.wr.usgs.gov/",
+    "note": "Centre of IAU feature 'de Gerlache' (USGS/IAU Gazetteer), not an official region polygon; NASA published region outlines only as map images."
+   },
+   "sample_radius_km": 15,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "Per-region value not published; sample Diviner Polar Cumulative Products in the target window (see body_context.moon for regional ranges)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "% of time sunlit",
+     "citation_url": null,
+     "note": "Per-region value not published; sample PGDA product 69 (AVGVISIB) in the target window."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Per-region slope statistics not published; compute low-slope fraction from PGDA 90 / LOLA polar slope. Lander requirement ≤8° (goal ≤5°) is in body_context.moon."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "ordinal class",
+     "citation_url": null,
+     "note": "No published thermal inertia per region; plan uses Diviner rock abundance + regolith temperature anomaly (within-body classes)."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "No region-specific ice abundance published; use PSR fraction + Ice Favorability Index in the window. Nearly all PSRs in the Artemis regions stay below 110 K (Williams et al. 2023)."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
+    }
+   },
+   "status": "artemis-9",
+   "window_offset": null,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 33,
+     "t_star": 33,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 1.62
+   }
+  },
+  {
+   "id": "moon_slater_plain",
+   "name": "Slater Plain",
+   "body": "moon",
+   "role": "Artemis candidate region",
+   "anchor": {
+    "lat": -88.08,
+    "lon": 111.29,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://planetarynames.wr.usgs.gov/",
+    "note": "Centre of IAU feature 'Slater' (USGS/IAU Gazetteer), not an official region polygon; NASA published region outlines only as map images."
+   },
+   "sample_radius_km": 15,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "Per-region value not published; sample Diviner Polar Cumulative Products in the target window (see body_context.moon for regional ranges)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "% of time sunlit",
+     "citation_url": null,
+     "note": "Per-region value not published; sample PGDA product 69 (AVGVISIB) in the target window."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Per-region slope statistics not published; compute low-slope fraction from PGDA 90 / LOLA polar slope. Lander requirement ≤8° (goal ≤5°) is in body_context.moon."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "ordinal class",
+     "citation_url": null,
+     "note": "No published thermal inertia per region; plan uses Diviner rock abundance + regolith temperature anomaly (within-body classes)."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "No region-specific ice abundance published; use PSR fraction + Ice Favorability Index in the window. Nearly all PSRs in the Artemis regions stay below 110 K (Williams et al. 2023)."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
+    }
+   },
+   "status": "artemis-9",
+   "window_offset": null,
+   "citations": [
+    "R4",
+    "R5",
+    "R29"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 1,
+     "t_star": 1,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 1.62
+   }
+  },
+  {
+   "id": "moon_shackleton_connecting_ridge",
+   "name": "Shackleton Connecting Ridge",
+   "body": "moon",
+   "role": "Moon Base I landing target (NASA release 26-046, 26 May 2026); dropped from the Artemis 2022 list",
+   "anchor": {
+    "lat": -89.4516,
+    "lon": -137.2419,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://elib.dlr.de/94240/",
+    "note": "Best-illuminated point at 10 m height, 89.4516°S, 222.7581°E (Gläser et al. 2014), converted to -137.2419°E."
+   },
+   "sample_radius_km": 15,
+   "values": {
+    "temperature_range": {
+     "value": "~200 K summer maximum; ridge crests generally >~120 K in summer, <~120 K when shadowed",
+     "unit": "K",
+     "citation_url": "https://www.hou.usra.edu/meetings/lunarsurface2020/pdf/5105.pdf",
+     "note": "Williams et al. 2020 (summer ~200 K on Connecting Ridge); 2023 abstract for ridge-crest behaviour (https://www.hou.usra.edu/meetings/Artemis_III_2023/pdf/2040.pdf). No single annual min/max published."
+    },
+    "illumination": {
+     "value": [
+      92.27,
+      95.65
+     ],
+     "unit": "% of time sunlit at 2 m / 10 m above ground",
+     "citation_url": "https://elib.dlr.de/94240/",
+     "note": "Best spots on the ridge (Gläser et al. 2014, 19-yr LOLA simulation); longest continuous darkness typically 3–5 days. Quinn et al. 2011 give 86.5% (max shadow 10 days) for a point at 89.434°S, 136.701°W (https://www.lpi.usra.edu/meetings/lpsc2011/pdf/2518.pdf)."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Per-region slope statistics not published; compute low-slope fraction from PGDA 90 / LOLA polar slope. Lander requirement ≤8° (goal ≤5°) is in body_context.moon."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "ordinal class",
+     "citation_url": null,
+     "note": "No published thermal inertia per region; plan uses Diviner rock abundance + regolith temperature anomaly (within-body classes)."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "No region-specific ice abundance published; use PSR fraction + Ice Favorability Index in the window. Nearly all PSRs in the Artemis regions stay below 110 K (Williams et al. 2023)."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
+    }
+   },
+   "context_values": {
+    "moon_base_source": "https://www.nasa.gov/news-release/nasa-provides-update-on-moon-base-rovers-landers-missions/"
+   },
+   "status": "moon-base-i",
+   "window_offset": null,
+   "citations": [
+    "R6",
+    "R10",
+    "R11"
+   ],
+   "features": {
+    "F1": {
+     "value": 180,
+     "t_star": 217.97785000000002,
+     "gap": 37.978,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F2": {
+     "value": 90,
+     "t_star": 38.064900000000016,
+     "gap": 51.935,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F3": {
+     "value": 2,
+     "t_star": 2,
+     "gap": 0.0,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "MOCK"
+    },
+    "F4": {
+     "value": 0.35,
+     "t_star": 0.35,
+     "gap": 0.0,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "MOCK"
+    },
+    "F5": {
+     "value": 1800,
+     "t_star": 1800.0,
+     "gap": 0.0,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "MOCK"
+    },
+    "F6": {
+     "value": 16,
+     "t_star": 16,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": 0.6,
+     "t_star": 0.6,
+     "gap": 0.0,
+     "units": "ice-access index 0-1",
+     "source": "MOCK"
+    },
+    "F10": {
+     "value": 0.55,
+     "t_star": 5.0,
+     "gap": 4.45,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "MOCK"
+    },
+    "F11": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "MOCK"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 49,
+     "t_star": 49,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 1.62,
+    "illumination": [
+     92.27,
+     95.65
+    ]
+   }
+  },
+  {
+   "id": "mars_jezero",
+   "name": "Jezero crater (Perseverance, Octavia E. Butler Landing)",
+   "body": "mars",
+   "role": "Mars 2020 landing site",
+   "anchor": {
+    "lat": 18.4446,
+    "lon": 77.4509,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://ntrs.nasa.gov/api/citations/20210024480/downloads/Mars2020_Flight_Mechanics_Simulation_Paper_v3.pdf",
+    "note": "Reconstructed landing point 18.44463°N, 77.45088°E (Mars 2020 EDL simulation assessment, NTRS)."
+   },
+   "sample_radius_km": 25,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "No site-specific surface temperature range compiled; sample MCD v6.2 tsurf (global context in body_context.mars)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Latitude-driven; compute analytically / from MCD fluxsurf_dn_sw."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Not compiled per site; compute from MOLA/HRSC. Engineering limits are in body_context.mars."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "J m^-2 K^-1 s^-1/2",
+     "citation_url": null,
+     "note": "Site value not compiled; sample TES TI (Putzig & Mellon 2007, https://se.psi.edu/inertia/2007/) in the window."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Equatorial site; no shallow ice expected per SWIM coverage (not quantified here)."
+    },
+    "elevation": {
+     "value": -2620,
+     "unit": "m (MOLA)",
+     "citation_url": "https://www.hou.usra.edu/meetings/lpsc2016/pdf/2324.pdf",
+     "note": "Elevation of the 2016 candidate ellipse centre (18.389°N, 77.541°E), -2.62 km."
+    }
+   },
+   "status": "mission-site",
+   "window_offset": null,
+   "citations": [
+    "R34",
+    "R35"
+   ],
+   "features": {
+    "F1": {
+     "value": 215,
+     "t_star": 217.97785000000002,
+     "gap": 2.978,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F2": {
+     "value": 85,
+     "t_star": 38.064900000000016,
+     "gap": 46.935,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F3": {
+     "value": 3,
+     "t_star": 3,
+     "gap": 0.0,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "MOCK"
+    },
+    "F4": {
+     "value": 0.85,
+     "t_star": 0.85,
+     "gap": 0.0,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "MOCK"
+    },
+    "F5": {
+     "value": 600,
+     "t_star": 600.0,
+     "gap": 0.0,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "MOCK"
+    },
+    "F6": {
+     "value": 8,
+     "t_star": 8,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "ice-access index 0-1",
+     "source": "MOCK"
+    },
+    "F10": {
+     "value": 72,
+     "t_star": 72.0,
+     "gap": 0.0,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "MOCK"
+    },
+    "F11": {
+     "value": 17,
+     "t_star": 17,
+     "gap": 0.0,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "MOCK"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 1,
+     "t_star": 1,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 3.73
+   }
+  },
+  {
+   "id": "mars_gale",
+   "name": "Gale crater (Curiosity, Bradbury Landing)",
+   "body": "mars",
+   "role": "MSL landing site; RAD radiation reference",
+   "anchor": {
+    "lat": -4.5895,
+    "lon": 137.4417,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://doi.org/10.1002/2014JE004622",
+    "note": "Bradbury Landing (Vasavada et al. 2014)."
+   },
+   "sample_radius_km": 25,
+   "values": {
+    "temperature_range": {
+     "value": [
+      173,
+      289
+     ],
+     "unit": "K (REMS ground temperature, annual min/max over first 1160 sols)",
+     "citation_url": "https://revistas.ucm.es/index.php/FITE/article/view/53902",
+     "note": "Martínez et al. 2016: min ~173 K (sol 534, Dingo Gap), max ~289 K (sols 103, 711); diurnal ground-temperature amplitude ~55–100 K."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Latitude-driven; compute analytically / from MCD fluxsurf_dn_sw."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Not compiled per site; compute from MOLA/HRSC. Engineering limits are in body_context.mars."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "J m^-2 K^-1 s^-1/2",
+     "citation_url": null,
+     "note": "Site value not compiled; sample TES TI (Putzig & Mellon 2007, https://se.psi.edu/inertia/2007/) in the window."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Equatorial; no shallow ice expected (not quantified here)."
+    },
+    "elevation": {
+     "value": -4501,
+     "unit": "m (MOLA)",
+     "citation_url": "https://doi.org/10.1002/2014JE004622",
+     "note": "Vasavada et al. 2014."
+    },
+    "radiation": {
+     "value": 0.64,
+     "unit": "mSv/day dose equivalent (±0.12)",
+     "citation_url": "https://doi.org/10.1126/science.1244797",
+     "note": "MSL RAD (Hassler et al. 2014); absorbed 0.210 ± 0.040 mGy/day."
+    }
+   },
+   "status": "mission-site",
+   "window_offset": null,
+   "citations": [
+    "R36",
+    "R37",
+    "R31"
+   ],
+   "features": {
+    "F1": {
+     "value": 220,
+     "t_star": 220.0,
+     "gap": 0.0,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F2": {
+     "value": 80,
+     "t_star": 38.064900000000016,
+     "gap": 41.935,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F3": {
+     "value": 3,
+     "t_star": 3,
+     "gap": 0.0,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "MOCK"
+    },
+    "F4": {
+     "value": 0.6,
+     "t_star": 0.6,
+     "gap": 0.0,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "MOCK"
+    },
+    "F5": {
+     "value": 2500,
+     "t_star": 2500.0,
+     "gap": 0.0,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "MOCK"
+    },
+    "F6": {
+     "value": 8,
+     "t_star": 8,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "ice-access index 0-1",
+     "source": "MOCK"
+    },
+    "F10": {
+     "value": 85,
+     "t_star": 78.0,
+     "gap": 7.0,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "MOCK"
+    },
+    "F11": {
+     "value": 20,
+     "t_star": 20,
+     "gap": 0.0,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "MOCK"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 1,
+     "t_star": 1,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 3.73
+   }
+  },
+  {
+   "id": "mars_utopia_zhurong",
+   "name": "Utopia Planitia (Zhurong landing site)",
+   "body": "mars",
+   "role": "Tianwen-1 landing site; ice-rich lowland plains",
+   "anchor": {
+    "lat": 25.066,
+    "lon": 109.925,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://www.nature.com/articles/s41550-021-01519-5",
+    "note": "Zhurong landing site from the Nature Astronomy landing-site paper."
+   },
+   "sample_radius_km": 25,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "No site-specific surface temperature range compiled; sample MCD v6.2 tsurf (global context in body_context.mars)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Latitude-driven; compute analytically / from MCD fluxsurf_dn_sw."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Not compiled per site; compute from MOLA/HRSC. Engineering limits are in body_context.mars."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "J m^-2 K^-1 s^-1/2",
+     "citation_url": null,
+     "note": "Site value not compiled; sample TES TI (Putzig & Mellon 2007, https://se.psi.edu/inertia/2007/) in the window."
+    },
+    "ice": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Not compiled; sample SWIM v4 depth bands."
+    },
+    "elevation": {
+     "value": -4099.4,
+     "unit": "m (MOLA)",
+     "citation_url": "https://www.nature.com/articles/s41550-021-01519-5"
+    }
+   },
+   "status": "mission-site",
+   "window_offset": null,
+   "citations": [
+    "R38"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 12,
+     "t_star": 12,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 4,
+     "t_star": 4,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 3.73
+   }
+  },
+  {
+   "id": "mars_arcadia_ap1",
+   "name": "Arcadia Planitia AP-1",
+   "body": "mars",
+   "role": "Starship primary candidate",
+   "anchor": {
+    "lat": 39.8,
+    "lon": -157.9,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+    "note": "Golombek et al. 2021 Table 1: 39.8°N, 202.1°E."
+   },
+   "sample_radius_km": 25,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "No site-specific surface temperature range compiled; sample MCD v6.2 tsurf (global context in body_context.mars)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Latitude-driven; compute analytically / from MCD fluxsurf_dn_sw."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Not compiled per site; compute from MOLA/HRSC. Engineering limits are in body_context.mars."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "J m^-2 K^-1 s^-1/2",
+     "citation_url": null,
+     "note": "Site value not given; Starship constraint excludes TI < 100. Sample TES TI."
+    },
+    "ice": {
+     "value": "AP-1 appears the safest site and has a moderate combined SWIM ice score (on the sinuous unit, thick ice inferred from radar).",
+     "unit": "qualitative",
+     "citation_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+     "note": "SWIM-based scoring summary from the abstract; quantitative depth to be sampled from SWIM v4 (https://iopscience.iop.org/article/10.3847/PSJ/ad9b24)."
+    },
+    "elevation": {
+     "value": -3900,
+     "unit": "m (MOLA geoid)",
+     "citation_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+     "note": "Table 1 lists km to 0.1 km precision."
+    }
+   },
+   "status": "starship-candidate",
+   "window_offset": null,
+   "citations": [
+    "R27",
+    "R42"
+   ],
+   "features": {
+    "F1": {
+     "value": 200,
+     "t_star": 217.97785000000002,
+     "gap": 17.978,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F2": {
+     "value": 70,
+     "t_star": 38.064900000000016,
+     "gap": 31.935,
+     "units": "K",
+     "source": "MOCK"
+    },
+    "F3": {
+     "value": 3,
+     "t_star": 3,
+     "gap": 0.0,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "MOCK"
+    },
+    "F4": {
+     "value": 0.95,
+     "t_star": 0.95,
+     "gap": 0.0,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "MOCK"
+    },
+    "F5": {
+     "value": 150,
+     "t_star": 150.0,
+     "gap": 0.0,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "MOCK"
+    },
+    "F6": {
+     "value": 12,
+     "t_star": 12,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "ice-access index 0-1",
+     "source": "MOCK"
+    },
+    "F10": {
+     "value": 50,
+     "t_star": 50.0,
+     "gap": 0.0,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "MOCK"
+    },
+    "F11": {
+     "value": 19,
+     "t_star": 19,
+     "gap": 0.0,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "MOCK"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 12,
+     "t_star": 12,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 3.73
+   }
+  },
+  {
+   "id": "mars_arcadia_ap9",
+   "name": "Arcadia Planitia AP-9",
+   "body": "mars",
+   "role": "Starship primary candidate",
+   "anchor": {
+    "lat": 40.02,
+    "lon": -156.65,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+    "note": "Golombek et al. 2021 Table 1: 40.02°N, 203.35°E."
+   },
+   "sample_radius_km": 25,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "No site-specific surface temperature range compiled; sample MCD v6.2 tsurf (global context in body_context.mars)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Latitude-driven; compute analytically / from MCD fluxsurf_dn_sw."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Not compiled per site; compute from MOLA/HRSC. Engineering limits are in body_context.mars."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "J m^-2 K^-1 s^-1/2",
+     "citation_url": null,
+     "note": "Site value not given; Starship constraint excludes TI < 100. Sample TES TI."
+    },
+    "ice": {
+     "value": "AP-9 has the thickest ice from radar returns and geomorphology indicating shallow ice; highest combined SWIM ice score; slightly rocky/rough.",
+     "unit": "qualitative",
+     "citation_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+     "note": "SWIM-based scoring summary from the abstract; quantitative depth to be sampled from SWIM v4 (https://iopscience.iop.org/article/10.3847/PSJ/ad9b24)."
+    },
+    "elevation": {
+     "value": -3900,
+     "unit": "m (MOLA geoid)",
+     "citation_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+     "note": "Table 1 lists km to 0.1 km precision."
+    }
+   },
+   "status": "starship-candidate",
+   "window_offset": null,
+   "citations": [
+    "R27",
+    "R42"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 12,
+     "t_star": 12,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 12,
+     "t_star": 12,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 3.73
+   }
+  },
+  {
+   "id": "mars_erebus_em16",
+   "name": "Erebus Montes EM-16",
+   "body": "mars",
+   "role": "Starship primary candidate",
+   "anchor": {
+    "lat": 39.89,
+    "lon": -167.97,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+    "note": "Golombek et al. 2021 Table 1: 39.89°N, 192.03°E."
+   },
+   "sample_radius_km": 25,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "No site-specific surface temperature range compiled; sample MCD v6.2 tsurf (global context in body_context.mars)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Latitude-driven; compute analytically / from MCD fluxsurf_dn_sw."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Not compiled per site; compute from MOLA/HRSC. Engineering limits are in body_context.mars."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "J m^-2 K^-1 s^-1/2",
+     "citation_url": null,
+     "note": "Site value not given; Starship constraint excludes TI < 100. Sample TES TI."
+    },
+    "ice": {
+     "value": "EM-16 is associated with a lobate debris apron (LDA), has the strongest radar return for shallow ice and the highest combined SWIM score.",
+     "unit": "qualitative",
+     "citation_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+     "note": "SWIM-based scoring summary from the abstract; quantitative depth to be sampled from SWIM v4 (https://iopscience.iop.org/article/10.3847/PSJ/ad9b24)."
+    },
+    "elevation": {
+     "value": -3900,
+     "unit": "m (MOLA geoid)",
+     "citation_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+     "note": "Table 1 lists km to 0.1 km precision."
+    }
+   },
+   "status": "starship-candidate",
+   "window_offset": null,
+   "citations": [
+    "R27"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 12,
+     "t_star": 12,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 28,
+     "t_star": 28,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 3.73
+   }
+  },
+  {
+   "id": "mars_phlegra_pm1",
+   "name": "Phlegra Montes PM-1",
+   "body": "mars",
+   "role": "Starship primary candidate",
+   "anchor": {
+    "lat": 35.23,
+    "lon": 163.95,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+    "note": "Golombek et al. 2021 Table 1: 35.23°N, 163.95°E."
+   },
+   "sample_radius_km": 25,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "No site-specific surface temperature range compiled; sample MCD v6.2 tsurf (global context in body_context.mars)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Latitude-driven; compute analytically / from MCD fluxsurf_dn_sw."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Not compiled per site; compute from MOLA/HRSC. Engineering limits are in body_context.mars."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "J m^-2 K^-1 s^-1/2",
+     "citation_url": null,
+     "note": "Site value not given; Starship constraint excludes TI < 100. Sample TES TI."
+    },
+    "ice": {
+     "value": "PM-1 has a clear LDA association and the highest SWIM geomorphic-ice score; regional SHARAD study reports debris-covered ice up to 440 ± 14 m thick (avg ~182 ± 91 m) under 2–8 m debris (Andres & Smith 2025, https://doi.org/10.1029/2024JE008830).",
+     "unit": "qualitative",
+     "citation_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+     "note": "SWIM-based scoring summary from the abstract; quantitative depth to be sampled from SWIM v4 (https://iopscience.iop.org/article/10.3847/PSJ/ad9b24)."
+    },
+    "elevation": {
+     "value": -3200,
+     "unit": "m (MOLA geoid)",
+     "citation_url": "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf",
+     "note": "Table 1 lists km to 0.1 km precision."
+    }
+   },
+   "status": "starship-candidate",
+   "window_offset": null,
+   "citations": [
+    "R27",
+    "R39"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 12,
+     "t_star": 12,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 28,
+     "t_star": 28,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 3.73
+   }
+  },
+  {
+   "id": "mars_phoenix",
+   "name": "Phoenix landing site (Vastitas Borealis)",
+   "body": "mars",
+   "role": "Ground-ice ground truth",
+   "anchor": {
+    "lat": 68.2188,
+    "lon": -125.7492,
+    "lon_convention": "east-positive, -180..180",
+    "source_url": "https://science.nasa.gov/photojournal/phoenix-landing-site-indicated-on-global-view/",
+    "note": "NASA gives 68.2°N, 234.2°E; precise 68.2188°N, 234.2508°E (Wikipedia/Phoenix references) converted to -125.7492°E."
+   },
+   "sample_radius_km": 25,
+   "values": {
+    "temperature_range": {
+     "value": null,
+     "unit": "K",
+     "citation_url": null,
+     "note": "No site-specific surface temperature range compiled; sample MCD v6.2 tsurf (global context in body_context.mars)."
+    },
+    "illumination": {
+     "value": null,
+     "unit": "various",
+     "citation_url": null,
+     "note": "Latitude-driven; compute analytically / from MCD fluxsurf_dn_sw."
+    },
+    "slope": {
+     "value": null,
+     "unit": "deg",
+     "citation_url": null,
+     "note": "Not compiled per site; compute from MOLA/HRSC. Engineering limits are in body_context.mars."
+    },
+    "thermal_inertia": {
+     "value": null,
+     "unit": "J m^-2 K^-1 s^-1/2",
+     "citation_url": null,
+     "note": "Site value not compiled; sample TES TI (Putzig & Mellon 2007, https://se.psi.edu/inertia/2007/) in the window."
+    },
+    "ice": {
+     "value": 4.6,
+     "unit": "cm mean depth to ice table (range 1.3–11.2 cm)",
+     "citation_url": "https://doi.org/10.1029/2009JE003417",
+     "note": "Mellon et al. 2009."
+    },
+    "elevation": {
+     "value": null,
+     "unit": "m",
+     "citation_url": null,
+     "note": "Not compiled; sample MOLA MEGDR."
+    }
+   },
+   "status": "ground-truth",
+   "window_offset": null,
+   "citations": [
+    "R40"
+   ],
+   "features": {
+    "F1": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F2": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "K",
+     "source": "pending"
+    },
+    "F3": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "class 1-5 (1 dusty, 2 fine, 3 sandy, 4 blocky, 5 rocky)",
+     "source": "pending"
+    },
+    "F4": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "fraction of area with slope < 5 deg",
+     "source": "pending"
+    },
+    "F5": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "m (P95 - P5 elevation over ~30 km windows)",
+     "source": "pending"
+    },
+    "F6": {
+     "value": 12,
+     "t_star": 12,
+     "gap": 0.0,
+     "units": "lithology class code (see lithology_classes)",
+     "source": "MOCK"
+    },
+    "F7": {
+     "value": 0.0,
+     "t_star": 0.0,
+     "gap": 0.0,
+     "units": "Aridity Index (P/PET, dimensionless)",
+     "source": "MOCK"
+    },
+    "F8": {
+     "value": 1.0,
+     "t_star": 1.0,
+     "gap": 0.0,
+     "units": "fraction of cell bare/sparse + snow/ice",
+     "source": "MOCK"
+    },
+    "F9": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "ice-access index 0-1",
+     "source": "pending"
+    },
+    "F10": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "deg (median local-noon solar elevation over a year)",
+     "source": "pending"
+    },
+    "F11": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "g/cm^2 atmospheric column mass; GV cutoff rigidity (Earth only)",
+     "source": "pending"
+    },
+    "F12": {
+     "value": null,
+     "t_star": null,
+     "gap": null,
+     "units": "UV index (annual mean, all-sky)",
+     "source": "pending"
+    },
+    "F13": {
+     "value": 4,
+     "t_star": 4,
+     "gap": 0.0,
+     "units": "bitmask (see geomorph_flags)",
+     "source": "MOCK"
+    }
+   },
+   "card": {
+    "gravity_ms2": 3.73
+   }
+  }
+ ],
+ "contract_version": "1.0.0",
+ "mock": true
+}

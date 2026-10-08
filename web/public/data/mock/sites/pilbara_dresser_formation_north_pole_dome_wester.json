@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "pilbara_dresser_formation_north_pole_dome_wester",
+ "name": "Pilbara, Dresser Formation, North Pole Dome (Western Australia)",
+ "lat": -21.1518,
+ "lon": 119.4373,
+ "cell_id": 160438,
+ "country": null,
+ "summary": "~3.48 Ga stromatolites and hydrothermal sediments, among Earth's oldest biosignatures; Mars 2020/ExoMars scientists trained here to recognise ancient life signs.",
+ "known_analog": "Pilbara, Dresser Formation, North Pole Dome (Western Australia)",
+ "earth_features": {
+  "ts_mean_k": 277.21,
+  "dt_k": 20.2,
+  "ati": 0.0398,
+  "ti_class": 3.0,
+  "slope_lt5_frac": 0.836,
+  "slope_lt8_frac": 0.94,
+  "slope_mean_deg": 1.75,
+  "relief_m": 607.0,
+  "lith_class": 9.0,
+  "aridity_index": 0.6253,
+  "barren_frac": 0.188,
+  "ice_index": 0.0,
+  "noon_sun_elev_deg": 69.0,
+  "column_mass_gcm2": 948.4,
+  "cutoff_rigidity_gv": 11.2,
+  "uv_index": 11.3,
+  "geomorph_flags": 0.0,
+  "elevation_m": 717.0,
+  "albedo": 0.196,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 675.0,
+  "airport_km": 320.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.nasa.gov/solar-system/mars-scientists-investigate-ancient-life-in-australia/"
+ ],
+ "attribution": []
+}

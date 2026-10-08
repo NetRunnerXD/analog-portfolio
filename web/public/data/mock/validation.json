@@ -1,0 +1,3601 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "frozen_commit": null,
+ "source": "docs/validation.csv",
+ "summary": {
+  "n_known": 21,
+  "n_negative": 11,
+  "n_evaluations": 147,
+  "pct_top5": 0.0544,
+  "pct_top1": 0.034,
+  "rank_auc": 0.7655
+ },
+ "sites": [
+  {
+   "name": "Haughton impact structure, Devon Island (Nunavut)",
+   "lat": 75.3833,
+   "lon": -89.6667,
+   "body_analog": "both",
+   "mission_purposes": [
+    "P3_habitat_eva_power",
+    "P4_geology_regolith",
+    "P1_landing_mobility"
+   ],
+   "why": "~23 km impact structure in a cold polar desert with permafrost, ground ice and impact breccias; NASA Haughton-Mars Project site since 1997 and Flashline Mars Arctic Research Station.",
+   "citation_url": "https://www.lpi.usra.edu/science/kring/epo_web/impact_cratering/World_Craters_web/northamericacraters/Haughton.html",
+   "kind": "positive",
+   "cell_id": 21060,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 73.48,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 86.17,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 45.67,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 72.77,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 84.6,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 44.92,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 73.83,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 86.06,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 46.22,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 74.79,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 32.51,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 65.97,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 60.24,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 28.11,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 49.1,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 82.95,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 63.17,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 77.85,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Atacama Desert hyperarid core, Yungay",
+   "lat": -24.0693,
+   "lon": -69.8663,
+   "body_analog": "mars",
+   "mission_purposes": [
+    "P5_astrobiology",
+    "P1_landing_mobility"
+   ],
+   "why": "Hyper-arid, high-UV, oxidizing nitrate/perchlorate soils at ~1 km elevation; Viking-style experiments on Yungay soils gave Mars-like results (Navarro-Gonzalez 2003). Coordinates = sample AT02-03A.",
+   "citation_url": "https://www.frontiersin.org/journals/astronomy-and-space-sciences/articles/10.3389/fspas.2021.810426/full",
+   "kind": "positive",
+   "cell_id": 164380,
+   "results": [
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 99.22,
+     "in_top5": true,
+     "in_top1": true
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 99.72,
+     "in_top5": true,
+     "in_top1": true
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 99.81,
+     "in_top5": true,
+     "in_top1": true
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 99.96,
+     "in_top5": true,
+     "in_top1": true
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 88.34,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 92.95,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "McMurdo Dry Valleys, University Valley (Antarctica)",
+   "lat": -77.8633,
+   "lon": 160.7167,
+   "body_analog": "mars",
+   "mission_purposes": [
+    "P2_isru_ice",
+    "P5_astrobiology"
+   ],
+   "why": "Cold hyper-arid polar desert at ~1730 m where air never exceeds 0 C; dry permafrost over an ice table 0 to >70 cm deep; analog for Phoenix-site ground ice.",
+   "citation_url": "https://www.lpi.usra.edu/meetings/polar2011/pdf/6051.pdf",
+   "kind": "positive",
+   "cell_id": 241881,
+   "results": [
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 57.88,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 73.6,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 65.31,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 75.65,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 78.67,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 86.06,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Rio Tinto headwaters, Pena de Hierro (Huelva, Spain)",
+   "lat": 37.7244,
+   "lon": -6.5558,
+   "body_analog": "mars",
+   "mission_purposes": [
+    "P5_astrobiology",
+    "P4_geology_regolith"
+   ],
+   "why": "Acidic (pH ~2.3) iron-sulfate river with jarosite, goethite and hematite comparable to Meridiani Planum; NASA/CAB MARTE subsurface drilling site.",
+   "citation_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4206857/",
+   "kind": "positive",
+   "cell_id": 75226,
+   "results": [
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 88.89,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 11.05,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 85.42,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 11.42,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 52.47,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 11.45,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Mauna Kea, Pu'u Hiwahine ISRU test site (Hawai'i)",
+   "lat": 19.7609,
+   "lon": -155.4707,
+   "body_analog": "moon",
+   "mission_purposes": [
+    "P2_isru_ice",
+    "P4_geology_regolith"
+   ],
+   "why": "Basaltic tephra cinder cone at ~2783 m used for NASA/CSA/DLR lunar ISRU field tests (RESOLVE, 2008/2010/2012) via PISCES.",
+   "citation_url": "https://ntrs.nasa.gov/citations/20110008363",
+   "kind": "positive",
+   "cell_id": 100849,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 60.61,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 47.39,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 85.08,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 55.73,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 45.49,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 50.32,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "HI-SEAS habitat, Mauna Loa (Hawai'i)",
+   "lat": 19.6024,
+   "lon": -155.4872,
+   "body_analog": "mars",
+   "mission_purposes": [
+    "P3_habitat_eva_power"
+   ],
+   "why": "Barren basaltic lava slopes at ~2,500 m; long-duration isolated Mars habitat missions funded by NASA's Human Research Program (2013-2018). Same 0.5 deg cell as Mauna Kea test site.",
+   "citation_url": "https://en.wikipedia.org/wiki/HI-SEAS",
+   "kind": "positive",
+   "cell_id": 100849,
+   "results": [
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 90.23,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 92.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 18.49,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Bockfjorden / Sverrefjell volcanic centre (Svalbard), AMASE",
+   "lat": 79.469,
+   "lon": 13.3287,
+   "body_analog": "mars",
+   "mission_purposes": [
+    "P5_astrobiology",
+    "P4_geology_regolith"
+   ],
+   "why": "Arctic volcanic centre with carbonate globules analogous to Martian meteorite ALH84001, permafrost and glacial terrain; NASA/ESA AMASE instrument-testing expeditions.",
+   "citation_url": "https://science.gsfc.nasa.gov/699/projects/247",
+   "kind": "positive",
+   "cell_id": 15506,
+   "results": [
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 57.13,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 64.15,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 60.99,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 64.7,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 54.36,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 68.36,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Askja / Vikrahraun lava field (Iceland)",
+   "lat": 65.033,
+   "lon": -16.783,
+   "body_analog": "both",
+   "mission_purposes": [
+    "P4_geology_regolith",
+    "P1_landing_mobility"
+   ],
+   "why": "Young basaltic lava (Vikrahraun, 1961) and tephra plains in a sparsely vegetated highland; studied as a Mars analog for lava morphology and rover/remote-sensing tests.",
+   "citation_url": "https://link.springer.com/article/10.1186/s40623-022-01711-5",
+   "kind": "positive",
+   "cell_id": 35606,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 28.38,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 84.72,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 26.59,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 84.64,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 27.56,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 84.63,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 13.36,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 18.14,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 9.7,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 15.3,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 15.61,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 20.24,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Mars Desert Research Station, Hanksville (Utah)",
+   "lat": 38.4065,
+   "lon": -110.7919,
+   "body_analog": "mars",
+   "mission_purposes": [
+    "P3_habitat_eva_power",
+    "P4_geology_regolith",
+    "P5_astrobiology"
+   ],
+   "why": "Red Jurassic Morrison Formation mudstones with clays, concretions and inverted (exhumed) paleochannels; Mars Society habitat used for NASA-linked field research.",
+   "citation_url": "https://ntrs.nasa.gov/api/citations/20110023235/downloads/20110023235.pdf",
+   "kind": "positive",
+   "cell_id": 74298,
+   "results": [
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 27.09,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 8.19,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 54.51,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 22.7,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 5.61,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 10.3,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 62.17,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 20.59,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 11.87,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Death Valley, Badwater Basin (California)",
+   "lat": 36.2503,
+   "lon": -116.8258,
+   "body_analog": "mars",
+   "mission_purposes": [
+    "P1_landing_mobility",
+    "P5_astrobiology"
+   ],
+   "why": "Hyper-arid evaporite playa and alluvial fans; NPS documents NASA/JPL rover and Mars-mission testing in Death Valley. Named in the challenge text.",
+   "citation_url": "https://www.nps.gov/deva/nasa.htm",
+   "kind": "positive",
+   "cell_id": 77166,
+   "results": [
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 83.65,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 98.76,
+     "in_top5": true,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 59.44,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 98.63,
+     "in_top5": true,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 99.58,
+     "in_top5": true,
+     "in_top1": true
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 92.83,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Lanzarote, Timanfaya volcanic field (Canary Islands)",
+   "lat": 28.9942,
+   "lon": -13.7933,
+   "body_analog": "both",
+   "mission_purposes": [
+    "P4_geology_regolith",
+    "P1_landing_mobility"
+   ],
+   "why": "Young barren basaltic lava fields and lava tubes; ESA PANGAEA astronaut planetary-geology training ground.",
+   "citation_url": "https://www.esa.int/Science_Exploration/Human_and_Robotic_Exploration/CAVES_and_Pangaea/What_is_PANGAEA",
+   "kind": "positive",
+   "cell_id": 88172,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 66.66,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 40.8,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 68.54,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 41.83,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 67.31,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 41.07,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 73.49,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 52.68,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 59.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 42.77,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 65.26,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 51.81,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Pilbara, Dresser Formation, North Pole Dome (Western Australia)",
+   "lat": -21.1518,
+   "lon": 119.4373,
+   "body_analog": "mars",
+   "mission_purposes": [
+    "P5_astrobiology"
+   ],
+   "why": "~3.48 Ga stromatolites and hydrothermal sediments, among Earth's oldest biosignatures; Mars 2020/ExoMars scientists trained here to recognise ancient life signs.",
+   "citation_url": "https://www.nasa.gov/solar-system/mars-scientists-investigate-ancient-life-in-australia/",
+   "kind": "positive",
+   "cell_id": 160438,
+   "results": [
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 21.44,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 32.48,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 20.53,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Erfoud, Tafilalt (Morocco), MARS2013 site",
+   "lat": 31.4361,
+   "lon": -4.2328,
+   "body_analog": "mars",
+   "mission_purposes": [
+    "P1_landing_mobility",
+    "P3_habitat_eva_power"
+   ],
+   "why": "Northern Saharan hammada and dunes chosen by the Austrian Space Forum for the MARS2013 integrated Mars field simulation; also used for ESA/ExoMars testing.",
+   "citation_url": "https://oewf.org/en/portfolio/morocco-mars-2013/",
+   "kind": "positive",
+   "cell_id": 84591,
+   "results": [
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 8.8,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 59.37,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 3.85,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 19.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 19.94,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 30.91,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Lonar crater (Maharashtra, India)",
+   "lat": 19.975,
+   "lon": 76.5075,
+   "body_analog": "both",
+   "mission_purposes": [
+    "P4_geology_regolith"
+   ],
+   "why": "~1.8 km young impact crater formed entirely in Deccan basalt, a rare analog for impacts into basaltic crust on the Moon and Mars.",
+   "citation_url": "https://www.lpi.usra.edu/meetings/lpsc2007/pdf/2316.pdf",
+   "kind": "positive",
+   "cell_id": 101313,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 20.52,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 20.82,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 20.51,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 16.06,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 16.18,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 11.71,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Ladakh, Tso Kar basin (India)",
+   "lat": 33.3,
+   "lon": 77.9833,
+   "body_analog": "mars",
+   "mission_purposes": [
+    "P5_astrobiology",
+    "P3_habitat_eva_power"
+   ],
+   "why": "Cold, arid, high-UV plateau at ~4.5 km with evaporites and hydrothermal springs (Puga nearby); used for Mars-analog and HABIT instrument studies.",
+   "citation_url": "https://www.cambridge.org/core/journals/international-journal-of-astrobiology/article/ladakh-diverse-highaltitude-extreme-environments-for-offearth-analogue-and-astrobiology-research/F9FE95516A6B5D650333ABBCCF2F7512",
+   "kind": "positive",
+   "cell_id": 81875,
+   "results": [
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 66.56,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 85.26,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 77.19,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 87.2,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 95.78,
+     "in_top5": true,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 70.19,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Nordlinger Ries impact crater (Germany)",
+   "lat": 48.8833,
+   "lon": 10.5667,
+   "body_analog": "moon",
+   "mission_purposes": [
+    "P4_geology_regolith"
+   ],
+   "why": "Complex impact crater with suevite and impact breccias; Apollo 14 crew geology training (August 1970).",
+   "citation_url": "https://apollojournals.org/alsj/ap-geotrips.pdf",
+   "kind": "positive",
+   "cell_id": 59421,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 85.81,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 85.61,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 85.83,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Sudbury impact structure (Ontario, Canada)",
+   "lat": 46.6,
+   "lon": -81.1833,
+   "body_analog": "moon",
+   "mission_purposes": [
+    "P4_geology_regolith"
+   ],
+   "why": "1.85 Ga impact structure with breccias and shatter cones; Apollo 16 and Apollo 17 crew geology training.",
+   "citation_url": "https://www.usgs.gov/data/apollo-17-geologic-training-exercise-sudbury-ontario-basin-19720328",
+   "kind": "positive",
+   "cell_id": 62117,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 86.18,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 86.06,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 86.26,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "SP Mountain / Black Point lava flow (Arizona), Desert RATS",
+   "lat": 35.5886,
+   "lon": -111.6371,
+   "body_analog": "moon",
+   "mission_purposes": [
+    "P1_landing_mobility",
+    "P3_habitat_eva_power"
+   ],
+   "why": "Barren basaltic lava flow and cinder terrain in the San Francisco Volcanic Field used for NASA Desert RATS lunar rover/EVA simulations (2008-2010). Coordinates = D-RATS SP Mountain site.",
+   "citation_url": "https://www.lpi.usra.edu/lunar/analogs/blackpoint/",
+   "kind": "positive",
+   "cell_id": 77896,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 31.96,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 33.43,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 32.42,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 35.98,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 32.09,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 30.78,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Cinder Lake crater field (Arizona)",
+   "lat": 35.3225,
+   "lon": -111.5181,
+   "body_analog": "moon",
+   "mission_purposes": [
+    "P1_landing_mobility",
+    "P4_geology_regolith"
+   ],
+   "why": "Basaltic cinder plain where USGS blasted crater fields replicating the Apollo 11 landing area for astronaut training and rover tests (1967). Coordinates from NASA D-RATS guide.",
+   "citation_url": "https://www.fs.usda.gov/r03/coconino/recreation/discover-history/cinder-lakes-apollo-training-area-history",
+   "kind": "positive",
+   "cell_id": 78616,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 30.32,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 84.44,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 29.88,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 84.5,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 30.03,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 84.45,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Lava Beds National Monument (California)",
+   "lat": 41.7139,
+   "lon": -121.5083,
+   "body_analog": "both",
+   "mission_purposes": [
+    "P3_habitat_eva_power",
+    "P5_astrobiology",
+    "P4_geology_regolith"
+   ],
+   "why": "Extensive basaltic lava-tube caves with ice and mineral deposits; NASA BRAILLE project tested cave-exploration robotics and biosignature detection. Covers the challenge's 'caves'.",
+   "citation_url": "https://www.nasa-braille.org/about-braille/the-field-site/lava-tubes",
+   "kind": "positive",
+   "cell_id": 69236,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 18.43,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 7.11,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 12.7,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 6.74,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 20.79,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 6.77,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 20.18,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 70.83,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 56.3,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 17.89,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 69.97,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 52.94,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 92.28,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 13.42,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 52.75,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Stillwater Complex (Montana)",
+   "lat": 45.3861,
+   "lon": -109.9031,
+   "body_analog": "moon",
+   "mission_purposes": [
+    "P4_geology_regolith"
+   ],
+   "why": "Layered intrusion with anorthosite and norite; source rock for NASA's NU-LHT lunar highlands regolith simulant, i.e. a compositional analog of the south-polar highlands.",
+   "citation_url": "https://ares.jsc.nasa.gov/projects/simulants/nu-lht.html",
+   "kind": "positive",
+   "cell_id": 64220,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 3.44,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 3.44,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 3.39,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: Amazon rainforest near Manaus (Brazil)",
+   "lat": -3.1189,
+   "lon": -60.0217,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Humid tropical rainforest and city edge: dense vegetation, very high rainfall and humidity, warm and stable temperatures; fails aridity, barrenness and thermal factors.",
+   "citation_url": "https://en.wikipedia.org/wiki/Manaus",
+   "kind": "negative",
+   "cell_id": 134159,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 33.81,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 1.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 29.14,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 29.5,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 33.56,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 6.97,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 33.52,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 29.62,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 33.69,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 3.91,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 19.43,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 29.56,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 47.33,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 15.5,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 84.61,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 75.08,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 20.66,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 40.84,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 0.52,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 88.11,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 74.49,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 16.48,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 40.49,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 8.99,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 7.7,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 86.77,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 20.06,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: Congo Basin rainforest, Salonga National Park (DR Congo)",
+   "lat": -2.0,
+   "lon": 21.0,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Closed-canopy equatorial rainforest with high rainfall; maximally vegetated and humid.",
+   "citation_url": "https://en.wikipedia.org/wiki/Salonga_National_Park",
+   "kind": "negative",
+   "cell_id": 132882,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 35.67,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 3.21,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 30.2,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 30.28,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 35.8,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 7.93,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 34.32,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 30.41,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 35.74,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 3.05,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 20.52,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 30.31,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 37.69,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 15.17,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 85.08,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 23.62,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 19.09,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 36.33,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 7.28,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 88.03,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 23.05,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 17.03,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 18.48,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 7.57,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 7.36,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 23.49,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 18.53,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: Singapore (humid tropical city)",
+   "lat": 1.2833,
+   "lon": 103.8333,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Dense built-up humid tropical city at sea level; fails the built-up hard filter and aridity/barrenness.",
+   "citation_url": "https://en.wikipedia.org/wiki/Singapore",
+   "kind": "negative",
+   "cell_id": 128007,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 3.44,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 8.13,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 13.79,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 14.51,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 19.65,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 7.81,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 19.63,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 7.31,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 24.29,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: Kolkata (humid tropical megacity, India)",
+   "lat": 22.5675,
+   "lon": 88.37,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Monsoon-humid, low-lying, densely built megacity on the Ganges delta; no barren terrain, ice or low pressure.",
+   "citation_url": "https://en.wikipedia.org/wiki/Kolkata",
+   "kind": "negative",
+   "cell_id": 97016,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 17.62,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 14.56,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 25.12,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 25.45,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 6.39,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 26.71,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 7.54,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 6.21,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 6.58,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: Sundarbans mangrove wetland (India/Bangladesh)",
+   "lat": 21.75,
+   "lon": 88.75,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Ocean-adjacent tidal mangrove forest and wetland: waterlogged, vegetated, humid, sea level.",
+   "citation_url": "https://whc.unesco.org/en/list/798/",
+   "kind": "negative",
+   "cell_id": 98457,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 35.83,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 18.81,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 24.72,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 30.03,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 36.19,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 13.07,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 30.64,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 30.25,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 35.86,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 29.38,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 16.18,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 30.07,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 34.12,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 22.18,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 80.28,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 22.15,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 7.64,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 33.34,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 31.73,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 78.37,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 22.69,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 4.63,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 11.83,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 26.65,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 4.4,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 18.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 7.28,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: Everglades wetland (Florida)",
+   "lat": 25.3125,
+   "lon": -80.6875,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Subtropical freshwater/coastal wetland with standing water and dense vegetation.",
+   "citation_url": "https://www.nps.gov/ever/learn/nature/index.htm",
+   "kind": "negative",
+   "cell_id": 93078,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 30.92,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 32.57,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 19.62,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 28.76,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 30.63,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 15.32,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 26.82,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 28.64,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 30.59,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 5.73,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 12.93,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 28.69,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 32.83,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 19.06,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 74.97,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 21.45,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 0.32,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 22.53,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 29.06,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 64.3,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 18.48,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 6.82,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 21.8,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 3.05,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 6.36,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 23.96,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 1.68,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: US Corn Belt cropland near Ames (Iowa)",
+   "lat": 42.018,
+   "lon": -93.62,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Intensively cultivated temperate cropland on deep fertile soils; vegetated, humid-continental climate.",
+   "citation_url": "https://en.wikipedia.org/wiki/Corn_Belt",
+   "kind": "negative",
+   "cell_id": 68572,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 21.9,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 41.92,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 17.19,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 27.69,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 19.48,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 55.11,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 23.22,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 27.16,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 20.86,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 33.44,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 11.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 27.45,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 31.78,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 96.02,
+     "in_top5": true,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 48.73,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 75.2,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 55.22,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 23.14,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 95.27,
+     "in_top5": true,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 29.34,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 72.99,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 55.93,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 61.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 32.87,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 80.14,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 33.31,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 55.97,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: Punjab irrigated cropland near Ludhiana (India)",
+   "lat": 30.909,
+   "lon": 75.8516,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Irrigated wheat/rice farmland on alluvial plains; vegetated, cultivated and built-up.",
+   "citation_url": "https://en.wikipedia.org/wiki/Ludhiana",
+   "kind": "negative",
+   "cell_id": 85471,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 51.99,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 54.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 38.48,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 38.88,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 59.07,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 73.41,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 43.9,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 40.99,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 55.86,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 36.31,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 34.76,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 39.74,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 18.94,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 92.91,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 62.97,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 23.42,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 12.83,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 37.73,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 94.3,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 62.76,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 27.1,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 13.49,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 11.14,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 32.7,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 36.04,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 18.65,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 13.89,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: Black Forest temperate forest (Germany)",
+   "lat": 48.25,
+   "lon": 8.05,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Humid temperate mountain forest; dense vegetation, moderate temperatures, high precipitation.",
+   "citation_url": "https://en.wikipedia.org/wiki/Black_Forest",
+   "kind": "negative",
+   "cell_id": 60136,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 43.06,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 50.38,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 35.46,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 33.32,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 45.9,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 67.96,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 38.47,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 34.14,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 44.15,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 34.71,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 27.49,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 33.5,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 7.88,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 90.58,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 44.43,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 18.65,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 51.81,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 33.26,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 92.96,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 58.43,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 24.95,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 51.05,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 8.52,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 32.67,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 37.53,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 10.82,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 51.39,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: Hoh temperate rainforest (Washington)",
+   "lat": 47.8614,
+   "lon": -123.9247,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Temperate rainforest with among the highest rainfall in the contiguous US; moss-covered, fully vegetated.",
+   "citation_url": "https://en.wikipedia.org/wiki/Hoh_Rainforest",
+   "kind": "negative",
+   "cell_id": 60592,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 10.08,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 35.84,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 10.75,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 21.39,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 9.33,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 49.9,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 16.11,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 20.75,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 9.71,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 32.89,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 6.93,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 20.98,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 21.03,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 94.11,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 30.24,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 75.71,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 51.5,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 12.91,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 93.36,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 22.55,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 73.45,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 51.73,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 58.83,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 32.92,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 41.13,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 84.15,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 52.39,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  },
+  {
+   "name": "Negative control: NEEMO Aquarius Reef Base (Florida Keys)",
+   "lat": 24.95,
+   "lon": -80.4536,
+   "body_analog": "none",
+   "mission_purposes": [],
+   "why": "Operations-only analog (isolation, EVA ops, comms delay) 19 m underwater; no surface-environment similarity, and it is ocean, not land. Should score low on environment.",
+   "citation_url": "https://www.nasa.gov/missions/analog-field-testing/neemo/about-neemo-nasa-extreme-environment-mission-operations/",
+   "kind": "negative",
+   "cell_id": 93799,
+   "results": [
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P2_isru_ice",
+     "percentile": 30.7,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_shackleton_connecting_ridge",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P2_isru_ice",
+     "percentile": 16.16,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_malapert_massif",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P2_isru_ice",
+     "percentile": 28.81,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "moon_haworth",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P2_isru_ice",
+     "percentile": 24.09,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_jezero",
+     "profile_id": "P5_astrobiology",
+     "percentile": 1.47,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P2_isru_ice",
+     "percentile": 28.74,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.01,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 6.25,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P2_isru_ice",
+     "percentile": 1.68,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P3_habitat_eva_power",
+     "percentile": 0.02,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P4_geology_regolith",
+     "percentile": 0.0,
+     "in_top5": false,
+     "in_top1": false
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P5_astrobiology",
+     "percentile": 1.02,
+     "in_top5": false,
+     "in_top1": false
+    }
+   ]
+  }
+ ],
+ "new_candidates": []
+}

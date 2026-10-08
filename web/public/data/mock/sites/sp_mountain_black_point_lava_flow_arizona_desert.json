@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "sp_mountain_black_point_lava_flow_arizona_desert",
+ "name": "SP Mountain / Black Point lava flow (Arizona), Desert RATS",
+ "lat": 35.5886,
+ "lon": -111.6371,
+ "cell_id": 77896,
+ "country": null,
+ "summary": "Barren basaltic lava flow and cinder terrain in the San Francisco Volcanic Field used for NASA Desert RATS lunar rover/EVA simulations (2008-2010). Coordinates = D-RATS SP Mountain site.",
+ "known_analog": "SP Mountain / Black Point lava flow (Arizona), Desert RATS",
+ "earth_features": {
+  "ts_mean_k": 269.17,
+  "dt_k": 11.52,
+  "ati": 0.0738,
+  "ti_class": 4.0,
+  "slope_lt5_frac": 0.608,
+  "slope_lt8_frac": 0.82,
+  "slope_mean_deg": 3.25,
+  "relief_m": 930.0,
+  "lith_class": 10.0,
+  "aridity_index": 2.1087,
+  "barren_frac": 0.0,
+  "ice_index": 0.264,
+  "noon_sun_elev_deg": 54.0,
+  "column_mass_gcm2": 890.0,
+  "cutoff_rigidity_gv": 6.5,
+  "uv_index": 9.6,
+  "geomorph_flags": 4.0,
+  "elevation_m": 1252.0,
+  "albedo": 0.152,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 243.0,
+  "airport_km": 206.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.lpi.usra.edu/lunar/analogs/blackpoint/"
+ ],
+ "attribution": []
+}

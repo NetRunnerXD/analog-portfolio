@@ -1,0 +1,361 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NetRunnerXD/analog-portfolio/contract/schemas/validation.schema.json",
+  "type": "object",
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "mock": {
+      "type": "boolean",
+      "description": "true for mock/demo data that is not derived from real layers"
+    },
+    "frozen_commit": {
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "git SHA of the pre-registration commit"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source": {
+      "type": "string",
+      "description": "Input CSV (docs/validation.csv)"
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "n_known": {
+          "type": "integer"
+        },
+        "n_negative": {
+          "type": "integer"
+        },
+        "n_evaluations": {
+          "type": "integer"
+        },
+        "pct_top5": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "pct_top1": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "rank_auc": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "n_known",
+        "n_negative",
+        "n_evaluations",
+        "pct_top5",
+        "pct_top1",
+        "rank_auc"
+      ]
+    },
+    "sites": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "body_analog": {
+            "enum": [
+              "moon",
+              "mars",
+              "both",
+              "none"
+            ]
+          },
+          "mission_purposes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^P[1-9]_[a-z0-9_]+$"
+            },
+            "description": "CSV column split on ';' ('none' -> [])"
+          },
+          "why": {
+            "type": "string"
+          },
+          "citation_url": {
+            "type": "string",
+            "pattern": "^https?://"
+          },
+          "kind": {
+            "enum": [
+              "positive",
+              "negative"
+            ],
+            "description": "negative iff body_analog == 'none'"
+          },
+          "cell_id": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 259199
+          },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "target_id": {
+                  "type": "string",
+                  "pattern": "^(moon|mars)_[a-z0-9_]+$"
+                },
+                "profile_id": {
+                  "type": "string",
+                  "pattern": "^P[1-9]_[a-z0-9_]+$"
+                },
+                "percentile": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "in_top5": {
+                  "type": "boolean"
+                },
+                "in_top1": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "target_id",
+                "profile_id",
+                "percentile",
+                "in_top5",
+                "in_top1"
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "lat",
+          "lon",
+          "body_analog",
+          "mission_purposes",
+          "why",
+          "citation_url",
+          "kind",
+          "results"
+        ]
+      }
+    },
+    "new_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "site_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "cell_id": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 259199
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "score_core": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "earth_percentile": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "factor_scores": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^F([1-9]|1[0-3])$"
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "covers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^F([1-9]|1[0-3])$"
+            }
+          },
+          "gaps": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^F([1-9]|1[0-3])$"
+            },
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "robustness": {
+            "type": "object",
+            "properties": {
+              "median_rank": {
+                "type": "number"
+              },
+              "topk_freq": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "robust": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "median_rank",
+              "topk_freq",
+              "robust"
+            ]
+          },
+          "logistics": {
+            "type": "object",
+            "properties": {
+              "travel_time_min": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "airport_km": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "nearest_airport": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "travel_time_min",
+              "airport_km",
+              "nearest_airport",
+              "cost"
+            ]
+          },
+          "known_analog": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "candidate": {
+            "type": "boolean",
+            "description": "true = new candidate (>300 km from any known analog), needs field confirmation"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "site_id",
+          "name",
+          "lat",
+          "lon",
+          "cell_id",
+          "score",
+          "factor_scores",
+          "covers"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "summary",
+    "sites"
+  ],
+  "title": "validation.json"
+}

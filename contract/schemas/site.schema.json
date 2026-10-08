@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NetRunnerXD/analog-portfolio/contract/schemas/site.schema.json",
+  "type": "object",
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "mock": {
+      "type": "boolean",
+      "description": "true for mock/demo data that is not derived from real layers"
+    },
+    "site_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "lat": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "lon": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180
+    },
+    "cell_id": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 259199
+    },
+    "country": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "summary": {
+      "type": "string"
+    },
+    "known_analog": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "earth_features": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "null"
+          }
+        ]
+      }
+    },
+    "drilldown": {
+      "type": "object",
+      "description": "Copernicus 90 m window stats, Macrostrat units, SoilGrids, airport"
+    },
+    "best_for": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "target_id": {
+            "type": "string",
+            "pattern": "^(moon|mars)_[a-z0-9_]+$"
+          },
+          "profile_id": {
+            "type": "string",
+            "pattern": "^P[1-9]_[a-z0-9_]+$"
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "rank": {
+            "type": "integer"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "target_id",
+          "profile_id",
+          "score",
+          "rank"
+        ]
+      }
+    },
+    "citations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "attribution": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "site_id",
+    "name",
+    "lat",
+    "lon",
+    "cell_id",
+    "summary"
+  ],
+  "title": "sites/<site_id>.json"
+}

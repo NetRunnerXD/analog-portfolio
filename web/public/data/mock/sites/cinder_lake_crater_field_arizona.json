@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "cinder_lake_crater_field_arizona",
+ "name": "Cinder Lake crater field (Arizona)",
+ "lat": 35.3225,
+ "lon": -111.5181,
+ "cell_id": 78616,
+ "country": null,
+ "summary": "Basaltic cinder plain where USGS blasted crater fields replicating the Apollo 11 landing area for astronaut training and rover tests (1967). Coordinates from NASA D-RATS guide.",
+ "known_analog": "Cinder Lake crater field (Arizona)",
+ "earth_features": {
+  "ts_mean_k": 276.2,
+  "dt_k": 8.63,
+  "ati": 0.0985,
+  "ti_class": 4.0,
+  "slope_lt5_frac": 0.864,
+  "slope_lt8_frac": 1.0,
+  "slope_mean_deg": 1.25,
+  "relief_m": 500.0,
+  "lith_class": 4.0,
+  "aridity_index": 3.421,
+  "barren_frac": 0.0,
+  "ice_index": 0.0,
+  "noon_sun_elev_deg": 55.0,
+  "column_mass_gcm2": 978.5,
+  "cutoff_rigidity_gv": 6.6,
+  "uv_index": 9.2,
+  "geomorph_flags": 0.0,
+  "elevation_m": 456.0,
+  "albedo": 0.152,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 240.0,
+  "airport_km": 89.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.fs.usda.gov/r03/coconino/recreation/discover-history/cinder-lakes-apollo-training-area-history"
+ ],
+ "attribution": []
+}

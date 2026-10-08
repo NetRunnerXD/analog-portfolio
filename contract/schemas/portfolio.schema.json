@@ -1,0 +1,489 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NetRunnerXD/analog-portfolio/contract/schemas/portfolio.schema.json",
+  "type": "object",
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "mock": {
+      "type": "boolean",
+      "description": "true for mock/demo data that is not derived from real layers"
+    },
+    "target_id": {
+      "type": "string",
+      "pattern": "^(moon|mars)_[a-z0-9_]+$"
+    },
+    "profile_id": {
+      "type": "string",
+      "pattern": "^P[1-9]_[a-z0-9_]+$"
+    },
+    "weights": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "number"
+      }
+    },
+    "theta": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "universe": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^F([1-9]|1[0-3])$"
+      }
+    },
+    "uncoverable": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^F([1-9]|1[0-3])$"
+      }
+    },
+    "variants": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "enum": [
+              "fidelity",
+              "balanced",
+              "accessible",
+              "single-continent"
+            ]
+          },
+          "lambda": {
+            "type": "number",
+            "minimum": 0
+          },
+          "sites": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "site_id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "lat": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "lon": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                "cell_id": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 259199
+                },
+                "score": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "score_core": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "earth_percentile": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 100
+                },
+                "factor_scores": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^F([1-9]|1[0-3])$"
+                  },
+                  "additionalProperties": {
+                    "anyOf": [
+                      {
+                        "type": "number",
+                        "minimum": 0,
+                        "maximum": 1
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                },
+                "covers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "pattern": "^F([1-9]|1[0-3])$"
+                  }
+                },
+                "gaps": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^F([1-9]|1[0-3])$"
+                  },
+                  "additionalProperties": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                },
+                "robustness": {
+                  "type": "object",
+                  "properties": {
+                    "median_rank": {
+                      "type": "number"
+                    },
+                    "topk_freq": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    "robust": {
+                      "type": "boolean"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "median_rank",
+                    "topk_freq",
+                    "robust"
+                  ]
+                },
+                "logistics": {
+                  "type": "object",
+                  "properties": {
+                    "travel_time_min": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "airport_km": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "nearest_airport": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "cost": {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "travel_time_min",
+                    "airport_km",
+                    "nearest_airport",
+                    "cost"
+                  ]
+                },
+                "known_analog": {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "null"
+                    }
+                  ]
+                },
+                "candidate": {
+                  "type": "boolean",
+                  "description": "true = new candidate (>300 km from any known analog), needs field confirmation"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "site_id",
+                "name",
+                "lat",
+                "lon",
+                "cell_id",
+                "score",
+                "factor_scores",
+                "covers"
+              ]
+            },
+            "maxItems": 5
+          },
+          "coverage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "lambda",
+          "sites",
+          "coverage"
+        ]
+      }
+    },
+    "top_cells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "site_id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          },
+          "lon": {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          "cell_id": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 259199
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "score_core": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "earth_percentile": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "factor_scores": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^F([1-9]|1[0-3])$"
+            },
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          },
+          "covers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^F([1-9]|1[0-3])$"
+            }
+          },
+          "gaps": {
+            "type": "object",
+            "propertyNames": {
+              "type": "string",
+              "pattern": "^F([1-9]|1[0-3])$"
+            },
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "robustness": {
+            "type": "object",
+            "properties": {
+              "median_rank": {
+                "type": "number"
+              },
+              "topk_freq": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "robust": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "median_rank",
+              "topk_freq",
+              "robust"
+            ]
+          },
+          "logistics": {
+            "type": "object",
+            "properties": {
+              "travel_time_min": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "airport_km": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "nearest_airport": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "cost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "travel_time_min",
+              "airport_km",
+              "nearest_airport",
+              "cost"
+            ]
+          },
+          "known_analog": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "candidate": {
+            "type": "boolean",
+            "description": "true = new candidate (>300 km from any known analog), needs field confirmation"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "site_id",
+          "name",
+          "lat",
+          "lon",
+          "cell_id",
+          "score",
+          "factor_scores",
+          "covers"
+        ]
+      },
+      "description": "Top-ranked candidate pool after NMS (for map pins)"
+    },
+    "score_histogram": {
+      "type": "object",
+      "properties": {
+        "bins": {
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "counts": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "bins",
+        "counts"
+      ]
+    },
+    "monte_carlo": {
+      "type": "object",
+      "properties": {
+        "draws": {
+          "type": "integer"
+        },
+        "top_k": {
+          "type": "integer"
+        },
+        "seed": {
+          "type": "integer"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "draws",
+        "top_k",
+        "seed"
+      ]
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "target_id",
+    "profile_id",
+    "weights",
+    "theta",
+    "universe",
+    "uncoverable",
+    "variants"
+  ],
+  "title": "portfolios/<target_id>_<profile_id>.json"
+}

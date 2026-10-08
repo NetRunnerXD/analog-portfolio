@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/NetRunnerXD/analog-portfolio/contract/schemas/profiles.schema.json",
+  "type": "object",
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "status": {
+      "type": "string"
+    },
+    "defaults": {
+      "type": "object"
+    },
+    "global_hard_filters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+          },
+          "rule": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "rule",
+          "reason"
+        ]
+      }
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^P[1-9]_[a-z0-9_]+$"
+          },
+          "code": {
+            "type": "string",
+            "pattern": "^P[0-9]+$"
+          },
+          "name": {
+            "type": "string"
+          },
+          "bodies": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "moon",
+                "mars"
+              ]
+            },
+            "minItems": 1
+          },
+          "disabled_for": {
+            "type": "object"
+          },
+          "weights": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^F([1-9]|10)$"
+            },
+            "additionalProperties": {
+              "type": "number",
+              "minimum": 0
+            },
+            "minProperties": 10,
+            "maxProperties": 10
+          },
+          "theta": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "nms_radius_km": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "hard_filters": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9][A-Za-z0-9_-]*$"
+                },
+                "rule": {
+                  "type": "string"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "rule",
+                "reason"
+              ]
+            }
+          },
+          "campaigns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "code",
+          "name",
+          "bodies",
+          "weights",
+          "theta",
+          "nms_radius_km",
+          "hard_filters"
+        ]
+      }
+    }
+  },
+  "additionalProperties": false,
+  "required": [
+    "contract_version",
+    "defaults",
+    "global_hard_filters",
+    "profiles"
+  ],
+  "title": "profiles.json"
+}

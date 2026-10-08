@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "mcmurdo_dry_valleys_university_valley_antarctica",
+ "name": "McMurdo Dry Valleys, University Valley (Antarctica)",
+ "lat": -77.8633,
+ "lon": 160.7167,
+ "cell_id": 241881,
+ "country": null,
+ "summary": "Cold hyper-arid polar desert at ~1730 m where air never exceeds 0 C; dry permafrost over an ice table 0 to >70 cm deep; analog for Phoenix-site ground ice.",
+ "known_analog": "McMurdo Dry Valleys, University Valley (Antarctica)",
+ "earth_features": {
+  "ts_mean_k": 253.0,
+  "dt_k": 15.0,
+  "ati": 0.0133,
+  "ti_class": 4.0,
+  "slope_lt5_frac": 0.4,
+  "slope_lt8_frac": 0.596,
+  "slope_mean_deg": 5.75,
+  "relief_m": 1500.0,
+  "lith_class": 6.0,
+  "aridity_index": 0.01,
+  "barren_frac": 1.0,
+  "ice_index": 1.0,
+  "noon_sun_elev_deg": 12.0,
+  "column_mass_gcm2": 939.2,
+  "cutoff_rigidity_gv": 0.0,
+  "uv_index": 2.7,
+  "geomorph_flags": 12.0,
+  "elevation_m": 800.0,
+  "albedo": 0.8,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 268.0,
+  "airport_km": 243.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.lpi.usra.edu/meetings/polar2011/pdf/6051.pdf"
+ ],
+ "attribution": []
+}

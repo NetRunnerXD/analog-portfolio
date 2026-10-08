@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "mars_desert_research_station_hanksville_utah",
+ "name": "Mars Desert Research Station, Hanksville (Utah)",
+ "lat": 38.4065,
+ "lon": -110.7919,
+ "cell_id": 74298,
+ "country": null,
+ "summary": "Red Jurassic Morrison Formation mudstones with clays, concretions and inverted (exhumed) paleochannels; Mars Society habitat used for NASA-linked field research.",
+ "known_analog": "Mars Desert Research Station, Hanksville (Utah)",
+ "earth_features": {
+  "ts_mean_k": 280.11,
+  "dt_k": 8.39,
+  "ati": 0.1013,
+  "ti_class": 4.0,
+  "slope_lt5_frac": 0.816,
+  "slope_lt8_frac": 1.0,
+  "slope_mean_deg": 0.25,
+  "relief_m": 237.0,
+  "lith_class": 11.0,
+  "aridity_index": 3.7116,
+  "barren_frac": 0.0,
+  "ice_index": 0.0,
+  "noon_sun_elev_deg": 52.0,
+  "column_mass_gcm2": 1019.6,
+  "cutoff_rigidity_gv": 5.7,
+  "uv_index": 8.4,
+  "geomorph_flags": 0.0,
+  "elevation_m": 109.0,
+  "albedo": 0.152,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 904.0,
+  "airport_km": 73.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://ntrs.nasa.gov/api/citations/20110023235/downloads/20110023235.pdf"
+ ],
+ "attribution": []
+}

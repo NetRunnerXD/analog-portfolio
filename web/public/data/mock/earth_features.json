@@ -1,0 +1,470 @@
+{
+ "contract_version": "1.0.0",
+ "body": "earth",
+ "mock": true,
+ "grid": {
+  "resolution_deg": 0.5,
+  "ncols": 720,
+  "nrows": 360,
+  "lon_centre_first": -179.75,
+  "lat_centre_first": 89.75,
+  "row_order": "north-to-south"
+ },
+ "layout": "sparse",
+ "n_cells": 8252,
+ "binary": "earth_features.bin",
+ "byte_order": "little",
+ "arrays": [
+  {
+   "name": "cell_id",
+   "factor": null,
+   "dtype": "uint32",
+   "byte_offset": 0,
+   "length": 8252,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": null,
+   "units": "cell id (row*720+col)",
+   "stats": null,
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "ts_mean_k",
+   "factor": "F1",
+   "dtype": "uint16",
+   "byte_offset": 33008,
+   "length": 8252,
+   "scale": 0.01,
+   "add_offset": 150,
+   "nodata": 65535,
+   "units": "K",
+   "stats": {
+    "p005": 217.97732556195933,
+    "p50": 261.1817442835609,
+    "p995": 300.58234396649925,
+    "min": 207.48161770817282,
+    "max": 307.1464825531108
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "dt_k",
+   "factor": "F2",
+   "dtype": "uint16",
+   "byte_offset": 49512,
+   "length": 8252,
+   "scale": 0.01,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "K",
+   "stats": {
+    "p005": 2.0,
+    "p50": 18.01977060015605,
+    "p995": 38.066139762150506,
+    "min": 2.0,
+    "max": 41.4723545599257
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "ati",
+   "factor": "F3",
+   "dtype": "uint16",
+   "byte_offset": 66016,
+   "length": 8252,
+   "scale": 1e-05,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "1/K (apparent thermal inertia, Price 1977)",
+   "stats": {
+    "p005": 0.005254013722620507,
+    "p50": 0.04076006845893765,
+    "p995": 0.425,
+    "min": 0.004822489634896637,
+    "max": 0.425
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "ti_class",
+   "factor": "F3",
+   "dtype": "uint8",
+   "byte_offset": 82520,
+   "length": 8252,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "class 1-5",
+   "stats": {
+    "p005": 1.0,
+    "p50": 3.0,
+    "p995": 5.0,
+    "min": 1.0,
+    "max": 5.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "slope_lt5_frac",
+   "factor": "F4",
+   "dtype": "uint8",
+   "byte_offset": 90772,
+   "length": 8252,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.8233431841772758,
+    "p995": 1.0,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "slope_lt8_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 99024,
+   "length": 8252,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.1968141379460215,
+    "p50": 0.9619547368541148,
+    "p995": 1.0,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "slope_mean_deg",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 107276,
+   "length": 8252,
+   "scale": 0.25,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "deg",
+   "stats": {
+    "p005": 0.04514587197323849,
+    "p50": 1.5530092103912092,
+    "p995": 10.160840948107305,
+    "min": 0.0017787969269870293,
+    "max": 14.341611846044025
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "relief_m",
+   "factor": "F5",
+   "dtype": "uint16",
+   "byte_offset": 115528,
+   "length": 8252,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "m",
+   "stats": {
+    "p005": 67.14712815933133,
+    "p50": 541.7466593691387,
+    "p995": 2623.8025359204958,
+    "min": 15.823144068611878,
+    "max": 3716.659539163474
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "lith_class",
+   "factor": "F6",
+   "dtype": "uint8",
+   "byte_offset": 132032,
+   "length": 8252,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "lithology code",
+   "stats": {
+    "p005": 1.0,
+    "p50": 8.0,
+    "p995": 12.0,
+    "min": 1.0,
+    "max": 17.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "aridity_index",
+   "factor": "F7",
+   "dtype": "uint16",
+   "byte_offset": 140284,
+   "length": 8252,
+   "scale": 0.0001,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "P/PET",
+   "stats": {
+    "p005": 0.006841527898687928,
+    "p50": 0.5899877564950942,
+    "p995": 6.5,
+    "min": 0.002,
+    "max": 6.5
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "barren_frac",
+   "factor": "F8",
+   "dtype": "uint8",
+   "byte_offset": 156788,
+   "length": 8252,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.4514715151029897,
+    "p995": 1.0,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "ice_index",
+   "factor": "F9",
+   "dtype": "uint8",
+   "byte_offset": 165040,
+   "length": 8252,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "index 0-1",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.7972402103367017,
+    "p995": 1.0,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "noon_sun_elev_deg",
+   "factor": "F10",
+   "dtype": "uint8",
+   "byte_offset": 173292,
+   "length": 8252,
+   "scale": 0.5,
+   "add_offset": -30,
+   "nodata": 255,
+   "units": "deg",
+   "stats": {
+    "p005": 5.25,
+    "p50": 40.75,
+    "p995": 77.82757973654182,
+    "min": 5.25,
+    "max": 77.82757973654182
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "column_mass_gcm2",
+   "factor": "F11",
+   "dtype": "uint16",
+   "byte_offset": 181544,
+   "length": 8252,
+   "scale": 0.1,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "g/cm^2",
+   "stats": {
+    "p005": 636.2839085069548,
+    "p50": 959.3631221389787,
+    "p995": 1030.7816384363286,
+    "min": 521.8021910356737,
+    "max": 1032.9125038378322
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "cutoff_rigidity_gv",
+   "factor": "F11",
+   "dtype": "uint8",
+   "byte_offset": 198048,
+   "length": 8252,
+   "scale": 0.1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "GV",
+   "stats": {
+    "p005": 0.0010444829995766086,
+    "p50": 2.7052022791032475,
+    "p995": 14.894894579548295,
+    "min": 0.0010444829995766086,
+    "max": 14.894894579548295
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "uv_index",
+   "factor": "F12",
+   "dtype": "uint8",
+   "byte_offset": 206300,
+   "length": 8252,
+   "scale": 0.1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "UV index",
+   "stats": {
+    "p005": 1.1250315601303058,
+    "p50": 6.706687859664165,
+    "p995": 12.90903934026524,
+    "min": 0.6352284285339652,
+    "max": 14.538065948691719
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "geomorph_flags",
+   "factor": "F13",
+   "dtype": "uint8",
+   "byte_offset": 214552,
+   "length": 8252,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "bitmask",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 64.0,
+    "min": 0.0,
+    "max": 68.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "elevation_m",
+   "factor": null,
+   "dtype": "uint16",
+   "byte_offset": 222804,
+   "length": 8252,
+   "scale": 1,
+   "add_offset": -500,
+   "nodata": 65535,
+   "units": "m",
+   "stats": {
+    "p005": 18.058348789295394,
+    "p50": 621.2036841564836,
+    "p995": 4070.451915271324,
+    "min": 0.7115187707948117,
+    "max": 5736.64473841761
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "albedo",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 239308,
+   "length": 8252,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.15,
+    "p50": 0.2629972055610863,
+    "p995": 0.8,
+    "min": 0.15,
+    "max": 0.8
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "water_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 247560,
+   "length": 8252,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.049892470196129746,
+    "p995": 0.1773011788543722,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "builtup_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 255812,
+   "length": 8252,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.02014477776290009,
+    "p995": 0.14954135297882257,
+    "min": 0.0,
+    "max": 0.8
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "travel_time_min",
+   "factor": null,
+   "dtype": "uint16",
+   "byte_offset": 264064,
+   "length": 8252,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "minutes to nearest city >50k",
+   "stats": {
+    "p005": 40.902522913690426,
+    "p50": 731.9644942487364,
+    "p995": 5541.449867461903,
+    "min": 10.0,
+    "max": 9000.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "airport_km",
+   "factor": null,
+   "dtype": "uint16",
+   "byte_offset": 280568,
+   "length": 8252,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "km to nearest airport",
+   "stats": {
+    "p005": 10.033889317505457,
+    "p50": 195.0243695820531,
+    "p995": 1568.9467736209008,
+    "min": 2.0,
+    "max": 2500.0
+   },
+   "source": "MOCK synthetic"
+  }
+ ],
+ "generated_at": "2026-10-08T07:11:54+00:00"
+}

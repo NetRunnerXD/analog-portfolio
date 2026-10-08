@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "stillwater_complex_montana",
+ "name": "Stillwater Complex (Montana)",
+ "lat": 45.3861,
+ "lon": -109.9031,
+ "cell_id": 64220,
+ "country": null,
+ "summary": "Layered intrusion with anorthosite and norite; source rock for NASA's NU-LHT lunar highlands regolith simulant, i.e. a compositional analog of the south-polar highlands.",
+ "known_analog": "Stillwater Complex (Montana)",
+ "earth_features": {
+  "ts_mean_k": 267.62,
+  "dt_k": 5.98,
+  "ati": 0.1422,
+  "ti_class": 5.0,
+  "slope_lt5_frac": 1.0,
+  "slope_lt8_frac": 0.98,
+  "slope_mean_deg": 1.25,
+  "relief_m": 441.0,
+  "lith_class": 1.0,
+  "aridity_index": 3.7664,
+  "barren_frac": 0.0,
+  "ice_index": 0.368,
+  "noon_sun_elev_deg": 45.0,
+  "column_mass_gcm2": 968.6,
+  "cutoff_rigidity_gv": 3.7,
+  "uv_index": 7.4,
+  "geomorph_flags": 0.0,
+  "elevation_m": 541.0,
+  "albedo": 0.152,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 751.0,
+  "airport_km": 90.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://ares.jsc.nasa.gov/projects/simulants/nu-lht.html"
+ ],
+ "attribution": []
+}

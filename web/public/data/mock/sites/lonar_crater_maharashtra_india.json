@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "lonar_crater_maharashtra_india",
+ "name": "Lonar crater (Maharashtra, India)",
+ "lat": 19.975,
+ "lon": 76.5075,
+ "cell_id": 101313,
+ "country": null,
+ "summary": "~1.8 km young impact crater formed entirely in Deccan basalt, a rare analog for impacts into basaltic crust on the Moon and Mars.",
+ "known_analog": "Lonar crater (Maharashtra, India)",
+ "earth_features": {
+  "ts_mean_k": 277.82,
+  "dt_k": 8.46,
+  "ati": 0.1005,
+  "ti_class": 4.0,
+  "slope_lt5_frac": 0.816,
+  "slope_lt8_frac": 0.884,
+  "slope_mean_deg": 2.5,
+  "relief_m": 691.0,
+  "lith_class": 1.0,
+  "aridity_index": 3.4877,
+  "barren_frac": 0.0,
+  "ice_index": 0.0,
+  "noon_sun_elev_deg": 70.0,
+  "column_mass_gcm2": 920.1,
+  "cutoff_rigidity_gv": 11.7,
+  "uv_index": 11.6,
+  "geomorph_flags": 4.0,
+  "elevation_m": 973.0,
+  "albedo": 0.152,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 367.0,
+  "airport_km": 188.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.lpi.usra.edu/meetings/lpsc2007/pdf/2316.pdf"
+ ],
+ "attribution": []
+}

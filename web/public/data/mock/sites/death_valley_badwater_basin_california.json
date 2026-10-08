@@ -1,0 +1,43 @@
+{
+ "contract_version": "1.0.0",
+ "mock": true,
+ "site_id": "death_valley_badwater_basin_california",
+ "name": "Death Valley, Badwater Basin (California)",
+ "lat": 36.2503,
+ "lon": -116.8258,
+ "cell_id": 77166,
+ "country": null,
+ "summary": "Hyper-arid evaporite playa and alluvial fans; NPS documents NASA/JPL rover and Mars-mission testing in Death Valley. Named in the challenge text.",
+ "known_analog": "Death Valley, Badwater Basin (California)",
+ "earth_features": {
+  "ts_mean_k": 271.57,
+  "dt_k": 29.74,
+  "ati": 0.0237,
+  "ti_class": 2.0,
+  "slope_lt5_frac": 0.952,
+  "slope_lt8_frac": 1.0,
+  "slope_mean_deg": 0.75,
+  "relief_m": 270.0,
+  "lith_class": 8.0,
+  "aridity_index": 0.3886,
+  "barren_frac": 0.58,
+  "ice_index": 0.104,
+  "noon_sun_elev_deg": 54.0,
+  "column_mass_gcm2": 994.6,
+  "cutoff_rigidity_gv": 6.3,
+  "uv_index": 8.9,
+  "geomorph_flags": 0.0,
+  "elevation_m": 318.0,
+  "albedo": 0.296,
+  "water_frac": 0.0,
+  "builtup_frac": 0.0,
+  "travel_time_min": 862.0,
+  "airport_km": 48.0
+ },
+ "drilldown": {},
+ "best_for": [],
+ "citations": [
+  "https://www.nps.gov/deva/nasa.htm"
+ ],
+ "attribution": []
+}
