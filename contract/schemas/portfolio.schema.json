@@ -44,6 +44,14 @@
         "pattern": "^F([1-9]|1[0-3])$"
       }
     },
+    "dropped_factors": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^F([1-9]|1[0-3])$"
+      },
+      "description": "Weighted core factors with no target value (e.g. F3 for polar Moon targets); weights renormalised"
+    },
     "variants": {
       "type": "array",
       "minItems": 1,
@@ -52,14 +60,36 @@
         "properties": {
           "id": {
             "enum": [
-              "fidelity",
-              "balanced",
-              "accessible",
-              "single-continent"
+              "best_match",
+              "easiest_to_reach",
+              "one_continent"
             ]
           },
-          "lambda": {
-            "type": "number",
+          "available": {
+            "type": "boolean"
+          },
+          "unavailable_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "continent": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "pool_size": {
+            "type": "integer",
             "minimum": 0
           },
           "sites": {
@@ -142,25 +172,34 @@
                   }
                 },
                 "robustness": {
-                  "type": "object",
-                  "properties": {
-                    "median_rank": {
-                      "type": "number"
+                  "anyOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "top5_freq": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
+                        },
+                        "robust": {
+                          "type": "boolean"
+                        },
+                        "median_percentile": {
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 100
+                        }
+                      },
+                      "additionalProperties": false,
+                      "required": [
+                        "top5_freq",
+                        "robust"
+                      ],
+                      "description": "Share of MC draws in which the cell is in the top 5% of land (area-weighted); robust = top5_freq >= 0.8"
                     },
-                    "topk_freq": {
-                      "type": "number",
-                      "minimum": 0,
-                      "maximum": 1
-                    },
-                    "robust": {
-                      "type": "boolean"
+                    {
+                      "type": "null"
                     }
-                  },
-                  "additionalProperties": false,
-                  "required": [
-                    "median_rank",
-                    "topk_freq",
-                    "robust"
                   ]
                 },
                 "logistics": {
@@ -176,17 +215,17 @@
                         }
                       ]
                     },
-                    "airport_km": {
+                    "within_6h": {
                       "anyOf": [
                         {
-                          "type": "number"
+                          "type": "boolean"
                         },
                         {
                           "type": "null"
                         }
                       ]
                     },
-                    "nearest_airport": {
+                    "continent": {
                       "anyOf": [
                         {
                           "type": "string"
@@ -196,18 +235,23 @@
                         }
                       ]
                     },
-                    "cost": {
-                      "type": "number",
-                      "minimum": 0,
-                      "maximum": 1
+                    "airport_km": {
+                      "anyOf": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
                     }
                   },
                   "additionalProperties": false,
                   "required": [
                     "travel_time_min",
-                    "airport_km",
-                    "nearest_airport",
-                    "cost"
+                    "within_6h",
+                    "continent",
+                    "airport_km"
                   ]
                 },
                 "known_analog": {
@@ -239,6 +283,13 @@
             },
             "maxItems": 5
           },
+          "covers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^F([1-9]|1[0-3])$"
+            }
+          },
           "coverage": {
             "type": "number",
             "minimum": 0,
@@ -248,7 +299,7 @@
         "additionalProperties": false,
         "required": [
           "id",
-          "lambda",
+          "available",
           "sites",
           "coverage"
         ]
@@ -334,25 +385,34 @@
             }
           },
           "robustness": {
-            "type": "object",
-            "properties": {
-              "median_rank": {
-                "type": "number"
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "top5_freq": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "robust": {
+                    "type": "boolean"
+                  },
+                  "median_percentile": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "top5_freq",
+                  "robust"
+                ],
+                "description": "Share of MC draws in which the cell is in the top 5% of land (area-weighted); robust = top5_freq >= 0.8"
               },
-              "topk_freq": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              },
-              "robust": {
-                "type": "boolean"
+              {
+                "type": "null"
               }
-            },
-            "additionalProperties": false,
-            "required": [
-              "median_rank",
-              "topk_freq",
-              "robust"
             ]
           },
           "logistics": {
@@ -368,17 +428,17 @@
                   }
                 ]
               },
-              "airport_km": {
+              "within_6h": {
                 "anyOf": [
                   {
-                    "type": "number"
+                    "type": "boolean"
                   },
                   {
                     "type": "null"
                   }
                 ]
               },
-              "nearest_airport": {
+              "continent": {
                 "anyOf": [
                   {
                     "type": "string"
@@ -388,18 +448,23 @@
                   }
                 ]
               },
-              "cost": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
+              "airport_km": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             },
             "additionalProperties": false,
             "required": [
               "travel_time_min",
-              "airport_km",
-              "nearest_airport",
-              "cost"
+              "within_6h",
+              "continent",
+              "airport_km"
             ]
           },
           "known_analog": {
@@ -459,19 +524,57 @@
         "draws": {
           "type": "integer"
         },
-        "top_k": {
-          "type": "integer"
+        "robust_top_frac": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "robust_min_freq": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         },
         "seed": {
           "type": "integer"
+        },
+        "area_weighting": {
+          "const": "cos_lat"
         }
       },
       "additionalProperties": false,
       "required": [
         "draws",
-        "top_k",
+        "robust_top_frac",
+        "robust_min_freq",
         "seed"
       ]
+    },
+    "earth_thresholds": {
+      "type": "object",
+      "properties": {
+        "top5": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "top1": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "median": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "top5",
+        "top1",
+        "median"
+      ],
+      "description": "Area-weighted land quantiles of S (default weights): P95, P99, P50"
     }
   },
   "additionalProperties": false,

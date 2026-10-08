@@ -1,5 +1,5 @@
 {
- "contract_version": "1.0.0",
+ "contract_version": "1.1.0",
  "body": "moon",
  "mock": true,
  "grid": {
@@ -238,5 +238,5 @@
    "source": "MOCK synthetic"
   }
  ],
- "generated_at": "2026-10-08T07:11:54+00:00"
+ "generated_at": "2026-10-08T07:31:27+00:00"
 }

@@ -97,6 +97,14 @@
           "name": {
             "type": "string"
           },
+          "short_name": {
+            "type": "string",
+            "description": "UI context-pill name (contract/target_priors.json)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Fact-checked one-line UI meta (spec v0.3 TARGET_META)"
+          },
           "body": {
             "enum": [
               "moon",
@@ -310,6 +318,312 @@
           "values"
         ]
       }
+    },
+    "earth_reference": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "label": {
+              "type": "string",
+              "description": "UI source label, e.g. 'From our 0.5 deg Earth grid (NASA POWER ...)'"
+            },
+            "source": {
+              "type": "string"
+            },
+            "grid": {
+              "type": "string"
+            },
+            "area_weighting": {
+              "const": "cos_lat"
+            },
+            "n_land_cells": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "land_area_km2": {
+              "type": "number",
+              "minimum": 0
+            },
+            "stats": {
+              "type": "object",
+              "properties": {
+                "ts_mean_k": {
+                  "type": "object",
+                  "properties": {
+                    "units": {
+                      "type": "string"
+                    },
+                    "min": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number"
+                        },
+                        "cell_id": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 259199
+                        },
+                        "lat": {
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        },
+                        "lon": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        }
+                      },
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "cell_id",
+                        "lat",
+                        "lon"
+                      ]
+                    },
+                    "max": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number"
+                        },
+                        "cell_id": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 259199
+                        },
+                        "lat": {
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        },
+                        "lon": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        }
+                      },
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "cell_id",
+                        "lat",
+                        "lon"
+                      ]
+                    },
+                    "p0_5": {
+                      "type": "number"
+                    },
+                    "p50": {
+                      "type": "number"
+                    },
+                    "p99_5": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "units",
+                    "min",
+                    "max",
+                    "p0_5",
+                    "p99_5"
+                  ]
+                },
+                "dt_k": {
+                  "type": "object",
+                  "properties": {
+                    "units": {
+                      "type": "string"
+                    },
+                    "min": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number"
+                        },
+                        "cell_id": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 259199
+                        },
+                        "lat": {
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        },
+                        "lon": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        }
+                      },
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "cell_id",
+                        "lat",
+                        "lon"
+                      ]
+                    },
+                    "max": {
+                      "type": "object",
+                      "properties": {
+                        "value": {
+                          "type": "number"
+                        },
+                        "cell_id": {
+                          "type": "integer",
+                          "minimum": 0,
+                          "maximum": 259199
+                        },
+                        "lat": {
+                          "type": "number",
+                          "minimum": -90,
+                          "maximum": 90
+                        },
+                        "lon": {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        }
+                      },
+                      "additionalProperties": false,
+                      "required": [
+                        "value",
+                        "cell_id",
+                        "lat",
+                        "lon"
+                      ]
+                    },
+                    "p0_5": {
+                      "type": "number"
+                    },
+                    "p50": {
+                      "type": "number"
+                    },
+                    "p99_5": {
+                      "type": "number"
+                    }
+                  },
+                  "additionalProperties": false,
+                  "required": [
+                    "units",
+                    "min",
+                    "max",
+                    "p0_5",
+                    "p99_5"
+                  ]
+                }
+              },
+              "additionalProperties": {
+                "type": "object",
+                "properties": {
+                  "units": {
+                    "type": "string"
+                  },
+                  "min": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "number"
+                      },
+                      "cell_id": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 259199
+                      },
+                      "lat": {
+                        "type": "number",
+                        "minimum": -90,
+                        "maximum": 90
+                      },
+                      "lon": {
+                        "type": "number",
+                        "minimum": -180,
+                        "maximum": 180
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "cell_id",
+                      "lat",
+                      "lon"
+                    ]
+                  },
+                  "max": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "number"
+                      },
+                      "cell_id": {
+                        "type": "integer",
+                        "minimum": 0,
+                        "maximum": 259199
+                      },
+                      "lat": {
+                        "type": "number",
+                        "minimum": -90,
+                        "maximum": 90
+                      },
+                      "lon": {
+                        "type": "number",
+                        "minimum": -180,
+                        "maximum": 180
+                      }
+                    },
+                    "additionalProperties": false,
+                    "required": [
+                      "value",
+                      "cell_id",
+                      "lat",
+                      "lon"
+                    ]
+                  },
+                  "p0_5": {
+                    "type": "number"
+                  },
+                  "p50": {
+                    "type": "number"
+                  },
+                  "p99_5": {
+                    "type": "number"
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "units",
+                  "min",
+                  "max",
+                  "p0_5",
+                  "p99_5"
+                ]
+              },
+              "required": [
+                "ts_mean_k",
+                "dt_k"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "label",
+            "source",
+            "area_weighting",
+            "n_land_cells",
+            "stats"
+          ],
+          "description": "Earth land extremes from our own grid for the gap panel (coldest 0.5 deg land-cell mean surface temperature, largest diurnal swing) and the clip quantiles"
+        },
+        {
+          "type": "null"
+        }
+      ]
     }
   },
   "additionalProperties": false,

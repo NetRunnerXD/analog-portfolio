@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.0.0",
+  "contract_version": "1.1.0",
   "status": "pre-registered (provisional until the Oct 28 statement diff; weights frozen before first scoring run)",
   "defaults": {
     "theta": 0.7,
@@ -7,34 +7,61 @@
     "candidates_top_n_per_factor": 50,
     "candidate_min_score": "earth_median",
     "portfolio_max_sites": 5,
-    "lambda_variants": {
-      "fidelity": 0.0,
-      "balanced": 0.5,
-      "accessible": 2.0
-    },
     "monte_carlo": {
       "draws": 1000,
       "dirichlet_alpha_scale": 50,
-      "top_k": 10,
-      "robust_min_topk_freq": 0.8,
+      "robust_top_frac": 0.05,
+      "robust_min_freq": 0.8,
+      "area_weighting": "cos_lat",
+      "rule": "A site is robust when its cell is in the top 5% of land cells (cos(lat) area-weighted threshold, recomputed per draw) in >= 80% of the draws",
       "seed": 20261114
     },
     "secondary_factors": [
       "F11",
       "F12",
       "F13"
-    ]
+    ],
+    "variants": [
+      {
+        "id": "best_match",
+        "display_name": "Best match",
+        "pool_filter": null,
+        "help": "Highest scores."
+      },
+      {
+        "id": "easiest_to_reach",
+        "display_name": "Easiest to reach",
+        "pool_filter": "travel_time_min <= 360",
+        "help": "Every site is within 6 hours of a city of 50,000+ people.",
+        "unavailable_reason": "No portfolio has every site within 6 h of a city of 50k+.",
+        "source": "MAP travel time to the nearest city of 50k+ (Nelson et al. 2019), cell value"
+      },
+      {
+        "id": "one_continent",
+        "display_name": "One continent",
+        "pool_filter": "same continent (the continent whose pool gives the best coverage; ties -> higher summed score)",
+        "help": "All sites on one continent, for a single expedition.",
+        "unavailable_reason": "No single continent covers {k} or more needs.",
+        "source": "Natural Earth admin-0 CONTINENT of the cell centre"
+      }
+    ],
+    "percentiles": "All Earth percentiles, the median used for the candidate pool, the P0.5/P99.5 clip and top-x% thresholds are cos(lat) area-weighted over land cells",
+    "nms_distance": "great-circle (haversine), Earth radius 6371.0088 km"
   },
   "global_hard_filters": [
     {
       "id": "land",
       "rule": "water_frac < 0.5",
-      "reason": "Land cells only"
+      "reason": "Land cells only",
+      "ui_short": "mostly water",
+      "ui_tooltip": "mostly water"
     },
     {
       "id": "not_urban",
       "rule": "builtup_frac < 0.5",
-      "reason": "Exclude built-up cells"
+      "reason": "Exclude built-up cells",
+      "ui_short": "built-up",
+      "ui_tooltip": "mostly city"
     }
   ],
   "profiles": [
@@ -42,6 +69,8 @@
       "id": "P1_landing_mobility",
       "code": "P1",
       "name": "Landing & mobility",
+      "display_name": "Landing & driving",
+      "display_short": "Landing",
       "bodies": [
         "moon",
         "mars"
@@ -70,6 +99,8 @@
       "id": "P2_isru_ice",
       "code": "P2",
       "name": "ISRU / ice prospecting",
+      "display_name": "Ice & resources",
+      "display_short": "Ice",
       "bodies": [
         "moon",
         "mars"
@@ -92,7 +123,9 @@
         {
           "id": "frozen_ground",
           "rule": "ice_index > 0 || ts_mean_k < 273.15",
-          "reason": "Permafrost present or mean annual surface temperature below 0 C"
+          "reason": "Permafrost present or mean annual surface temperature below 0 C",
+          "ui_short": "not frozen",
+          "ui_tooltip": "no frozen ground (needed for Ice & resources)"
         }
       ],
       "campaigns": [
@@ -104,6 +137,8 @@
       "id": "P3_habitat_eva_power",
       "code": "P3",
       "name": "Habitat, EVA thermal & power",
+      "display_name": "Habitat, EVA & power",
+      "display_short": "Habitat",
       "bodies": [
         "moon",
         "mars"
@@ -132,6 +167,8 @@
       "id": "P4_geology_regolith",
       "code": "P4",
       "name": "Geology & regolith",
+      "display_name": "Geology & regolith",
+      "display_short": "Geology",
       "bodies": [
         "moon",
         "mars"
@@ -161,6 +198,8 @@
       "id": "P5_astrobiology",
       "code": "P5",
       "name": "Astrobiology (Mars only)",
+      "display_name": "Search for life",
+      "display_short": "Life",
       "bodies": [
         "mars"
       ],
@@ -185,7 +224,9 @@
         {
           "id": "dry_or_cold_desert",
           "rule": "aridity_index < 0.2 || (ts_mean_k < 273.15 && aridity_index < 0.5)",
-          "reason": "Arid or cold desert"
+          "reason": "Arid or cold desert",
+          "ui_short": "not dry enough",
+          "ui_tooltip": "not dry enough (needed for Search for life)"
         }
       ],
       "campaigns": [

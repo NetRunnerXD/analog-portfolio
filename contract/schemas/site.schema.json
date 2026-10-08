@@ -93,6 +93,26 @@
           },
           "rank": {
             "type": "integer"
+          },
+          "percentile": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          },
+          "top5_freq": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "robust": {
+            "type": "boolean"
           }
         },
         "additionalProperties": false,
@@ -100,7 +120,10 @@
           "target_id",
           "profile_id",
           "score",
-          "rank"
+          "rank",
+          "percentile",
+          "top5_freq",
+          "robust"
         ]
       }
     },
