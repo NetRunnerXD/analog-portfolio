@@ -1,5 +1,5 @@
 {
- "contract_version": "1.0.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "sudbury_impact_structure_ontario_canada",
  "name": "Sudbury impact structure (Ontario, Canada)",
@@ -7,6 +7,8 @@
  "lon": -81.1833,
  "cell_id": 62117,
  "country": null,
+ "admin1": null,
+ "continent": "North America",
  "summary": "1.85 Ga impact structure with breccias and shatter cones; Apollo 16 and Apollo 17 crew geology training.",
  "known_analog": "Sudbury impact structure (Ontario, Canada)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 642.0,
-  "airport_km": 193.0
+  "airport_km": 193.0,
+  "continent": 5.0
  },
  "drilldown": {},
  "best_for": [],

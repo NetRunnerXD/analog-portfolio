@@ -1,5 +1,5 @@
 {
- "contract_version": "1.0.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "mauna_kea_pu_u_hiwahine_isru_test_site_hawai_i",
  "name": "Mauna Kea, Pu'u Hiwahine ISRU test site (Hawai'i)",
@@ -7,6 +7,8 @@
  "lon": -155.4707,
  "cell_id": 100849,
  "country": null,
+ "admin1": null,
+ "continent": "North America",
  "summary": "Basaltic tephra cinder cone at ~2783 m used for NASA/CSA/DLR lunar ISRU field tests (RESOLVE, 2008/2010/2012) via PISCES.",
  "known_analog": "Mauna Kea, Pu'u Hiwahine ISRU test site (Hawai'i)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 302.0,
-  "airport_km": 261.0
+  "airport_km": 261.0,
+  "continent": 5.0
  },
  "drilldown": {},
  "best_for": [],

@@ -1,5 +1,5 @@
 {
- "contract_version": "1.0.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "mars_desert_research_station_hanksville_utah",
  "name": "Mars Desert Research Station, Hanksville (Utah)",
@@ -7,6 +7,8 @@
  "lon": -110.7919,
  "cell_id": 74298,
  "country": null,
+ "admin1": null,
+ "continent": "North America",
  "summary": "Red Jurassic Morrison Formation mudstones with clays, concretions and inverted (exhumed) paleochannels; Mars Society habitat used for NASA-linked field research.",
  "known_analog": "Mars Desert Research Station, Hanksville (Utah)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 904.0,
-  "airport_km": 73.0
+  "airport_km": 73.0,
+  "continent": 5.0
  },
  "drilldown": {},
  "best_for": [],

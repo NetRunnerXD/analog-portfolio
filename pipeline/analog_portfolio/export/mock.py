@@ -18,9 +18,12 @@ from .. import CONTRACT_VERSION
 from ..contract import REPO_ROOT, WEB_DATA_DIR, load
 from ..grid import cell_centre, cell_id, haversine_km
 from ..grid.binary import read_grid, write_grid
-from ..grid.columns import EARTH_COLUMNS, PLANET_COLUMNS
-from ..score.engine import CORE, SECONDARY, aggregate, clip_targets, factor_scores, hard_filter_mask
-from ..score.setcover import greedy_portfolio
+from ..grid.columns import COLUMN_CODES, CONTINENT_CODES, EARTH_COLUMNS, PLANET_COLUMNS
+from ..grid.area import weighted_pct_rank, weighted_quantile
+from ..score.engine import (CORE, SECONDARY, aggregate, area_weights, clip_targets, dropped_factors, factor_scores,
+                            hard_filter_mask)
+from ..score.robust import top_frac_freq
+from ..score.variants import build_variants
 
 OUT = WEB_DATA_DIR / "mock"
 INPUTS = REPO_ROOT / "pipeline" / "inputs"
@@ -99,6 +102,43 @@ def synth_cell(lat: float, lon: float) -> dict:
     )
 
 
+def mock_continent(lat: float, lon: float) -> str:
+    """Coarse continent boxes for MOCK data only (real data: Natural Earth admin-0 CONTINENT)."""
+    if lat < -60:
+        return "Antarctica"
+    if lon < -30:
+        return "South America" if lat < 12 else "North America"
+    if lat > 60 and lon < -10:
+        return "North America"  # Greenland
+    if lon > 110 and lat < -10 or lon > 160:
+        return "Oceania"
+    if -20 <= lon <= 52 and lat < 36:
+        return "Africa"
+    if -25 <= lon <= 40 and lat >= 36:
+        return "Europe"
+    return "Asia"
+
+
+def earth_reference(earth: dict, label: str, source: str) -> dict:
+    """Area-weighted land extremes and clip quantiles of F1/F2 from the Earth grid (gap panel values)."""
+    aw = area_weights(earth)
+    land = np.nan_to_num(earth["water_frac"], nan=1.0) < 0.5
+    out = dict(label=label, source=source, grid="0.5 deg land cells (water_frac < 0.5)", area_weighting="cos_lat",
+               n_land_cells=int(land.sum()), stats={})
+    for col in ("ts_mean_k", "dt_k"):
+        x = np.where(land, earth[col], np.nan)
+        ok = np.isfinite(x)
+        i_min = int(np.nanargmin(x)); i_max = int(np.nanargmax(x))
+        q = weighted_quantile(x[ok], aw[ok], [0.005, 0.5, 0.995])
+
+        def ext(i):
+            cid = int(earth["cell_id"][i]); la, lo = cell_centre(cid)
+            return dict(value=round(float(x[i]), 2), cell_id=cid, lat=la, lon=lo)
+        out["stats"][col] = dict(units="K", min=ext(i_min), max=ext(i_max), p0_5=round(float(q[0]), 2),
+                                 p50=round(float(q[1]), 2), p99_5=round(float(q[2]), 2))
+    return out
+
+
 def slug(name: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", name.lower().replace("negative control:", "neg")).strip("_")[:48]
 
@@ -163,6 +203,8 @@ def build_earth(validation: list[dict]) -> tuple[dict[str, np.ndarray], dict[int
     for i, _cid in enumerate(ids):
         data["ti_class"][i] = rows[i]["ti_class"] if rows[i]["ti_class"] else cls[i]
     data["cell_id"] = np.array(ids, dtype="float64")
+    code = {v: k for k, v in CONTINENT_CODES.items()}
+    data["continent"] = np.array([code[mock_continent(*cell_centre(c))] for c in ids], dtype="float64")
     return data, site_cells
 
 
@@ -195,8 +237,8 @@ def main() -> None:
 
     # --- earth_features (sparse) ---
     data, site_cells = build_earth(validation)
-    cols = [dict(name=n, factor=f, dtype=d, scale=s, add_offset=o, units=u, values=data[n], source="MOCK synthetic")
-            for n, f, d, s, o, u in EARTH_COLUMNS]
+    cols = [dict(name=n, factor=f, dtype=d, scale=s, add_offset=o, units=u, values=data[n], source="MOCK synthetic",
+                 codes=COLUMN_CODES.get(n)) for n, f, d, s, o, u in EARTH_COLUMNS]
     write_grid(OUT / "earth_features", "earth", "sparse", cols, mock=True)
     earth = read_grid(OUT / "earth_features.json")  # score on the quantized values, like the browser
     known_cells = {cid: v["name"] for cid, v in site_cells.items() if v["kind"] == "positive"}
@@ -240,9 +282,11 @@ def main() -> None:
         ill = t["values"].get("illumination", {}).get("value")
         if ill is not None:
             card["illumination"] = ill
-        out_targets.append(dict(t, status=pr["status"], window_offset=pr["window_offset"], citations=pr["citations"],
+        out_targets.append(dict(t, short_name=pr["short_name"], description=pr["description"], status=pr["status"], window_offset=pr["window_offset"], citations=pr["citations"],
                                 features=feats, card=card))
-    write("targets.json", dict(rtargets, contract_version=CONTRACT_VERSION, mock=True, targets=out_targets))
+    eref = earth_reference(earth, "MOCK: synthetic grid (not real data)", "MOCK synthetic Earth grid")
+    write("targets.json", dict(rtargets, contract_version=CONTRACT_VERSION, mock=True, targets=out_targets,
+                               earth_reference=eref))
     write("profiles.json", profiles)
     write("factors.json", factors)
     write("gaps.json", dict(rgaps, contract_version=CONTRACT_VERSION, mock=False))
@@ -252,6 +296,8 @@ def main() -> None:
     lat_c = np.array([cell_centre(int(c))[0] for c in earth["cell_id"]])
     lon_c = np.array([cell_centre(int(c))[1] for c in earth["cell_id"]])
     idx_of = {int(c): i for i, c in enumerate(earth["cell_id"])}
+    aw = area_weights(earth)
+    mc = profiles["defaults"]["monte_carlo"]
     results: dict[str, list] = {slug(v["name"]): [] for v in validation}
     for tid in MOCK_TARGET_VALUES:
         body = tid.split("_")[0]
@@ -263,16 +309,21 @@ def main() -> None:
             core, total = aggregate(s, w)
             mask = hard_filter_mask(earth, prof)
             total_f = np.where(mask, total, 0.0)
-            median = float(np.median(total_f[mask])) if mask.any() else 0.0
-            pct = 100.0 * (np.argsort(np.argsort(total_f)) / max(len(total_f) - 1, 1))
+            median = float(weighted_quantile(total_f[mask], aw[mask], 0.5)[0]) if mask.any() else 0.0
+            pct = 100.0 * weighted_pct_rank(total_f, aw)  # area-weighted rank among land cells (filtered = 0)
+            thr = weighted_quantile(total_f, aw, [0.5, 0.95, 0.99])
+            freq = top_frac_freq(s, w, mask, aw, draws=mc["draws"], alpha_scale=mc["dirichlet_alpha_scale"],
+                                 top_frac=mc["robust_top_frac"], seed=mc["seed"])
             # candidate pool: top-N per factor (w>0) with S >= median, then NMS
             cand_idx = set()
             for f, wf in w.items():
                 if wf <= 0:
                     continue
                 ok = np.where(mask & (total_f >= median))[0]
-                cand_idx.update(ok[np.argsort(-s[f][ok])][: profiles["defaults"]["candidates_top_n_per_factor"]].tolist())
-            pool = sorted(cand_idx, key=lambda i: -total_f[i])
+                # canonical tie-break (contract 3.2.7): stable sort s_f desc, then S desc, then cell index asc
+                o = np.lexsort((ok, -total_f[ok], -s[f][ok]))
+                cand_idx.update(ok[o][: profiles["defaults"]["candidates_top_n_per_factor"]].tolist())
+            pool = sorted(cand_idx, key=lambda i: (-total_f[i], i))
             kept: list[int] = []
             for i in pool:
                 if all(haversine_km(lat_c[i], lon_c[i], lat_c[j], lon_c[j]) > prof["nms_radius_km"] for j in kept):
@@ -283,7 +334,6 @@ def main() -> None:
                 cid = int(earth["cell_id"][i])
                 name = known_cells.get(cid, f"Candidate cell {lat_c[i]:.2f}, {lon_c[i]:.2f}")
                 sid = slug(name) if cid in known_cells else f"cell_{cid}"
-                cost = 0.5 * min(1, earth["travel_time_min"][i] / 1440) + 0.5 * min(1, earth["airport_km"][i] / 1000)
                 fs = {f: round(float(s[f][i]), 4) for f in CORE + SECONDARY}
                 near_known = min((haversine_km(lat_c[i], lon_c[i], *cell_centre(k)) for k in known_cells), default=1e9)
                 return dict(site_id=sid, name=name, lat=float(lat_c[i]), lon=float(lon_c[i]), cell_id=cid,
@@ -291,23 +341,17 @@ def main() -> None:
                             earth_percentile=round(float(pct[i]), 2), factor_scores=fs,
                             covers=[f for f in CORE if w[f] > 0 and fs[f] >= prof["theta"]],
                             gaps={f: round(g, 3) for f, (_t, g) in clips.items() if g > 0},
-                            robustness=dict(median_rank=float(kept.index(i) + 1) if i in kept else 99.0,
-                                            topk_freq=0.0, robust=False),
-                            logistics=dict(travel_time_min=float(earth["travel_time_min"][i]),
-                                           airport_km=float(earth["airport_km"][i]), nearest_airport=None,
-                                           cost=round(float(cost), 4)),
+                            robustness=dict(top5_freq=round(float(freq[i]), 3),
+                                            robust=bool(freq[i] >= mc["robust_min_freq"])),
+                            country=None, admin1=None,
+                            logistics=dict(travel_time_min=round(float(earth["travel_time_min"][i]), 1),
+                                           within_6h=bool(earth["travel_time_min"][i] <= 360),
+                                           continent=CONTINENT_CODES.get(int(earth["continent"][i])),
+                                           airport_km=round(float(earth["airport_km"][i]), 1)),
                             known_analog=known_cells.get(cid), candidate=cid not in known_cells and near_known > 300)
 
             pool_sites = [site(i) for i in kept[:200]]
-            variants = []
-            for vid, lam in profiles["defaults"]["lambda_variants"].items():
-                chosen, covered, unc = greedy_portfolio(
-                    [dict(ps, cost=ps["logistics"]["cost"]) for ps in pool_sites], w, prof["theta"], lam,
-                    profiles["defaults"]["portfolio_max_sites"])
-                active = [f for f in CORE if w[f] > 0]
-                variants.append(dict(id=vid, **{"lambda": lam},
-                                     sites=[{k: v for k, v in c.items() if k != "cost"} for c in chosen],
-                                     coverage=round(len(covered) / len(active), 4)))
+            variants = build_variants(pool_sites, w, prof["theta"], profiles["defaults"]["portfolio_max_sites"])
             active = [f for f in CORE if w[f] > 0]
             universe = sorted({f for f in active if any(ps["factor_scores"][f] >= prof["theta"] for ps in pool_sites)},
                               key=lambda x: int(x[1:]))
@@ -315,10 +359,12 @@ def main() -> None:
             write(f"portfolios/{tid}_{pid}.json", dict(
                 contract_version=CONTRACT_VERSION, mock=True, target_id=tid, profile_id=pid, weights=w,
                 theta=prof["theta"], universe=universe, uncoverable=[f for f in active if f not in universe],
-                variants=variants, top_cells=pool_sites[:25],
+                dropped_factors=dropped_factors(s, w), variants=variants, top_cells=pool_sites[:25],
                 score_histogram=dict(bins=[round(b, 3) for b in bins.tolist()], counts=hist.astype(int).tolist()),
-                monte_carlo=dict(draws=0, top_k=profiles["defaults"]["monte_carlo"]["top_k"],
-                                 seed=profiles["defaults"]["monte_carlo"]["seed"])))
+                monte_carlo=dict(draws=mc["draws"], robust_top_frac=mc["robust_top_frac"],
+                                 robust_min_freq=mc["robust_min_freq"], seed=mc["seed"], area_weighting="cos_lat"),
+                earth_thresholds=dict(median=round(float(thr[0]), 4), top5=round(float(thr[1]), 4),
+                                      top1=round(float(thr[2]), 4))))
             # validation: positives on matching body + purpose; negatives on every evaluated pair
             for v in validation:
                 match = v["kind"] == "negative" or (v["body_analog"] in (body, "both") and pid in v["mission_purposes"])
@@ -355,7 +401,8 @@ def main() -> None:
                  for c in EARTH_COLUMNS if c[0] != "cell_id"}
         write(f"sites/{slug(v['name'])}.json", dict(
             contract_version=CONTRACT_VERSION, mock=True, site_id=slug(v["name"]), name=v["name"], lat=v["lat"],
-            lon=v["lon"], cell_id=cid, country=None, summary=v["why"], known_analog=v["name"],
+            lon=v["lon"], cell_id=cid, country=None, admin1=None,
+            continent=CONTINENT_CODES.get(int(earth["continent"][idx_of[cid]])), summary=v["why"], known_analog=v["name"],
             earth_features=feats, drilldown={}, best_for=[], citations=[v["citation_url"]], attribution=[]))
 
     write("provenance.json", dict(contract_version=CONTRACT_VERSION, mock=True, layers=[dict(

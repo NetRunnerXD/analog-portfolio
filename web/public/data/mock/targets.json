@@ -156,6 +156,8 @@
      "note": "Sanin et al. 2012; context for nearby Cabeus PSR."
     }
    },
+   "short_name": "Peak near Cabeus B",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "citations": [
@@ -314,6 +316,8 @@
    "context_values": {
     "note": "Haworth is a large PSR-bearing crater; no region-specific numbers found."
    },
+   "short_name": "Haworth",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "citations": [
@@ -324,15 +328,15 @@
    "features": {
     "F1": {
      "value": 110,
-     "t_star": 217.97785000000002,
-     "gap": 107.978,
+     "t_star": 222.31,
+     "gap": 112.31,
      "units": "K",
      "source": "MOCK"
     },
     "F2": {
      "value": 60,
-     "t_star": 38.064900000000016,
-     "gap": 21.935,
+     "t_star": 37.05354208190868,
+     "gap": 22.946,
      "units": "K",
      "source": "MOCK"
     },
@@ -387,8 +391,8 @@
     },
     "F10": {
      "value": 2.5,
-     "t_star": 5.0,
-     "gap": 2.5,
+     "t_star": 7.0,
+     "gap": 4.5,
      "units": "deg (median local-noon solar elevation over a year)",
      "source": "MOCK"
     },
@@ -478,6 +482,8 @@
     },
     "ambiguity_note": "Quinn et al. 2011 list 89.6% illumination for a point labelled 'Malapert Mountain' at 85.306°S, 36.986°E, ~38° of longitude from this anchor; NOT assigned here."
    },
+   "short_name": "Malapert Massif",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "citations": [
@@ -489,15 +495,15 @@
    "features": {
     "F1": {
      "value": 170,
-     "t_star": 217.97785000000002,
-     "gap": 47.978,
+     "t_star": 222.31,
+     "gap": 52.31,
      "units": "K",
      "source": "MOCK"
     },
     "F2": {
      "value": 110,
-     "t_star": 38.064900000000016,
-     "gap": 71.935,
+     "t_star": 37.05354208190868,
+     "gap": 72.946,
      "units": "K",
      "source": "MOCK"
     },
@@ -517,8 +523,8 @@
     },
     "F5": {
      "value": 2500,
-     "t_star": 2500.0,
-     "gap": 0.0,
+     "t_star": 2384.0,
+     "gap": 116.0,
      "units": "m (P95 - P5 elevation over ~30 km windows)",
      "source": "MOCK"
     },
@@ -552,8 +558,8 @@
     },
     "F10": {
      "value": 4.0,
-     "t_star": 5.0,
-     "gap": 1.0,
+     "t_star": 7.0,
+     "gap": 3.0,
      "units": "deg (median local-noon solar elevation over a year)",
      "source": "MOCK"
     },
@@ -637,6 +643,8 @@
    "context_values": {
     "note": "Shares the IAU Mons Mouton anchor with moon_mons_mouton; plan.md says paired regions get offset sample windows (to be documented by Project 1). Mons Mouton is a ~130 km feature. A Quinn et al. 2011 point labelled 'Malapert Mountain' (85.306°S, 36.986°E, 89.6% lit) may fall in this massif; unverified assignment."
    },
+   "short_name": "Mons Mouton Plateau",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "citations": [
@@ -795,6 +803,8 @@
    "context_values": {
     "note": "Same anchor as moon_mons_mouton_plateau; offset window required."
    },
+   "short_name": "Mons Mouton",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": {
     "bearing_deg": 180,
@@ -956,6 +966,8 @@
    "context_values": {
     "note": "Shares the Nobile anchor with moon_nobile_rim_2; offset window required."
    },
+   "short_name": "Nobile Rim 1",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": {
     "bearing_deg": 270,
@@ -1117,6 +1129,8 @@
    "context_values": {
     "note": "Same anchor as moon_nobile_rim_1; offset window required."
    },
+   "short_name": "Nobile Rim 2",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": {
     "bearing_deg": 90,
@@ -1275,6 +1289,8 @@
      "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
     }
    },
+   "short_name": "de Gerlache Rim 2",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "citations": [
@@ -1430,6 +1446,8 @@
      "note": "Not compiled; sample LOLA polar DEM (relief matters, not absolute elevation)."
     }
    },
+   "short_name": "Slater Plain",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "citations": [
@@ -1591,6 +1609,8 @@
    "context_values": {
     "moon_base_source": "https://www.nasa.gov/news-release/nasa-provides-update-on-moon-base-rovers-landers-missions/"
    },
+   "short_name": "Shackleton Connecting Ridge",
+   "description": "Moon Base I landing site · launch NET fall 2026",
    "status": "moon-base-i",
    "window_offset": null,
    "citations": [
@@ -1601,15 +1621,15 @@
    "features": {
     "F1": {
      "value": 180,
-     "t_star": 217.97785000000002,
-     "gap": 37.978,
+     "t_star": 222.31,
+     "gap": 42.31,
      "units": "K",
      "source": "MOCK"
     },
     "F2": {
      "value": 90,
-     "t_star": 38.064900000000016,
-     "gap": 51.935,
+     "t_star": 37.05354208190868,
+     "gap": 52.946,
      "units": "K",
      "source": "MOCK"
     },
@@ -1664,8 +1684,8 @@
     },
     "F10": {
      "value": 0.55,
-     "t_star": 5.0,
-     "gap": 4.45,
+     "t_star": 7.0,
+     "gap": 6.45,
      "units": "deg (median local-noon solar elevation over a year)",
      "source": "MOCK"
     },
@@ -1750,6 +1770,8 @@
      "note": "Elevation of the 2016 candidate ellipse centre (18.389°N, 77.541°E), -2.62 km."
     }
    },
+   "short_name": "Jezero crater",
+   "description": "Perseverance landing site (Mars 2020)",
    "status": "mission-site",
    "window_offset": null,
    "citations": [
@@ -1759,15 +1781,15 @@
    "features": {
     "F1": {
      "value": 215,
-     "t_star": 217.97785000000002,
-     "gap": 2.978,
+     "t_star": 222.31,
+     "gap": 7.31,
      "units": "K",
      "source": "MOCK"
     },
     "F2": {
      "value": 85,
-     "t_star": 38.064900000000016,
-     "gap": 46.935,
+     "t_star": 37.05354208190868,
+     "gap": 47.946,
      "units": "K",
      "source": "MOCK"
     },
@@ -1913,6 +1935,8 @@
      "note": "MSL RAD (Hassler et al. 2014); absorbed 0.210 ± 0.040 mGy/day."
     }
    },
+   "short_name": "Gale crater",
+   "description": "Curiosity landing site · RAD radiation reference",
    "status": "mission-site",
    "window_offset": null,
    "citations": [
@@ -1923,15 +1947,15 @@
    "features": {
     "F1": {
      "value": 220,
-     "t_star": 220.0,
-     "gap": 0.0,
+     "t_star": 222.31,
+     "gap": 2.31,
      "units": "K",
      "source": "MOCK"
     },
     "F2": {
      "value": 80,
-     "t_star": 38.064900000000016,
-     "gap": 41.935,
+     "t_star": 37.05354208190868,
+     "gap": 42.946,
      "units": "K",
      "source": "MOCK"
     },
@@ -1951,8 +1975,8 @@
     },
     "F5": {
      "value": 2500,
-     "t_star": 2500.0,
-     "gap": 0.0,
+     "t_star": 2384.0,
+     "gap": 116.0,
      "units": "m (P95 - P5 elevation over ~30 km windows)",
      "source": "MOCK"
     },
@@ -2067,6 +2091,8 @@
      "citation_url": "https://www.nature.com/articles/s41550-021-01519-5"
     }
    },
+   "short_name": "Utopia Planitia",
+   "description": "Zhurong landing site · ice-rich lowland plains",
    "status": "mission-site",
    "window_offset": null,
    "citations": [
@@ -2220,6 +2246,8 @@
      "note": "Table 1 lists km to 0.1 km precision."
     }
    },
+   "short_name": "Arcadia AP-1",
+   "description": "Starship candidate landing site · ice-rich (SWIM)",
    "status": "starship-candidate",
    "window_offset": null,
    "citations": [
@@ -2229,15 +2257,15 @@
    "features": {
     "F1": {
      "value": 200,
-     "t_star": 217.97785000000002,
-     "gap": 17.978,
+     "t_star": 222.31,
+     "gap": 22.31,
      "units": "K",
      "source": "MOCK"
     },
     "F2": {
      "value": 70,
-     "t_star": 38.064900000000016,
-     "gap": 31.935,
+     "t_star": 37.05354208190868,
+     "gap": 32.946,
      "units": "K",
      "source": "MOCK"
     },
@@ -2374,6 +2402,8 @@
      "note": "Table 1 lists km to 0.1 km precision."
     }
    },
+   "short_name": "Arcadia AP-9",
+   "description": "Starship candidate landing site · ice-rich (SWIM)",
    "status": "starship-candidate",
    "window_offset": null,
    "citations": [
@@ -2528,6 +2558,8 @@
      "note": "Table 1 lists km to 0.1 km precision."
     }
    },
+   "short_name": "Erebus Montes EM-16",
+   "description": "Starship candidate landing site · ice-rich (SWIM)",
    "status": "starship-candidate",
    "window_offset": null,
    "citations": [
@@ -2681,6 +2713,8 @@
      "note": "Table 1 lists km to 0.1 km precision."
     }
    },
+   "short_name": "Phlegra Montes PM-1",
+   "description": "Starship candidate landing site · ice-rich (SWIM)",
    "status": "starship-candidate",
    "window_offset": null,
    "citations": [
@@ -2835,6 +2869,8 @@
      "note": "Not compiled; sample MOLA MEGDR."
     }
    },
+   "short_name": "Phoenix site",
+   "description": "Ground ice seen by Phoenix",
    "status": "ground-truth",
    "window_offset": null,
    "citations": [
@@ -2938,6 +2974,51 @@
    }
   }
  ],
- "contract_version": "1.0.0",
- "mock": true
+ "contract_version": "1.1.1",
+ "mock": true,
+ "earth_reference": {
+  "label": "MOCK: synthetic grid (not real data)",
+  "source": "MOCK synthetic Earth grid",
+  "grid": "0.5 deg land cells (water_frac < 0.5)",
+  "area_weighting": "cos_lat",
+  "n_land_cells": 8251,
+  "stats": {
+   "ts_mean_k": {
+    "units": "K",
+    "min": {
+     "value": 207.48,
+     "cell_id": 251652,
+     "lat": -84.75,
+     "lon": 6.25
+    },
+    "max": {
+     "value": 307.15,
+     "cell_id": 130598,
+     "lat": -0.75,
+     "lon": -40.75
+    },
+    "p0_5": 222.31,
+    "p50": 272.82,
+    "p99_5": 301.74
+   },
+   "dt_k": {
+    "units": "K",
+    "min": {
+     "value": 2.0,
+     "cell_id": 25652,
+     "lat": 72.25,
+     "lon": 46.25
+    },
+    "max": {
+     "value": 41.47,
+     "cell_id": 234040,
+     "lat": -72.75,
+     "lon": -159.75
+    },
+    "p0_5": 2.0,
+    "p50": 14.82,
+    "p99_5": 37.05
+   }
+  }
+ }
 }

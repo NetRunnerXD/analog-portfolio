@@ -11,7 +11,160 @@
       "type": "string"
     },
     "defaults": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "theta": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "nms_radius_km": {
+          "type": "number"
+        },
+        "candidates_top_n_per_factor": {
+          "type": "integer"
+        },
+        "candidate_min_score": {
+          "type": "string"
+        },
+        "portfolio_max_sites": {
+          "type": "integer"
+        },
+        "variants": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "enum": [
+                  "best_match",
+                  "easiest_to_reach",
+                  "one_continent"
+                ]
+              },
+              "display_name": {
+                "type": "string"
+              },
+              "pool_filter": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
+              },
+              "help": {
+                "type": "string"
+              },
+              "unavailable_reason": {
+                "type": "string"
+              },
+              "source": {
+                "type": "string"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "display_name",
+              "pool_filter"
+            ]
+          }
+        },
+        "monte_carlo": {
+          "type": "object",
+          "properties": {
+            "draws": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "dirichlet_alpha_scale": {
+              "type": "number"
+            },
+            "robust_top_frac": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "robust_min_freq": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "area_weighting": {
+              "const": "cos_lat"
+            },
+            "rule": {
+              "type": "string"
+            },
+            "seed": {
+              "type": "integer"
+            },
+            "alpha_rule": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "draws",
+            "dirichlet_alpha_scale",
+            "robust_top_frac",
+            "robust_min_freq",
+            "seed"
+          ]
+        },
+        "secondary_factors": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^F([1-9]|1[0-3])$"
+          }
+        },
+        "percentiles": {
+          "type": "string"
+        },
+        "nms_distance": {
+          "type": "string"
+        },
+        "missing_data": {
+          "type": "object",
+          "properties": {
+            "earth_nan": {
+              "type": "string"
+            },
+            "min_active_weight_frac": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "below_min": {
+              "type": "string"
+            },
+            "target_null": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "min_active_weight_frac"
+          ]
+        },
+        "ties": {
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "theta",
+        "nms_radius_km",
+        "portfolio_max_sites",
+        "variants",
+        "monte_carlo"
+      ]
     },
     "global_hard_filters": {
       "type": "array",
@@ -27,6 +180,14 @@
           },
           "reason": {
             "type": "string"
+          },
+          "ui_short": {
+            "type": "string",
+            "description": "Legend fragment, e.g. 'mostly water'"
+          },
+          "ui_tooltip": {
+            "type": "string",
+            "description": "Tooltip text after 'Filtered out: '"
           }
         },
         "additionalProperties": false,
@@ -52,6 +213,13 @@
             "pattern": "^P[0-9]+$"
           },
           "name": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "UI purpose name (spec v0.3 PURPOSE_UI)"
+          },
+          "display_short": {
             "type": "string"
           },
           "bodies": {
@@ -102,6 +270,14 @@
                 },
                 "reason": {
                   "type": "string"
+                },
+                "ui_short": {
+                  "type": "string",
+                  "description": "Legend fragment, e.g. 'mostly water'"
+                },
+                "ui_tooltip": {
+                  "type": "string",
+                  "description": "Tooltip text after 'Filtered out: '"
                 }
               },
               "additionalProperties": false,
@@ -124,6 +300,7 @@
           "id",
           "code",
           "name",
+          "display_name",
           "bodies",
           "weights",
           "theta",

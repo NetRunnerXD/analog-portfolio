@@ -1,7 +1,7 @@
 {
- "contract_version": "1.0.0",
+ "contract_version": "1.1.1",
  "tolerance": 1e-09,
- "note": "Known-answer vectors shared by pytest (pipeline/tests) and vitest (web/src/scoring). Owner: Code Optimizer.",
+ "note": "Known-answer vectors shared by pytest (pipeline/tests) and vitest (web/src/scoring). Owner: Code Optimizer. v1.1: weighted_quantile / weighted_pct_rank (cos(lat) area weighting) and geometric_mean_dropped added.",
  "ratio_sim": [
   {
    "x": 500,
@@ -291,6 +291,131 @@
     "b",
     "c"
    ]
+  }
+ ],
+ "weighted_quantile": [
+  {
+   "x": [
+    3.0,
+    1.0,
+    2.0,
+    5.0,
+    4.0
+   ],
+   "w": [
+    1.0,
+    0.5,
+    0.5,
+    0.25,
+    1.0
+   ],
+   "q": 0.05,
+   "expected": 1.0,
+   "note": "cdf_i = (cumsum(w) - w/2) / sum(w) over x sorted ascending; linear interpolation; clamp outside"
+  },
+  {
+   "x": [
+    3.0,
+    1.0,
+    2.0,
+    5.0,
+    4.0
+   ],
+   "w": [
+    1.0,
+    0.5,
+    0.5,
+    0.25,
+    1.0
+   ],
+   "q": 0.5,
+   "expected": 3.125,
+   "note": "cdf_i = (cumsum(w) - w/2) / sum(w) over x sorted ascending; linear interpolation; clamp outside"
+  },
+  {
+   "x": [
+    3.0,
+    1.0,
+    2.0,
+    5.0,
+    4.0
+   ],
+   "w": [
+    1.0,
+    0.5,
+    0.5,
+    0.25,
+    1.0
+   ],
+   "q": 0.95,
+   "expected": 4.9399999999999995,
+   "note": "cdf_i = (cumsum(w) - w/2) / sum(w) over x sorted ascending; linear interpolation; clamp outside"
+  }
+ ],
+ "weighted_pct_rank": [
+  {
+   "x": [
+    1.0,
+    2.0,
+    2.0,
+    4.0
+   ],
+   "w": [
+    1.0,
+    1.0,
+    1.0,
+    1.0
+   ],
+   "higher_is_better": true,
+   "expected": [
+    0.125,
+    0.5,
+    0.5,
+    0.875
+   ],
+   "note": "(weight below + weight of equal values / 2) / total weight; ties share the mid rank"
+  },
+  {
+   "x": [
+    3.0,
+    1.0,
+    2.0,
+    5.0,
+    4.0
+   ],
+   "w": [
+    1.0,
+    0.5,
+    0.5,
+    0.25,
+    1.0
+   ],
+   "higher_is_better": false,
+   "expected": [
+    0.5384615384615384,
+    0.9230769230769231,
+    0.7692307692307692,
+    0.038461538461538436,
+    0.23076923076923073
+   ]
+  }
+ ],
+ "geometric_mean_dropped": [
+  {
+   "scores": {
+    "F1": 0.9,
+    "F2": 0.5,
+    "F5": 0.8
+   },
+   "weights": {
+    "F1": 20,
+    "F2": 20,
+    "F3": 5,
+    "F5": 5
+   },
+   "floor": 0.01,
+   "expected": 0.6840761498584497,
+   "note": "F3 has no target value: dropped, remaining weights renormalised"
   }
  ]
 }

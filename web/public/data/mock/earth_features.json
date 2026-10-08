@@ -1,5 +1,5 @@
 {
- "contract_version": "1.0.0",
+ "contract_version": "1.1.1",
  "body": "earth",
  "mock": true,
  "grid": {
@@ -464,7 +464,35 @@
     "max": 2500.0
    },
    "source": "MOCK synthetic"
+  },
+  {
+   "name": "continent",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 297072,
+   "length": 8252,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "continent code (manifest codes; Natural Earth admin-0 CONTINENT)",
+   "stats": {
+    "p005": 1.0,
+    "p50": 3.0,
+    "p995": 7.0,
+    "min": 1.0,
+    "max": 7.0
+   },
+   "source": "MOCK synthetic",
+   "codes": {
+    "1": "Africa",
+    "2": "Antarctica",
+    "3": "Asia",
+    "4": "Europe",
+    "5": "North America",
+    "6": "Oceania",
+    "7": "South America"
+   }
   }
  ],
- "generated_at": "2026-10-08T07:11:54+00:00"
+ "generated_at": "2026-10-08T08:01:56+00:00"
 }

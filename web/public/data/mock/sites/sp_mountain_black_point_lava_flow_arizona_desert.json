@@ -1,5 +1,5 @@
 {
- "contract_version": "1.0.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "sp_mountain_black_point_lava_flow_arizona_desert",
  "name": "SP Mountain / Black Point lava flow (Arizona), Desert RATS",
@@ -7,6 +7,8 @@
  "lon": -111.6371,
  "cell_id": 77896,
  "country": null,
+ "admin1": null,
+ "continent": "North America",
  "summary": "Barren basaltic lava flow and cinder terrain in the San Francisco Volcanic Field used for NASA Desert RATS lunar rover/EVA simulations (2008-2010). Coordinates = D-RATS SP Mountain site.",
  "known_analog": "SP Mountain / Black Point lava flow (Arizona), Desert RATS",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 243.0,
-  "airport_km": 206.0
+  "airport_km": 206.0,
+  "continent": 5.0
  },
  "drilldown": {},
  "best_for": [],

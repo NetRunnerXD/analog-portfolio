@@ -1,5 +1,5 @@
 {
- "contract_version": "1.0.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "stillwater_complex_montana",
  "name": "Stillwater Complex (Montana)",
@@ -7,6 +7,8 @@
  "lon": -109.9031,
  "cell_id": 64220,
  "country": null,
+ "admin1": null,
+ "continent": "North America",
  "summary": "Layered intrusion with anorthosite and norite; source rock for NASA's NU-LHT lunar highlands regolith simulant, i.e. a compositional analog of the south-polar highlands.",
  "known_analog": "Stillwater Complex (Montana)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 751.0,
-  "airport_km": 90.0
+  "airport_km": 90.0,
+  "continent": 5.0
  },
  "drilldown": {},
  "best_for": [],

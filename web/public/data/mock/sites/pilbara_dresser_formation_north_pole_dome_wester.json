@@ -1,5 +1,5 @@
 {
- "contract_version": "1.0.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "pilbara_dresser_formation_north_pole_dome_wester",
  "name": "Pilbara, Dresser Formation, North Pole Dome (Western Australia)",
@@ -7,6 +7,8 @@
  "lon": 119.4373,
  "cell_id": 160438,
  "country": null,
+ "admin1": null,
+ "continent": "Oceania",
  "summary": "~3.48 Ga stromatolites and hydrothermal sediments, among Earth's oldest biosignatures; Mars 2020/ExoMars scientists trained here to recognise ancient life signs.",
  "known_analog": "Pilbara, Dresser Formation, North Pole Dome (Western Australia)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 675.0,
-  "airport_km": 320.0
+  "airport_km": 320.0,
+  "continent": 6.0
  },
  "drilldown": {},
  "best_for": [],

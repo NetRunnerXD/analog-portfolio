@@ -1,8 +1,10 @@
 {
- "contract_version": "1.0.0",
- "note": "Engine-side priors keyed by Researcher target IDs (pipeline/inputs/targets.json is the source of truth for IDs, anchors, sample radii and literature values). lith_class/geomorph_flags are provisional target-side codes (factors.json vocabularies); window_offset applies to targets that share an IAU anchor; citations are research.md [R#] keys.",
+ "contract_version": "1.1.1",
+ "note": "Engine-side priors keyed by Researcher target IDs (pipeline/inputs/targets.json is the source of truth for IDs, anchors, sample radii and literature values). lith_class/geomorph_flags are provisional target-side codes (factors.json vocabularies); window_offset applies to targets that share an IAU anchor; citations are research.md [R#] keys. short_name/description are UI display strings (spec v0.3 §8.6 TARGET_META, fact-checked in design/factcheck.md #17-#20).",
  "targets": {
   "moon_peak_near_cabeus_b": {
+   "short_name": "Peak near Cabeus B",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "lith_class": 16,
@@ -15,6 +17,8 @@
    "notes": "Cabeus crater (-85.33, -42.13) is the LCROSS ice site [R12]"
   },
   "moon_haworth": {
+   "short_name": "Haworth",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "lith_class": 16,
@@ -27,6 +31,8 @@
    "notes": "Large PSR crater; region lies on its rim"
   },
   "moon_malapert_massif": {
+   "short_name": "Malapert Massif",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "lith_class": 16,
@@ -40,6 +46,8 @@
    "notes": "Summit area has 100% Earth visibility near -85.95, +/-5 deg lon [R30]"
   },
   "moon_mons_mouton_plateau": {
+   "short_name": "Mons Mouton Plateau",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "lith_class": 16,
@@ -52,6 +60,8 @@
    "notes": "Shares anchor with Mons Mouton; window centred on anchor (provisional)"
   },
   "moon_mons_mouton": {
+   "short_name": "Mons Mouton",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": {
     "bearing_deg": 180,
@@ -67,6 +77,8 @@
    "notes": "Shares anchor with Mons Mouton Plateau; window offset 20 km grid-south of anchor (provisional, to verify against NASA region map [R4])"
   },
   "moon_nobile_rim_1": {
+   "short_name": "Nobile Rim 1",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": {
     "bearing_deg": 270,
@@ -82,6 +94,8 @@
    "notes": "Shares anchor with Nobile Rim 2; window offset 20 km grid-west (provisional, to verify against NASA region map [R4])"
   },
   "moon_nobile_rim_2": {
+   "short_name": "Nobile Rim 2",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": {
     "bearing_deg": 90,
@@ -97,6 +111,8 @@
    "notes": "Shares anchor with Nobile Rim 1; window offset 20 km grid-east (provisional, to verify against NASA region map [R4])"
   },
   "moon_de_gerlache_rim_2": {
+   "short_name": "de Gerlache Rim 2",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "lith_class": 16,
@@ -109,6 +125,8 @@
    "notes": ""
   },
   "moon_slater_plain": {
+   "short_name": "Slater Plain",
+   "description": "Artemis candidate landing region",
    "status": "artemis-9",
    "window_offset": null,
    "lith_class": 16,
@@ -121,6 +139,8 @@
    "notes": ""
   },
   "moon_shackleton_connecting_ridge": {
+   "short_name": "Shackleton Connecting Ridge",
+   "description": "Moon Base I landing site · launch NET fall 2026",
    "status": "moon-base-i",
    "window_offset": null,
    "lith_class": 16,
@@ -133,6 +153,8 @@
    "notes": "Moon Base I target [R6]; best-illuminated spot at 10 m height 89.4516S, 222.7581E [R10]; sunlit 92.27% at 2 m [R10][R11]"
   },
   "mars_jezero": {
+   "short_name": "Jezero crater",
+   "description": "Perseverance landing site (Mars 2020)",
    "status": "mission-site",
    "window_offset": null,
    "lith_class": 8,
@@ -144,6 +166,8 @@
    "notes": "Delta and lake deposits; crater floor ~ -2.6 km"
   },
   "mars_gale": {
+   "short_name": "Gale crater",
+   "description": "Curiosity landing site · RAD radiation reference",
    "status": "mission-site",
    "window_offset": null,
    "lith_class": 8,
@@ -156,6 +180,8 @@
    "notes": "Mt Sharp layered sediments; MSL RAD reference dose 0.64 mSv/d [R31]"
   },
   "mars_utopia_zhurong": {
+   "short_name": "Utopia Planitia",
+   "description": "Zhurong landing site · ice-rich lowland plains",
    "status": "mission-site",
    "window_offset": null,
    "lith_class": 12,
@@ -166,6 +192,8 @@
    "notes": "Ice-rich lowland plains"
   },
   "mars_arcadia_ap1": {
+   "short_name": "Arcadia AP-1",
+   "description": "Starship candidate landing site · ice-rich (SWIM)",
    "status": "starship-candidate",
    "window_offset": null,
    "lith_class": 12,
@@ -177,6 +205,8 @@
    "notes": "Starship human-landing candidate with shallow ice [R27]; SWIM best candidate region [R42]"
   },
   "mars_arcadia_ap9": {
+   "short_name": "Arcadia AP-9",
+   "description": "Starship candidate landing site · ice-rich (SWIM)",
    "status": "starship-candidate",
    "window_offset": null,
    "lith_class": 12,
@@ -188,6 +218,8 @@
    "notes": "Starship human-landing candidate [R27]"
   },
   "mars_erebus_em16": {
+   "short_name": "Erebus Montes EM-16",
+   "description": "Starship candidate landing site · ice-rich (SWIM)",
    "status": "starship-candidate",
    "window_offset": null,
    "lith_class": 12,
@@ -198,6 +230,8 @@
    "notes": "Starship human-landing candidate [R27]"
   },
   "mars_phlegra_pm1": {
+   "short_name": "Phlegra Montes PM-1",
+   "description": "Starship candidate landing site · ice-rich (SWIM)",
    "status": "starship-candidate",
    "window_offset": null,
    "lith_class": 12,
@@ -209,6 +243,8 @@
    "notes": "Debris-covered glaciers, ~182 +/- 91 m ice under 2-8 m debris [R39]"
   },
   "mars_phoenix": {
+   "short_name": "Phoenix site",
+   "description": "Ground ice seen by Phoenix",
    "status": "ground-truth",
    "window_offset": null,
    "lith_class": 12,

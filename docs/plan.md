@@ -51,7 +51,7 @@ Earth is the search space (land only, roughly 70–90k cells). Global Moon and M
 | F11 | Atmospheric shielding (radiation + pressure), **capped** | Cutoff rigidity from IGRF dipole (Störmer ≈14.9·cos⁴λ_m GV) + atmospheric depth from elevation | constant (no field, no atmosphere); 1369 µSv/d [R20] | MCD `ps` column mass, checked against RAD at Gale | log10 + directional percentile × cap c (§2.4) |
 | F12 | Surface UV, **capped** | POWER `ALLSKY_SFC_UV_INDEX` | unshielded | ~10³ × Earth (inferred) | Directional percentile × cap |
 | F13 | Geomorphic flags | Hand-curated cited lists: impact structures, lava tubes and caves, periglacial terrain | craters, PSRs, massifs | craters, caves (MGC³), debris-covered glaciers | Binary match, arithmetic |
-| — | Logistics (**separate axis, not similarity**) | MAP travel time to cities 2015 (CC BY, verify) + Natural Earth airports (PD) | — | — | Cost term in set cover and the accessibility filter |
+| — | Logistics (**separate axis, not similarity**) | MAP travel time to cities 2015 (CC BY, verify) + Natural Earth airports (PD) | — | — | "Easiest to reach" hard filter (MAP travel time to a city of 50k+ ≤ 6 h) and the access time on site cards |
 | — | Gravity, vacuum, Earth visibility | **not scored** | shown | shown | Fidelity Gap / target card |
 
 ### 2.3 Aggregation
@@ -91,21 +91,21 @@ Facility lookup (static JSON written by Researcher): gravity → parabolic fligh
 
 ### 2.5 Analog Portfolio Optimizer (greedy weighted set cover)
 
-- **Candidate sites.** For each factor with w > 0, take the top 50 cells by s_f that pass the hard filters and have S ≥ the Earth median. Apply non-max suppression with a ~300 km radius, which gives a pool of roughly 500 sites or fewer.
+- **Candidate sites.** For each factor with w > 0, take the top 50 cells by s_f that pass the hard filters and have S ≥ the area-weighted Earth land median. Apply non-max suppression with a 300 km great-circle (haversine) radius, which gives a pool of roughly 500 sites or fewer.
 - **Coverage.** Site j covers factor f if s_f(j) ≥ θ_f (default 0.7, set per profile). The universe U is the factors with w_f > 0 that some site can cover. Factors no site covers go to the gap panel.
 - **Greedy step** (pseudocode, ≈50 lines when built):
-  `while U not empty and |portfolio| < 5: pick j maximizing [Σ_{f∈U∩cover(j)} w_f · s_f(j)] / (1 + λ·cost_j); add j; U ← U − cover(j)`
-  Here cost_j is normalized MAP travel time plus nearest-airport distance.
-- **Variants:** highest fidelity (λ = 0), most accessible (high λ), single-continent (pool restricted), and, as a stretch, "within N hours of <city>" (great-circle flight estimate plus MAP last-mile time).
+  `while U not empty and |portfolio| < 5: pick j maximizing Σ_{f∈U∩cover(j)} w_f · s_f(j); add j; U ← U − cover(j)`
+  (Contract v1.1: no cost term; accessibility is a hard filter on the pool, below.)
+- **Variants (contract v1.1, three):** `best_match` (full candidate pool), `easiest_to_reach` (pool filtered to cells with MAP travel time to the nearest city of 50k+ ≤ 6 h before set cover; no cost weighting), `one_continent` (pool restricted to one continent; the continent with the best coverage wins). A variant with no feasible portfolio is exported as unavailable with a reason.
 - **Output per site:** the factors covered (colour chips), per-factor bars vs target, gap residuals, Monte Carlo robustness, and logistics.
 
 ### 2.6 Robustness and validation
 
-- **Monte Carlo weight sensitivity.** 1,000 Dirichlet draws centred on the profile weights (α = 50·w). For each (target, profile), report each candidate site's median rank and top-k frequency. "Robust" badge if top-k frequency ≥ 80%. Precomputed for presets offline; a live 200-draw worker run for Custom is a stretch.
+- **Monte Carlo weight sensitivity.** 1,000 Dirichlet draws centred on the profile weights (α = 50·w). For each (target, profile), report how often each candidate site's cell lands in the top 5% of Earth land (cos(lat) area-weighted threshold, recomputed per draw). "Robust" badge if that frequency is ≥ 80%; the frequency is exported per site. Precomputed for presets offline; a live 200-draw worker run for Custom is a stretch.
 - **Blind rediscovery.** Researcher writes a cited CSV of about 20 known analogs (research.md §3.5), each with body, purpose and coordinates, plus about 10 negative controls (humid forest, cities, NEEMO as operations-only). Weights and thresholds are **committed before the first scoring run** (timestamped in git) and never tuned to the validation set. Bug fixes are allowed and logged.
-- **Metrics:** % of known analogs in the top 5% and top 1% for their matching target and profile, rank-AUC against the negative controls, and a per-site percentile table.
+- **Metrics:** % of known analogs in the top 5% and top 1% for their matching target and profile, rank-AUC against the negative controls, and a per-site percentile table. Percentiles and the top-5%/1% thresholds are cos(lat) area-weighted over land cells, because a 0.5° cell's area shrinks with latitude.
 - **New candidates:** high-S sites more than 300 km from any known analog, labelled "candidate, needs field confirmation."
-- **Resolution honesty.** 0.5° (~55 km) is regional screening. Haughton (23 km) is sub-cell. The top ~20 sites per preset get offline drill-down enrichment from Copernicus 90 m window stats, Macrostrat units (CC BY 4.0), a SoilGrids point query and the nearest airport.
+- **Resolution honesty.** A 0.5° cell is ~55 km north–south but only ~55.6·cos(lat) km east–west (about 56 × 12 km at 77.5°S, 55 × 33 km at 54°N), so it is regional screening, and all land fractions, percentiles and thresholds are area-weighted. Haughton (23 km) is sub-cell. The top ~20 sites per preset get offline drill-down enrichment from Copernicus 90 m window stats, Macrostrat units (CC BY 4.0), a SoilGrids point query and the nearest airport.
 
 ---
 
