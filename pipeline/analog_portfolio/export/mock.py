@@ -18,7 +18,7 @@ from .. import CONTRACT_VERSION
 from ..contract import REPO_ROOT, WEB_DATA_DIR, load
 from ..grid import cell_centre, cell_id, haversine_km
 from ..grid.binary import read_grid, write_grid
-from ..grid.columns import EARTH_COLUMNS, PLANET_COLUMNS
+from ..grid.columns import COLUMN_CODES, CONTINENT_CODES, EARTH_COLUMNS, PLANET_COLUMNS
 from ..grid.area import weighted_pct_rank, weighted_quantile
 from ..score.engine import (CORE, SECONDARY, aggregate, area_weights, clip_targets, dropped_factors, factor_scores,
                             hard_filter_mask)
@@ -203,6 +203,8 @@ def build_earth(validation: list[dict]) -> tuple[dict[str, np.ndarray], dict[int
     for i, _cid in enumerate(ids):
         data["ti_class"][i] = rows[i]["ti_class"] if rows[i]["ti_class"] else cls[i]
     data["cell_id"] = np.array(ids, dtype="float64")
+    code = {v: k for k, v in CONTINENT_CODES.items()}
+    data["continent"] = np.array([code[mock_continent(*cell_centre(c))] for c in ids], dtype="float64")
     return data, site_cells
 
 
@@ -235,8 +237,8 @@ def main() -> None:
 
     # --- earth_features (sparse) ---
     data, site_cells = build_earth(validation)
-    cols = [dict(name=n, factor=f, dtype=d, scale=s, add_offset=o, units=u, values=data[n], source="MOCK synthetic")
-            for n, f, d, s, o, u in EARTH_COLUMNS]
+    cols = [dict(name=n, factor=f, dtype=d, scale=s, add_offset=o, units=u, values=data[n], source="MOCK synthetic",
+                 codes=COLUMN_CODES.get(n)) for n, f, d, s, o, u in EARTH_COLUMNS]
     write_grid(OUT / "earth_features", "earth", "sparse", cols, mock=True)
     earth = read_grid(OUT / "earth_features.json")  # score on the quantized values, like the browser
     known_cells = {cid: v["name"] for cid, v in site_cells.items() if v["kind"] == "positive"}
@@ -318,8 +320,10 @@ def main() -> None:
                 if wf <= 0:
                     continue
                 ok = np.where(mask & (total_f >= median))[0]
-                cand_idx.update(ok[np.argsort(-s[f][ok])][: profiles["defaults"]["candidates_top_n_per_factor"]].tolist())
-            pool = sorted(cand_idx, key=lambda i: -total_f[i])
+                # canonical tie-break (contract 3.2.7): stable sort s_f desc, then S desc, then cell index asc
+                o = np.lexsort((ok, -total_f[ok], -s[f][ok]))
+                cand_idx.update(ok[o][: profiles["defaults"]["candidates_top_n_per_factor"]].tolist())
+            pool = sorted(cand_idx, key=lambda i: (-total_f[i], i))
             kept: list[int] = []
             for i in pool:
                 if all(haversine_km(lat_c[i], lon_c[i], lat_c[j], lon_c[j]) > prof["nms_radius_km"] for j in kept):
@@ -339,9 +343,10 @@ def main() -> None:
                             gaps={f: round(g, 3) for f, (_t, g) in clips.items() if g > 0},
                             robustness=dict(top5_freq=round(float(freq[i]), 3),
                                             robust=bool(freq[i] >= mc["robust_min_freq"])),
+                            country=None, admin1=None,
                             logistics=dict(travel_time_min=round(float(earth["travel_time_min"][i]), 1),
                                            within_6h=bool(earth["travel_time_min"][i] <= 360),
-                                           continent=mock_continent(lat_c[i], lon_c[i]),
+                                           continent=CONTINENT_CODES.get(int(earth["continent"][i])),
                                            airport_km=round(float(earth["airport_km"][i]), 1)),
                             known_analog=known_cells.get(cid), candidate=cid not in known_cells and near_known > 300)
 
@@ -396,7 +401,8 @@ def main() -> None:
                  for c in EARTH_COLUMNS if c[0] != "cell_id"}
         write(f"sites/{slug(v['name'])}.json", dict(
             contract_version=CONTRACT_VERSION, mock=True, site_id=slug(v["name"]), name=v["name"], lat=v["lat"],
-            lon=v["lon"], cell_id=cid, country=None, summary=v["why"], known_analog=v["name"],
+            lon=v["lon"], cell_id=cid, country=None, admin1=None,
+            continent=CONTINENT_CODES.get(int(earth["continent"][idx_of[cid]])), summary=v["why"], known_analog=v["name"],
             earth_features=feats, drilldown={}, best_for=[], citations=[v["citation_url"]], attribution=[]))
 
     write("provenance.json", dict(contract_version=CONTRACT_VERSION, mock=True, layers=[dict(

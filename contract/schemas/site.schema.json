@@ -43,6 +43,27 @@
         }
       ]
     },
+    "admin1": {
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "Natural Earth admin-1 (state/province) name"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "continent": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
     "summary": {
       "type": "string"
     },
@@ -86,6 +107,13 @@
             "type": "string",
             "pattern": "^P[1-9]_[a-z0-9_]+$"
           },
+          "variant": {
+            "enum": [
+              "best_match",
+              "easiest_to_reach",
+              "one_continent"
+            ]
+          },
           "score": {
             "type": "number",
             "minimum": 0,
@@ -119,6 +147,7 @@
         "required": [
           "target_id",
           "profile_id",
+          "variant",
           "score",
           "rank",
           "percentile",

@@ -63,6 +63,8 @@ ARRAY = obj({
         "min": {"type": "number"}, "max": {"type": "number"},
     })),
     "source": {"type": "string"},
+    "codes": {"type": "object", "additionalProperties": {"type": "string"},
+              "description": "Categorical code table (raw value -> label), e.g. continent"},
 }, required=["name", "factor", "dtype", "byte_offset", "length", "scale", "add_offset", "nodata", "units"])
 
 SCHEMAS: dict[str, dict] = {}
@@ -197,6 +199,8 @@ SITE_REF = obj({
                                description="Share of MC draws in which the cell is in the top 5% of land (area-weighted); robust = top5_freq >= 0.8")),
     "logistics": obj({"travel_time_min": nullable({"type": "number"}), "within_6h": nullable({"type": "boolean"}),
                       "continent": nullable({"type": "string"}), "airport_km": nullable({"type": "number"})}),
+    "country": nullable({"type": "string", "description": "Natural Earth admin-0 NAME"}),
+    "admin1": nullable({"type": "string", "description": "Natural Earth admin-1 (state/province) name"}),
     "known_analog": nullable({"type": "string"}),
     "candidate": {"type": "boolean", "description": "true = new candidate (>300 km from any known analog), needs field confirmation"},
 }, required=["site_id", "name", "lat", "lon", "cell_id", "score", "factor_scores", "covers"])
@@ -262,11 +266,13 @@ SCHEMAS["site"] = obj({
     "site_id": ID, "name": {"type": "string"}, "lat": LAT, "lon": LON,
     "cell_id": {"type": "integer", "minimum": 0, "maximum": 259199},
     "country": nullable({"type": "string"}),
+    "admin1": nullable({"type": "string", "description": "Natural Earth admin-1 (state/province) name"}),
+    "continent": nullable({"type": "string"}),
     "summary": {"type": "string"},
     "known_analog": nullable({"type": "string"}),
     "earth_features": {"type": "object", "additionalProperties": nullable({"type": "number"})},
     "drilldown": {"type": "object", "description": "Copernicus 90 m window stats, Macrostrat units, SoilGrids, airport"},
-    "best_for": {"type": "array", "items": obj({"target_id": TARGET_ID, "profile_id": PROFILE_ID, "score": NUM01, "rank": {"type": "integer"},
+    "best_for": {"type": "array", "items": obj({"target_id": TARGET_ID, "profile_id": PROFILE_ID, "variant": VARIANT_ID, "score": NUM01, "rank": {"type": "integer"},
                                                 "percentile": {"type": "number", "minimum": 0, "maximum": 100},
                                                 "top5_freq": nullable(NUM01), "robust": {"type": "boolean"}})},
     "citations": {"type": "array", "items": {"type": "string"}},

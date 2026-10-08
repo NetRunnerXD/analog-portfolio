@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "target_id": "mars_gale",
  "profile_id": "P2_isru_ice",
@@ -83,6 +83,8 @@
       "top5_freq": 1.0,
       "robust": true
      },
+     "country": null,
+     "admin1": null,
      "logistics": {
       "travel_time_min": 523.0,
       "within_6h": false,
@@ -131,6 +133,8 @@
       "top5_freq": 0.0,
       "robust": false
      },
+     "country": null,
+     "admin1": null,
      "logistics": {
       "travel_time_min": 145.0,
       "within_6h": true,
@@ -159,30 +163,30 @@
    "available": true,
    "unavailable_reason": null,
    "continent": null,
-   "pool_size": 47,
+   "pool_size": 55,
    "sites": [
     {
-     "site_id": "cell_90402",
-     "name": "Candidate cell 27.25, 21.25",
-     "lat": 27.25,
-     "lon": 21.25,
-     "cell_id": 90402,
-     "score": 0.6155,
-     "score_core": 0.6825,
-     "earth_percentile": 99.89,
+     "site_id": "cell_77516",
+     "name": "Candidate cell 36.25, 58.25",
+     "lat": 36.25,
+     "lon": 58.25,
+     "cell_id": 77516,
+     "score": 0.5838,
+     "score_core": 0.6478,
+     "earth_percentile": 99.59,
      "factor_scores": {
-      "F1": 0.8977,
-      "F2": 0.8466,
+      "F1": 0.9003,
+      "F2": 0.9432,
       "F3": 0.75,
-      "F4": 0.928,
-      "F5": 0.4005,
-      "F6": 0.6,
-      "F7": 0.8293,
-      "F8": 0.948,
-      "F9": 0.988,
-      "F10": 0.0111,
-      "F11": 0.0517,
-      "F12": 0.0037,
+      "F4": 0.724,
+      "F5": 0.2275,
+      "F6": 1.0,
+      "F7": 0.8864,
+      "F8": 0.928,
+      "F9": 0.892,
+      "F10": 0.0,
+      "F11": 0.0343,
+      "F12": 0.0026,
       "F13": 0.0
      },
      "covers": [
@@ -190,6 +194,7 @@
       "F2",
       "F3",
       "F4",
+      "F6",
       "F7",
       "F8",
       "F9"
@@ -204,47 +209,45 @@
       "top5_freq": 1.0,
       "robust": true
      },
+     "country": null,
+     "admin1": null,
      "logistics": {
-      "travel_time_min": 297.0,
+      "travel_time_min": 17.0,
       "within_6h": true,
-      "continent": "Africa",
-      "airport_km": 48.0
+      "continent": "Asia",
+      "airport_km": 59.0
      },
      "known_analog": null,
      "candidate": true
     },
     {
-     "site_id": "cell_240256",
-     "name": "Candidate cell -76.75, 68.25",
-     "lat": -76.75,
-     "lon": 68.25,
-     "cell_id": 240256,
-     "score": 0.1625,
-     "score_core": 0.1799,
-     "earth_percentile": 75.68,
+     "site_id": "cell_89108",
+     "name": "Candidate cell 28.25, 94.25",
+     "lat": 28.25,
+     "lon": 94.25,
+     "cell_id": 89108,
+     "score": 0.2665,
+     "score_core": 0.2953,
+     "earth_percentile": 83.15,
      "factor_scores": {
-      "F1": 0.9836,
-      "F2": 0.9706,
-      "F3": 0.5,
-      "F4": 0.804,
-      "F5": 0.8828,
-      "F6": 1.0,
-      "F7": 0.9767,
-      "F8": 1.0,
-      "F9": 0.0,
-      "F10": 0.0,
-      "F11": 0.0978,
-      "F12": 0.0005,
+      "F1": 0.9151,
+      "F2": 0.5869,
+      "F3": 1.0,
+      "F4": 0.4,
+      "F5": 0.9911,
+      "F6": 0.0,
+      "F7": 0.4047,
+      "F8": 0.0,
+      "F9": 0.36,
+      "F10": 0.006,
+      "F11": 0.0699,
+      "F12": 0.0058,
       "F13": 0.0
      },
      "covers": [
       "F1",
-      "F2",
-      "F4",
-      "F5",
-      "F6",
-      "F7",
-      "F8"
+      "F3",
+      "F5"
      ],
      "gaps": {
       "F1": 2.31,
@@ -256,11 +259,13 @@
       "top5_freq": 0.0,
       "robust": false
      },
+     "country": null,
+     "admin1": null,
      "logistics": {
-      "travel_time_min": 209.0,
+      "travel_time_min": 145.0,
       "within_6h": true,
-      "continent": "Antarctica",
-      "airport_km": 329.0
+      "continent": "Asia",
+      "airport_km": 38.0
      },
      "known_analog": null,
      "candidate": true
@@ -284,7 +289,7 @@
    "available": true,
    "unavailable_reason": null,
    "continent": "Oceania",
-   "pool_size": 12,
+   "pool_size": 16,
    "sites": [
     {
      "site_id": "cell_165514",
@@ -329,6 +334,8 @@
       "top5_freq": 0.986,
       "robust": true
      },
+     "country": null,
+     "admin1": null,
      "logistics": {
       "travel_time_min": 615.0,
       "within_6h": false,
@@ -339,37 +346,33 @@
      "candidate": true
     },
     {
-     "site_id": "cell_182872",
-     "name": "Candidate cell -36.75, 176.25",
-     "lat": -36.75,
-     "lon": 176.25,
-     "cell_id": 182872,
-     "score": 0.4964,
-     "score_core": 0.55,
-     "earth_percentile": 98.03,
+     "site_id": "cell_191496",
+     "name": "Candidate cell -42.75, 168.25",
+     "lat": -42.75,
+     "lon": 168.25,
+     "cell_id": 191496,
+     "score": 0.5233,
+     "score_core": 0.5803,
+     "earth_percentile": 98.59,
      "factor_scores": {
-      "F1": 0.9141,
-      "F2": 0.9758,
-      "F3": 0.75,
-      "F4": 0.932,
-      "F5": 0.6431,
+      "F1": 0.9061,
+      "F2": 0.6483,
+      "F3": 1.0,
+      "F4": 0.652,
+      "F5": 0.3369,
       "F6": 1.0,
-      "F7": 0.8683,
-      "F8": 0.944,
-      "F9": 0.396,
+      "F7": 0.6505,
+      "F8": 0.648,
+      "F9": 0.68,
       "F10": 0.0,
-      "F11": 0.072,
-      "F12": 0.0031,
+      "F11": 0.0537,
+      "F12": 0.0022,
       "F13": 0.0
      },
      "covers": [
       "F1",
-      "F2",
       "F3",
-      "F4",
-      "F6",
-      "F7",
-      "F8"
+      "F6"
      ],
      "gaps": {
       "F1": 2.31,
@@ -378,14 +381,16 @@
       "F10": 7.0
      },
      "robustness": {
-      "top5_freq": 0.891,
+      "top5_freq": 1.0,
       "robust": true
      },
+     "country": null,
+     "admin1": null,
      "logistics": {
-      "travel_time_min": 910.0,
+      "travel_time_min": 789.0,
       "within_6h": false,
       "continent": "Oceania",
-      "airport_km": 231.0
+      "airport_km": 66.0
      },
      "known_analog": null,
      "candidate": true
@@ -433,6 +438,8 @@
       "top5_freq": 0.974,
       "robust": true
      },
+     "country": null,
+     "admin1": null,
      "logistics": {
       "travel_time_min": 585.0,
       "within_6h": false,
@@ -500,6 +507,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 2032.0,
     "within_6h": false,
@@ -551,6 +560,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 140.0,
     "within_6h": true,
@@ -603,6 +614,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 194.0,
     "within_6h": true,
@@ -655,6 +668,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 138.0,
     "within_6h": true,
@@ -708,6 +723,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 523.0,
     "within_6h": false,
@@ -761,6 +778,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 174.0,
     "within_6h": true,
@@ -813,6 +832,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 297.0,
     "within_6h": true,
@@ -863,6 +884,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 1524.0,
     "within_6h": false,
@@ -912,6 +935,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 248.0,
     "within_6h": true,
@@ -964,11 +989,64 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 1703.0,
     "within_6h": false,
     "continent": "Europe",
     "airport_km": 64.0
+   },
+   "known_analog": null,
+   "candidate": true
+  },
+  {
+   "site_id": "cell_80544",
+   "name": "Candidate cell 34.25, 132.25",
+   "lat": 34.25,
+   "lon": 132.25,
+   "cell_id": 80544,
+   "score": 0.6017,
+   "score_core": 0.6432,
+   "earth_percentile": 99.82,
+   "factor_scores": {
+    "F1": 0.8983,
+    "F2": 0.6915,
+    "F3": 1.0,
+    "F4": 0.972,
+    "F5": 0.4545,
+    "F6": 0.5,
+    "F7": 0.6475,
+    "F8": 0.396,
+    "F9": 0.968,
+    "F10": 0.0001,
+    "F11": 0.0615,
+    "F12": 0.003,
+    "F13": 1.0
+   },
+   "covers": [
+    "F1",
+    "F3",
+    "F4",
+    "F9"
+   ],
+   "gaps": {
+    "F1": 2.31,
+    "F2": 42.946,
+    "F5": 116.0,
+    "F10": 7.0
+   },
+   "robustness": {
+    "top5_freq": 1.0,
+    "robust": true
+   },
+   "country": null,
+   "admin1": null,
+   "logistics": {
+    "travel_time_min": 1306.0,
+    "within_6h": false,
+    "continent": "Asia",
+    "airport_km": 170.0
    },
    "known_analog": null,
    "candidate": true
@@ -1016,6 +1094,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 609.0,
     "within_6h": false,
@@ -1066,11 +1146,68 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 945.0,
     "within_6h": false,
     "continent": "Oceania",
     "airport_km": 12.0
+   },
+   "known_analog": null,
+   "candidate": true
+  },
+  {
+   "site_id": "cell_83416",
+   "name": "Candidate cell 32.25, 128.25",
+   "lat": 32.25,
+   "lon": 128.25,
+   "cell_id": 83416,
+   "score": 0.5944,
+   "score_core": 0.6595,
+   "earth_percentile": 99.75,
+   "factor_scores": {
+    "F1": 0.901,
+    "F2": 0.8211,
+    "F3": 0.75,
+    "F4": 0.824,
+    "F5": 0.3211,
+    "F6": 1.0,
+    "F7": 0.877,
+    "F8": 1.0,
+    "F9": 0.868,
+    "F10": 0.0003,
+    "F11": 0.0345,
+    "F12": 0.003,
+    "F13": 0.0
+   },
+   "covers": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F6",
+    "F7",
+    "F8",
+    "F9"
+   ],
+   "gaps": {
+    "F1": 2.31,
+    "F2": 42.946,
+    "F5": 116.0,
+    "F10": 7.0
+   },
+   "robustness": {
+    "top5_freq": 1.0,
+    "robust": true
+   },
+   "country": null,
+   "admin1": null,
+   "logistics": {
+    "travel_time_min": 1115.0,
+    "within_6h": false,
+    "continent": "Asia",
+    "airport_km": 216.0
    },
    "known_analog": null,
    "candidate": true
@@ -1118,6 +1255,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 314.0,
     "within_6h": true,
@@ -1167,6 +1306,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 1388.0,
     "within_6h": false,
@@ -1217,6 +1358,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 1460.0,
     "within_6h": false,
@@ -1269,6 +1412,8 @@
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 380.0,
     "within_6h": false,
@@ -1279,34 +1424,140 @@
    "candidate": true
   },
   {
-   "site_id": "cell_66148",
-   "name": "Candidate cell 44.25, 134.25",
-   "lat": 44.25,
-   "lon": 134.25,
-   "cell_id": 66148,
-   "score": 0.5803,
-   "score_core": 0.6208,
-   "earth_percentile": 99.51,
+   "site_id": "cell_84650",
+   "name": "Candidate cell 31.25, 25.25",
+   "lat": 31.25,
+   "lon": 25.25,
+   "cell_id": 84650,
+   "score": 0.5895,
+   "score_core": 0.6534,
+   "earth_percentile": 99.67,
    "factor_scores": {
-    "F1": 0.8985,
-    "F2": 0.7204,
+    "F1": 0.9018,
+    "F2": 0.784,
     "F3": 0.75,
-    "F4": 0.74,
-    "F5": 0.0867,
+    "F4": 0.96,
+    "F5": 0.5329,
     "F6": 1.0,
-    "F7": 0.8238,
+    "F7": 0.7431,
+    "F8": 0.672,
+    "F9": 0.836,
+    "F10": 0.0007,
+    "F11": 0.061,
+    "F12": 0.0034,
+    "F13": 0.0
+   },
+   "covers": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F6",
+    "F7",
+    "F9"
+   ],
+   "gaps": {
+    "F1": 2.31,
+    "F2": 42.946,
+    "F5": 116.0,
+    "F10": 7.0
+   },
+   "robustness": {
+    "top5_freq": 1.0,
+    "robust": true
+   },
+   "country": null,
+   "admin1": null,
+   "logistics": {
+    "travel_time_min": 87.0,
+    "within_6h": true,
+    "continent": "Africa",
+    "airport_km": 337.0
+   },
+   "known_analog": null,
+   "candidate": true
+  },
+  {
+   "site_id": "cell_173750",
+   "name": "Candidate cell -30.75, -64.75",
+   "lat": -30.75,
+   "lon": -64.75,
+   "cell_id": 173750,
+   "score": 0.5885,
+   "score_core": 0.6529,
+   "earth_percentile": 99.65,
+   "factor_scores": {
+    "F1": 0.898,
+    "F2": 0.6981,
+    "F3": 1.0,
+    "F4": 0.692,
+    "F5": 0.2477,
+    "F6": 1.0,
+    "F7": 0.7204,
+    "F8": 0.736,
+    "F9": 0.976,
+    "F10": 0.0007,
+    "F11": 0.0392,
+    "F12": 0.0032,
+    "F13": 0.0
+   },
+   "covers": [
+    "F1",
+    "F3",
+    "F6",
+    "F7",
+    "F8",
+    "F9"
+   ],
+   "gaps": {
+    "F1": 2.31,
+    "F2": 42.946,
+    "F5": 116.0,
+    "F10": 7.0
+   },
+   "robustness": {
+    "top5_freq": 1.0,
+    "robust": true
+   },
+   "country": null,
+   "admin1": null,
+   "logistics": {
+    "travel_time_min": 364.0,
+    "within_6h": false,
+    "continent": "South America",
+    "airport_km": 101.0
+   },
+   "known_analog": null,
+   "candidate": true
+  },
+  {
+   "site_id": "cell_74532",
+   "name": "Candidate cell 38.25, 6.25",
+   "lat": 38.25,
+   "lon": 6.25,
+   "cell_id": 74532,
+   "score": 0.587,
+   "score_core": 0.6274,
+   "earth_percentile": 99.64,
+   "factor_scores": {
+    "F1": 0.9046,
+    "F2": 0.9394,
+    "F3": 0.75,
+    "F4": 0.656,
+    "F5": 0.3903,
+    "F6": 1.0,
+    "F7": 0.9255,
     "F8": 1.0,
-    "F9": 0.956,
+    "F9": 0.736,
     "F10": 0.0,
-    "F11": 0.0394,
-    "F12": 0.002,
+    "F11": 0.0614,
+    "F12": 0.0026,
     "F13": 1.0
    },
    "covers": [
     "F1",
     "F2",
     "F3",
-    "F4",
     "F6",
     "F7",
     "F8",
@@ -1319,405 +1570,104 @@
     "F10": 7.0
    },
    "robustness": {
-    "top5_freq": 0.997,
-    "robust": true
-   },
-   "logistics": {
-    "travel_time_min": 1283.0,
-    "within_6h": false,
-    "continent": "Asia",
-    "airport_km": 129.0
-   },
-   "known_analog": null,
-   "candidate": true
-  },
-  {
-   "site_id": "cell_165102",
-   "name": "Candidate cell -24.75, -68.75",
-   "lat": -24.75,
-   "lon": -68.75,
-   "cell_id": 165102,
-   "score": 0.5657,
-   "score_core": 0.6269,
-   "earth_percentile": 99.36,
-   "factor_scores": {
-    "F1": 0.9044,
-    "F2": 0.5763,
-    "F3": 1.0,
-    "F4": 0.748,
-    "F5": 0.8245,
-    "F6": 0.6,
-    "F7": 0.5625,
-    "F8": 0.408,
-    "F9": 0.744,
-    "F10": 0.034,
-    "F11": 0.063,
-    "F12": 0.005,
-    "F13": 0.0
-   },
-   "covers": [
-    "F1",
-    "F3",
-    "F4",
-    "F5",
-    "F9"
-   ],
-   "gaps": {
-    "F1": 2.31,
-    "F2": 42.946,
-    "F5": 116.0,
-    "F10": 7.0
-   },
-   "robustness": {
     "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
    "logistics": {
-    "travel_time_min": 662.0,
+    "travel_time_min": 531.0,
     "within_6h": false,
-    "continent": "South America",
-    "airport_km": 58.0
-   },
-   "known_analog": null,
-   "candidate": false
-  },
-  {
-   "site_id": "cell_168014",
-   "name": "Candidate cell -26.75, -52.75",
-   "lat": -26.75,
-   "lon": -52.75,
-   "cell_id": 168014,
-   "score": 0.5651,
-   "score_core": 0.6263,
-   "earth_percentile": 99.34,
-   "factor_scores": {
-    "F1": 0.9031,
-    "F2": 0.7208,
-    "F3": 1.0,
-    "F4": 0.88,
-    "F5": 0.802,
-    "F6": 0.6,
-    "F7": 0.625,
-    "F8": 0.42,
-    "F9": 0.788,
-    "F10": 0.0111,
-    "F11": 0.0642,
-    "F12": 0.0047,
-    "F13": 0.0
-   },
-   "covers": [
-    "F1",
-    "F2",
-    "F3",
-    "F4",
-    "F5",
-    "F9"
-   ],
-   "gaps": {
-    "F1": 2.31,
-    "F2": 42.946,
-    "F5": 116.0,
-    "F10": 7.0
-   },
-   "robustness": {
-    "top5_freq": 1.0,
-    "robust": true
-   },
-   "logistics": {
-    "travel_time_min": 465.0,
-    "within_6h": false,
-    "continent": "South America",
-    "airport_km": 81.0
-   },
-   "known_analog": null,
-   "candidate": true
-  },
-  {
-   "site_id": "mauna_kea_pu_u_hiwahine_isru_test_site_hawai_i",
-   "name": "Mauna Kea, Pu'u Hiwahine ISRU test site (Hawai'i)",
-   "lat": 19.75,
-   "lon": -155.25,
-   "cell_id": 100849,
-   "score": 0.5632,
-   "score_core": 0.6242,
-   "earth_percentile": 99.28,
-   "factor_scores": {
-    "F1": 0.8887,
-    "F2": 0.6539,
-    "F3": 0.75,
-    "F4": 0.7,
-    "F5": 0.8856,
-    "F6": 0.0,
-    "F7": 0.7048,
-    "F8": 0.7,
-    "F9": 0.952,
-    "F10": 0.278,
-    "F11": 0.0625,
-    "F12": 0.0048,
-    "F13": 0.0
-   },
-   "covers": [
-    "F1",
-    "F3",
-    "F4",
-    "F5",
-    "F7",
-    "F8",
-    "F9"
-   ],
-   "gaps": {
-    "F1": 2.31,
-    "F2": 42.946,
-    "F5": 116.0,
-    "F10": 7.0
-   },
-   "robustness": {
-    "top5_freq": 0.986,
-    "robust": true
-   },
-   "logistics": {
-    "travel_time_min": 302.0,
-    "within_6h": true,
-    "continent": "North America",
-    "airport_km": 261.0
-   },
-   "known_analog": "Mauna Kea, Pu'u Hiwahine ISRU test site (Hawai'i)",
-   "candidate": false
-  },
-  {
-   "site_id": "cell_100272",
-   "name": "Candidate cell 20.25, -83.75",
-   "lat": 20.25,
-   "lon": -83.75,
-   "cell_id": 100272,
-   "score": 0.5584,
-   "score_core": 0.6189,
-   "earth_percentile": 99.18,
-   "factor_scores": {
-    "F1": 0.9044,
-    "F2": 0.8607,
-    "F3": 0.75,
-    "F4": 0.876,
-    "F5": 0.8699,
-    "F6": 0.0,
-    "F7": 0.8138,
-    "F8": 0.912,
-    "F9": 0.744,
-    "F10": 0.278,
-    "F11": 0.0617,
-    "F12": 0.0059,
-    "F13": 0.0
-   },
-   "covers": [
-    "F1",
-    "F2",
-    "F3",
-    "F4",
-    "F5",
-    "F7",
-    "F8",
-    "F9"
-   ],
-   "gaps": {
-    "F1": 2.31,
-    "F2": 42.946,
-    "F5": 116.0,
-    "F10": 7.0
-   },
-   "robustness": {
-    "top5_freq": 0.987,
-    "robust": true
-   },
-   "logistics": {
-    "travel_time_min": 40.0,
-    "within_6h": true,
-    "continent": "North America",
-    "airport_km": 162.0
-   },
-   "known_analog": null,
-   "candidate": true
-  },
-  {
-   "site_id": "cell_96094",
-   "name": "Candidate cell 23.25, -12.75",
-   "lat": 23.25,
-   "lon": -12.75,
-   "cell_id": 96094,
-   "score": 0.5548,
-   "score_core": 0.6149,
-   "earth_percentile": 99.13,
-   "factor_scores": {
-    "F1": 0.9,
-    "F2": 0.929,
-    "F3": 0.75,
-    "F4": 0.856,
-    "F5": 0.7512,
-    "F6": 0.0,
-    "F7": 0.8422,
-    "F8": 0.828,
-    "F9": 0.904,
-    "F10": 0.0889,
-    "F11": 0.0609,
-    "F12": 0.0049,
-    "F13": 0.0
-   },
-   "covers": [
-    "F1",
-    "F2",
-    "F3",
-    "F4",
-    "F5",
-    "F7",
-    "F8",
-    "F9"
-   ],
-   "gaps": {
-    "F1": 2.31,
-    "F2": 42.946,
-    "F5": 116.0,
-    "F10": 7.0
-   },
-   "robustness": {
-    "top5_freq": 0.99,
-    "robust": true
-   },
-   "logistics": {
-    "travel_time_min": 733.0,
-    "within_6h": false,
-    "continent": "Africa",
+    "continent": "Europe",
     "airport_km": 52.0
    },
    "known_analog": null,
    "candidate": true
   },
   {
-   "site_id": "cell_72842",
-   "name": "Candidate cell 39.25, -118.75",
-   "lat": 39.25,
-   "lon": -118.75,
-   "cell_id": 72842,
-   "score": 0.551,
-   "score_core": 0.6109,
-   "earth_percentile": 99.06,
+   "site_id": "cell_87198",
+   "name": "Candidate cell 29.25, -140.75",
+   "lat": 29.25,
+   "lon": -140.75,
+   "cell_id": 87198,
+   "score": 0.5843,
+   "score_core": 0.6479,
+   "earth_percentile": 99.6,
    "factor_scores": {
-    "F1": 0.8976,
-    "F2": 0.6727,
-    "F3": 1.0,
-    "F4": 0.76,
-    "F5": 0.288,
-    "F6": 1.0,
-    "F7": 0.5039,
-    "F8": 0.268,
-    "F9": 0.992,
-    "F10": 0.0,
-    "F11": 0.0547,
-    "F12": 0.0024,
-    "F13": 0.0
-   },
-   "covers": [
-    "F1",
-    "F3",
-    "F4",
-    "F6",
-    "F9"
-   ],
-   "gaps": {
-    "F1": 2.31,
-    "F2": 42.946,
-    "F5": 116.0,
-    "F10": 7.0
-   },
-   "robustness": {
-    "top5_freq": 0.999,
-    "robust": true
-   },
-   "logistics": {
-    "travel_time_min": 35.0,
-    "within_6h": true,
-    "continent": "North America",
-    "airport_km": 203.0
-   },
-   "known_analog": null,
-   "candidate": true
-  },
-  {
-   "site_id": "cell_70082",
-   "name": "Candidate cell 41.25, -58.75",
-   "lat": 41.25,
-   "lon": -58.75,
-   "cell_id": 70082,
-   "score": 0.5493,
-   "score_core": 0.6096,
-   "earth_percentile": 99.05,
-   "factor_scores": {
-    "F1": 0.8977,
-    "F2": 0.6979,
-    "F3": 1.0,
-    "F4": 0.6,
-    "F5": 0.1012,
-    "F6": 1.0,
-    "F7": 0.6859,
-    "F8": 0.624,
-    "F9": 0.988,
-    "F10": 0.0,
-    "F11": 0.0324,
-    "F12": 0.0022,
-    "F13": 0.0
-   },
-   "covers": [
-    "F1",
-    "F3",
-    "F6",
-    "F9"
-   ],
-   "gaps": {
-    "F1": 2.31,
-    "F2": 42.946,
-    "F5": 116.0,
-    "F10": 7.0
-   },
-   "robustness": {
-    "top5_freq": 0.991,
-    "robust": true
-   },
-   "logistics": {
-    "travel_time_min": 568.0,
-    "within_6h": false,
-    "continent": "North America",
-    "airport_km": 132.0
-   },
-   "known_analog": null,
-   "candidate": true
-  },
-  {
-   "site_id": "cell_153982",
-   "name": "Candidate cell -16.75, 131.25",
-   "lat": -16.75,
-   "lon": 131.25,
-   "cell_id": 153982,
-   "score": 0.5486,
-   "score_core": 0.6081,
-   "earth_percentile": 99.03,
-   "factor_scores": {
-    "F1": 0.9044,
-    "F2": 0.7263,
+    "F1": 0.8985,
+    "F2": 0.8009,
     "F3": 0.75,
-    "F4": 0.568,
-    "F5": 0.9305,
-    "F6": 0.0,
-    "F7": 0.7714,
-    "F8": 0.86,
-    "F9": 0.744,
-    "F10": 0.6065,
-    "F11": 0.06,
-    "F12": 0.006,
+    "F4": 0.732,
+    "F5": 0.3744,
+    "F6": 1.0,
+    "F7": 0.6843,
+    "F8": 0.708,
+    "F9": 0.96,
+    "F10": 0.0031,
+    "F11": 0.0499,
+    "F12": 0.0034,
     "F13": 0.0
    },
    "covers": [
     "F1",
     "F2",
     "F3",
-    "F5",
+    "F4",
+    "F6",
+    "F8",
+    "F9"
+   ],
+   "gaps": {
+    "F1": 2.31,
+    "F2": 42.946,
+    "F5": 116.0,
+    "F10": 7.0
+   },
+   "robustness": {
+    "top5_freq": 1.0,
+    "robust": true
+   },
+   "country": null,
+   "admin1": null,
+   "logistics": {
+    "travel_time_min": 171.0,
+    "within_6h": true,
+    "continent": "North America",
+    "airport_km": 42.0
+   },
+   "known_analog": null,
+   "candidate": true
+  },
+  {
+   "site_id": "cell_77516",
+   "name": "Candidate cell 36.25, 58.25",
+   "lat": 36.25,
+   "lon": 58.25,
+   "cell_id": 77516,
+   "score": 0.5838,
+   "score_core": 0.6478,
+   "earth_percentile": 99.59,
+   "factor_scores": {
+    "F1": 0.9003,
+    "F2": 0.9432,
+    "F3": 0.75,
+    "F4": 0.724,
+    "F5": 0.2275,
+    "F6": 1.0,
+    "F7": 0.8864,
+    "F8": 0.928,
+    "F9": 0.892,
+    "F10": 0.0,
+    "F11": 0.0343,
+    "F12": 0.0026,
+    "F13": 0.0
+   },
+   "covers": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F6",
     "F7",
     "F8",
     "F9"
@@ -1729,14 +1679,126 @@
     "F10": 7.0
    },
    "robustness": {
-    "top5_freq": 0.974,
+    "top5_freq": 1.0,
     "robust": true
    },
+   "country": null,
+   "admin1": null,
+   "logistics": {
+    "travel_time_min": 17.0,
+    "within_6h": true,
+    "continent": "Asia",
+    "airport_km": 59.0
+   },
+   "known_analog": null,
+   "candidate": true
+  },
+  {
+   "site_id": "cell_81750",
+   "name": "Candidate cell 33.25, 15.25",
+   "lat": 33.25,
+   "lon": 15.25,
+   "cell_id": 81750,
+   "score": 0.5833,
+   "score_core": 0.6467,
+   "earth_percentile": 99.57,
+   "factor_scores": {
+    "F1": 0.9018,
+    "F2": 0.7836,
+    "F3": 0.75,
+    "F4": 0.808,
+    "F5": 0.5288,
+    "F6": 1.0,
+    "F7": 0.7683,
+    "F8": 0.708,
+    "F9": 0.84,
+    "F10": 0.0001,
+    "F11": 0.0532,
+    "F12": 0.003,
+    "F13": 0.0
+   },
+   "covers": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F6",
+    "F7",
+    "F8",
+    "F9"
+   ],
+   "gaps": {
+    "F1": 2.31,
+    "F2": 42.946,
+    "F5": 116.0,
+    "F10": 7.0
+   },
+   "robustness": {
+    "top5_freq": 1.0,
+    "robust": true
+   },
+   "country": null,
+   "admin1": null,
+   "logistics": {
+    "travel_time_min": 434.0,
+    "within_6h": false,
+    "continent": "Africa",
+    "airport_km": 39.0
+   },
+   "known_analog": null,
+   "candidate": true
+  },
+  {
+   "site_id": "cell_90438",
+   "name": "Candidate cell 27.25, 39.25",
+   "lat": 27.25,
+   "lon": 39.25,
+   "cell_id": 90438,
+   "score": 0.5827,
+   "score_core": 0.6457,
+   "earth_percentile": 99.54,
+   "factor_scores": {
+    "F1": 0.9067,
+    "F2": 0.8784,
+    "F3": 0.75,
+    "F4": 0.912,
+    "F5": 0.7386,
+    "F6": 1.0,
+    "F7": 0.8746,
+    "F8": 1.0,
+    "F9": 0.66,
+    "F10": 0.0111,
+    "F11": 0.0645,
+    "F12": 0.0043,
+    "F13": 0.0
+   },
+   "covers": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F6",
+    "F7",
+    "F8"
+   ],
+   "gaps": {
+    "F1": 2.31,
+    "F2": 42.946,
+    "F5": 116.0,
+    "F10": 7.0
+   },
+   "robustness": {
+    "top5_freq": 1.0,
+    "robust": true
+   },
+   "country": null,
+   "admin1": null,
    "logistics": {
     "travel_time_min": 585.0,
     "within_6h": false,
-    "continent": "Oceania",
-    "airport_km": 167.0
+    "continent": "Africa",
+    "airport_km": 105.0
    },
    "known_analog": null,
    "candidate": true

@@ -9,7 +9,7 @@ RES = 0.5
 NCOLS = 720
 NROWS = 360
 NCELLS = NCOLS * NROWS
-BODY_RADIUS_M = {"earth": 6_371_000.0, "moon": 1_737_400.0, "mars": 3_396_190.0}
+BODY_RADIUS_M = {"earth": 6_371_008.8, "moon": 1_737_400.0, "mars": 3_396_190.0}
 
 
 def lon_centres() -> np.ndarray:
