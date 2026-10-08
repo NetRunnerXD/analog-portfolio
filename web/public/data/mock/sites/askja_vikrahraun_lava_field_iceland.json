@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "askja_vikrahraun_lava_field_iceland",
  "name": "Askja / Vikrahraun lava field (Iceland)",
@@ -7,6 +7,8 @@
  "lon": -16.783,
  "cell_id": 35606,
  "country": null,
+ "admin1": null,
+ "continent": "North America",
  "summary": "Young basaltic lava (Vikrahraun, 1961) and tephra plains in a sparsely vegetated highland; studied as a Mars analog for lava morphology and rover/remote-sensing tests.",
  "known_analog": "Askja / Vikrahraun lava field (Iceland)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 1904.0,
-  "airport_km": 9.0
+  "airport_km": 9.0,
+  "continent": 5.0
  },
  "drilldown": {},
  "best_for": [],

@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "death_valley_badwater_basin_california",
  "name": "Death Valley, Badwater Basin (California)",
@@ -7,6 +7,8 @@
  "lon": -116.8258,
  "cell_id": 77166,
  "country": null,
+ "admin1": null,
+ "continent": "North America",
  "summary": "Hyper-arid evaporite playa and alluvial fans; NPS documents NASA/JPL rover and Mars-mission testing in Death Valley. Named in the challenge text.",
  "known_analog": "Death Valley, Badwater Basin (California)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 862.0,
-  "airport_km": 48.0
+  "airport_km": 48.0,
+  "continent": 5.0
  },
  "drilldown": {},
  "best_for": [],

@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "hi_seas_habitat_mauna_loa_hawai_i",
  "name": "HI-SEAS habitat, Mauna Loa (Hawai'i)",
@@ -7,6 +7,8 @@
  "lon": -155.4872,
  "cell_id": 100849,
  "country": null,
+ "admin1": null,
+ "continent": "North America",
  "summary": "Barren basaltic lava slopes at ~2,500 m; long-duration isolated Mars habitat missions funded by NASA's Human Research Program (2013-2018). Same 0.5 deg cell as Mauna Kea test site.",
  "known_analog": "HI-SEAS habitat, Mauna Loa (Hawai'i)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 302.0,
-  "airport_km": 261.0
+  "airport_km": 261.0,
+  "continent": 5.0
  },
  "drilldown": {},
  "best_for": [],

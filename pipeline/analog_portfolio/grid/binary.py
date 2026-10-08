@@ -58,6 +58,8 @@ def write_grid(path_stem: Path, body: str, layout: str, columns: list[dict], moc
             "nodata": NODATA[c["dtype"]], "units": c.get("units", ""), "stats": stats,
             "source": c.get("source", ""),
         })
+        if c.get("codes"):
+            arrays[-1]["codes"] = {str(k): v for k, v in c["codes"].items()}
     manifest = {
         "contract_version": CONTRACT_VERSION, "body": body, "mock": mock,
         "grid": {"resolution_deg": 0.5, "ncols": 720, "nrows": 360, "lon_centre_first": -179.75,
