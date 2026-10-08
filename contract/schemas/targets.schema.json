@@ -624,6 +624,21 @@
           "type": "null"
         }
       ]
+    },
+    "scoring_constants": {
+      "type": "object",
+      "description": "Full-precision Earth constants for the browser rescorer (earth_clip P0.5/P99.5, F1/F2 range_norm P1/P99, gate inputs); contract v1.2",
+      "properties": {
+        "earth_clip": {
+          "type": "object"
+        },
+        "range_norm": {
+          "type": "object"
+        },
+        "gates": {
+          "type": "object"
+        }
+      }
     }
   },
   "additionalProperties": false,

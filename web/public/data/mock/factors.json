@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.2",
+ "contract_version": "1.2.0",
  "grid": {
   "resolution_deg": 0.5,
   "ncols": 720,
@@ -29,7 +29,7 @@
    "tier": "core",
    "units": "K",
    "feature": "ts_mean_k",
-   "normalization": "ratio",
+   "normalization": "range_normalised",
    "direction": "match",
    "earth_clip": true,
    "layers": {
@@ -38,7 +38,11 @@
     "mars": "Mars Climate Database v6.2 tsurf, mean over Ls x local time"
    },
    "ui_label": "Average ground temperature",
-   "ui_copy": "The average temperature of the ground over a full day and year. Cold limits how batteries, rovers and people work, and it controls whether water stays frozen. The Moon's shadowed polar craters are far colder than anywhere on Earth, so we match as closely as Earth allows and show what's left over."
+   "ui_copy": "The average temperature of the ground over a full day and year. Cold limits how batteries, rovers and people work, and it controls whether water stays frozen. The Moon's shadowed polar craters are far colder than anywhere on Earth, so we match as closely as Earth allows and show what's left over.",
+   "params": {
+    "range": "Earth land P1..P99 (cos(lat) area-weighted)",
+    "formula": "s = max(0, 1 - |x - t*| / (P99 - P1)), t* = target clipped to Earth P0.5..P99.5; gap = |t - t*| on the unclipped target"
+   }
   },
   {
    "id": "F2",
@@ -46,7 +50,7 @@
    "tier": "core",
    "units": "K",
    "feature": "dt_k",
-   "normalization": "ratio",
+   "normalization": "range_normalised",
    "direction": "match",
    "earth_clip": true,
    "layers": {
@@ -55,7 +59,11 @@
     "mars": "MCD tsurf max - min over local time"
    },
    "ui_label": "Day–night temperature swing",
-   "ui_copy": "How much the ground heats up and cools down between day and night. Big swings stress materials, seals and electronics. The Moon's equator swings by roughly 300 °C, which no place on Earth comes close to. Mars swings less, and some Earth deserts get closer to it."
+   "ui_copy": "How much the ground heats up and cools down between day and night. Big swings stress materials, seals and electronics. The Moon's equator swings by roughly 300 °C, which no place on Earth comes close to. Mars swings less, and some Earth deserts get closer to it.",
+   "params": {
+    "range": "Earth land P1..P99 (cos(lat) area-weighted)",
+    "formula": "s = max(0, 1 - |x - t*| / (P99 - P1)), t* = target clipped to Earth P0.5..P99.5; gap = |t - t*| on the unclipped target"
+   }
   },
   {
    "id": "F3",
@@ -100,7 +108,8 @@
    },
    "note": "Slope baseline is recorded per body in provenance.json.",
    "ui_label": "Flat, landable ground",
-   "ui_copy": "The share of the area flat enough for a lander to set down safely. NASA's lunar lander requirement is a tilt of 8° or less, with 5° as the goal. Steep, broken ground is risky for landers, rovers and walking astronauts."
+   "ui_copy": "The share of the area flat enough for a lander to set down safely. NASA's lunar lander requirement is a tilt of 8° or less, with 5° as the goal. Steep, broken ground is risky for landers, rovers and walking astronauts.",
+   "notes": "Known limitation (resolution mismatch): Earth slope comes from Copernicus GLO-90 read at overview level 4 (~360 m posting at the equator), Moon polar targets from LOLA 240 m, Mars from MOLA MEGDR (~463 m). Coarser postings smooth slopes, so Earth cells look flatter than they would at the Moon's 240 m baseline; F4 similarity for Moon targets is biased toward Earth cells looking landable. Not corrected (documented only)."
   },
   {
    "id": "F5",

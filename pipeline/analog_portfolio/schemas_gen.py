@@ -39,14 +39,21 @@ def nullable(s: dict) -> dict:
     return {"anyOf": [s, {"type": "null"}]}
 
 
-GRID = obj({
+GRID = {"anyOf": [obj({
     "resolution_deg": {"const": 0.5},
     "ncols": {"const": 720},
     "nrows": {"const": 360},
     "lon_centre_first": {"const": -179.75},
     "lat_centre_first": {"const": 89.75},
     "row_order": {"const": "north-to-south"},
-})
+}), obj({
+    "resolution_deg": {"const": 1.0},
+    "ncols": {"const": 360},
+    "nrows": {"const": 180},
+    "lon_centre_first": {"const": -179.5},
+    "lat_centre_first": {"const": 89.5},
+    "row_order": {"const": "north-to-south"},
+}, description="1 deg global grid for Moon/Mars (contract v1.2): cell index = row*360 + col")]}
 
 ARRAY = obj({
     "name": {"type": "string", "pattern": "^[a-z0-9_]+$"},
@@ -65,6 +72,7 @@ ARRAY = obj({
     "source": {"type": "string"},
     "codes": {"type": "object", "additionalProperties": {"type": "string"},
               "description": "Categorical code table (raw value -> label), e.g. continent"},
+    "codes_note": {"type": "string", "description": "How the codes were assigned (e.g. Russia split at 60E)"},
 }, required=["name", "factor", "dtype", "byte_offset", "length", "scale", "add_offset", "nodata", "units"])
 
 SCHEMAS: dict[str, dict] = {}
@@ -81,7 +89,10 @@ SCHEMAS["grid_manifest"] = obj({
     "byte_order": {"const": "little"},
     "arrays": {"type": "array", "items": ARRAY, "minItems": 1},
     "generated_at": {"type": "string"},
-}, title="Grid manifest (earth_features.json, moon_grid.json, mars_grid.json)")
+    "subset": {"type": "string", "description": "Which cells a sparse grid holds, e.g. Moon polar |lat| >= 60 deg"},
+    "companions": {"type": "array", "items": {"type": "string"}, "description": "Other manifests for the same body"},
+}, required=["contract_version", "body", "mock", "grid", "layout", "n_cells", "binary", "byte_order", "arrays", "generated_at"],
+   title="Grid manifest (earth_features.json, moon_grid.json, mars_grid.json)")
 
 FEATURE_VAL = obj({
     "value": nullable({"type": "number"}),
@@ -140,6 +151,10 @@ SCHEMAS["targets"] = obj({
         "card": {"type": "object", "description": "Display-only attributes, never scored (illumination %, Earth visibility %, gravity, dose)"},
     }, required=["id", "name", "body", "role", "anchor", "sample_radius_km", "values"])},
     "earth_reference": nullable(EARTH_REF),
+    "scoring_constants": {"type": "object", "description": "Full-precision Earth constants for the browser rescorer "
+                          "(earth_clip P0.5/P99.5, F1/F2 range_norm P1/P99, gate inputs); contract v1.2",
+                          "properties": {"earth_clip": {"type": "object"}, "range_norm": {"type": "object"},
+                                         "gates": {"type": "object"}}},
 }, required=["targets"], title="targets.json (Researcher input superset; shipped file adds features)")
 
 FILTER = obj({"id": ID, "rule": {"type": "string"}, "reason": {"type": "string"},
@@ -169,6 +184,7 @@ SCHEMAS["profiles"] = obj({
                              "below_min": {"type": "string"}, "target_null": {"type": "string"}},
                             required=["min_active_weight_frac"]),
         "ties": {"type": "object"},
+        "candidate_gates": {"type": "object", "description": "Body-level portfolio-candidate gates (contract v1.2)"},
     }, required=["theta", "nms_radius_km", "portfolio_max_sites", "variants", "monte_carlo"]),
     "global_hard_filters": {"type": "array", "items": FILTER},
     "profiles": {"type": "array", "minItems": 1, "items": obj({
@@ -241,7 +257,13 @@ SCHEMAS["validation"] = obj({
     "source": {"type": "string", "description": "Input CSV (docs/validation.csv)"},
     "summary": obj({"n_known": {"type": "integer"}, "n_negative": {"type": "integer"},
                     "n_evaluations": {"type": "integer"},
-                    "pct_top5": NUM01, "pct_top1": NUM01, "rank_auc": nullable(NUM01)}),
+                    "pct_top5": NUM01, "pct_top1": NUM01, "rank_auc": nullable(NUM01),
+                    "n_scored": {"type": "integer", "description": "Positive evaluations that passed every filter and the gate"},
+                    **{k: obj({"sites": {"type": "array", "items": {"type": "string"}}, "n_evaluations": {"type": "integer"}},
+                              required=["sites", "n_evaluations"])
+                       for k in ("gate_excluded", "land_filter_excluded", "hard_filter_excluded")},
+                    "denominators_note": {"type": "string"}},
+                   required=["n_known", "n_negative", "n_evaluations", "pct_top5", "pct_top1", "rank_auc"]),
     "sites": {"type": "array", "items": obj({
         # --- columns of docs/validation.csv (Researcher) ---
         "name": {"type": "string"}, "lat": LAT, "lon": LON,
@@ -252,13 +274,21 @@ SCHEMAS["validation"] = obj({
         # --- engine results ---
         "kind": {"enum": ["positive", "negative"], "description": "negative iff body_analog == 'none'"},
         "cell_id": {"type": "integer", "minimum": 0, "maximum": 259199},
+        "eval_cell_id": {"type": "integer", "minimum": 0, "maximum": 259199,
+                         "description": "Cell actually scored: the site's own cell, or the nearest >= 50% land cell within 1 cell"},
+        "snapped": {"type": "boolean"},
+        "snap_km": nullable({"type": "number", "minimum": 0, "description": "Great-circle km from the site to the snapped cell centre"}),
         "results": {"type": "array", "items": obj({
             "target_id": TARGET_ID, "profile_id": PROFILE_ID,
             "percentile": {"type": "number", "minimum": 0, "maximum": 100},
             "in_top5": {"type": "boolean"}, "in_top1": {"type": "boolean"},
-        })},
+            "status": {"enum": ["scored", "gate_excluded", "land_filter_excluded", "hard_filter_excluded"],
+                       "description": "scored = passed land/built-up, profile hard filters and the body gate; excluded "
+                                      "evaluations stay in the denominators as misses"},
+        }, required=["target_id", "profile_id", "percentile", "in_top5", "in_top1"])},
     }, required=["name", "lat", "lon", "body_analog", "mission_purposes", "why", "citation_url", "kind", "results"])},
     "new_candidates": {"type": "array", "items": SITE_REF},
+    "method": {"type": "string", "description": "Validation method notes (snapping, percentiles, gates)"},
 }, required=["contract_version", "summary", "sites"], title="validation.json")
 
 SCHEMAS["site"] = obj({
@@ -301,6 +331,10 @@ SCHEMAS["gaps"] = obj({
     "generated": {"type": "string"},
     "contract_version": VERSION, "mock": MOCK,
     "tiers": obj({"never_on_earth": TIER, "beyond_earth_range": TIER, "coverable": TIER}),
+    "caveats": {"type": "array", "items": obj({"id": {"type": "string", "pattern": "^[a-z0-9_]+$"},
+                                                 "factors": {"type": "array", "items": FACTOR_ID},
+                                                 "text": {"type": "string"}}),
+                "description": "Pipeline caveats shown with the Fidelity Gap panel (known limitations)"},
     "facilities": {"type": "object", "propertyNames": {"pattern": "^[a-z0-9_]+$"}, "additionalProperties": obj({
         "name": {"type": "string"}, "type": {"type": "string"}, "operator": {"type": "string"},
         "location": {"type": "string"}, "provides": {"type": "string"}, "url": URL, "url_alt": URL,

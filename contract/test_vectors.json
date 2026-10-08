@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.2",
+ "contract_version": "1.2.0",
  "tolerance": 1e-09,
  "note": "Known-answer vectors shared by pytest (pipeline/tests) and vitest (web/src/scoring). Owner: Code Optimizer. v1.1: weighted_quantile / weighted_pct_rank (cos(lat) area weighting) and geometric_mean_dropped added.",
  "ratio_sim": [
@@ -416,6 +416,56 @@
    "floor": 0.01,
    "expected": 0.6840761498584497,
    "note": "F3 has no target value: dropped, remaining weights renormalised"
+  }
+ ],
+ "range_sim": [
+  {
+   "x": 290.0,
+   "t_star": 217.47,
+   "p01": 219.0,
+   "p99": 303.0,
+   "expected": 0.13654761904761903,
+   "note": "Lima-like cell vs Moon target clipped to Earth P0.5"
+  },
+  {
+   "x": 220.0,
+   "t_star": 217.47,
+   "p01": 219.0,
+   "p99": 303.0,
+   "expected": 0.9698809523809524,
+   "note": "Antarctic plateau vs clipped Moon target"
+  },
+  {
+   "x": 217.47,
+   "t_star": 217.47,
+   "p01": 219.0,
+   "p99": 303.0,
+   "expected": 1.0,
+   "note": "identity"
+  },
+  {
+   "x": 12.0,
+   "t_star": 27.3,
+   "p01": 1.5,
+   "p99": 26.5,
+   "expected": 0.388,
+   "note": "Earth median swing vs clipped Moon swing"
+  },
+  {
+   "x": 400.0,
+   "t_star": 217.47,
+   "p01": 219.0,
+   "p99": 303.0,
+   "expected": 0.0,
+   "note": "floored at 0"
+  },
+  {
+   "x": 5.0,
+   "t_star": 5.0,
+   "p01": 3.0,
+   "p99": 3.0,
+   "expected": 1.0,
+   "note": "degenerate span"
   }
  ]
 }
