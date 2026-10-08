@@ -92,6 +92,22 @@ FEATURE_VAL = obj({
 LIT = obj({"value": LIT_VALUE, "unit": {"type": "string"}, "citation_url": nullable(URL), "note": {"type": "string"}},
           required=["value", "unit", "citation_url"])
 
+EXTREME = obj({"value": {"type": "number"}, "cell_id": {"type": "integer", "minimum": 0, "maximum": 259199},
+               "lat": LAT, "lon": LON}, required=["value", "cell_id", "lat", "lon"])
+EARTH_STAT = obj({"units": {"type": "string"}, "min": EXTREME, "max": EXTREME,
+                  "p0_5": {"type": "number"}, "p50": {"type": "number"}, "p99_5": {"type": "number"}},
+                 required=["units", "min", "max", "p0_5", "p99_5"])
+EARTH_REF = obj({
+    "label": {"type": "string", "description": "UI source label, e.g. 'From our 0.5 deg Earth grid (NASA POWER ...)'"},
+    "source": {"type": "string"}, "grid": {"type": "string"},
+    "area_weighting": {"const": "cos_lat"},
+    "n_land_cells": {"type": "integer", "minimum": 0},
+    "land_area_km2": {"type": "number", "minimum": 0},
+    "stats": {"type": "object", "properties": {"ts_mean_k": EARTH_STAT, "dt_k": EARTH_STAT},
+              "additionalProperties": EARTH_STAT, "required": ["ts_mean_k", "dt_k"]},
+}, required=["label", "source", "area_weighting", "n_land_cells", "stats"],
+   description="Earth land extremes from our own grid for the gap panel (coldest 0.5 deg land-cell mean surface temperature, largest diurnal swing) and the clip quantiles")
+
 SCHEMAS["targets"] = obj({
     "_schema": {"type": "string"},
     "version": {"type": "string"},
@@ -104,6 +120,8 @@ SCHEMAS["targets"] = obj({
         # --- Researcher fields (pipeline/inputs/targets.json) ---
         "id": TARGET_ID,
         "name": {"type": "string"},
+        "short_name": {"type": "string", "description": "UI context-pill name (contract/target_priors.json)"},
+        "description": {"type": "string", "description": "Fact-checked one-line UI meta (spec v0.3 TARGET_META)"},
         "body": TARGET_BODY,
         "role": {"type": "string"},
         "anchor": obj({"lat": LAT, "lon": LON, "lon_convention": {"const": "east-positive, -180..180"},
@@ -119,23 +137,45 @@ SCHEMAS["targets"] = obj({
         "features": {"type": "object", "propertyNames": FACTOR_ID, "additionalProperties": FEATURE_VAL},
         "card": {"type": "object", "description": "Display-only attributes, never scored (illumination %, Earth visibility %, gravity, dose)"},
     }, required=["id", "name", "body", "role", "anchor", "sample_radius_km", "values"])},
+    "earth_reference": nullable(EARTH_REF),
 }, required=["targets"], title="targets.json (Researcher input superset; shipped file adds features)")
+
+FILTER = obj({"id": ID, "rule": {"type": "string"}, "reason": {"type": "string"},
+              "ui_short": {"type": "string", "description": "Legend fragment, e.g. 'mostly water'"},
+              "ui_tooltip": {"type": "string", "description": "Tooltip text after 'Filtered out: '"}},
+             required=["id", "rule", "reason"])
+VARIANT_ID = {"enum": ["best_match", "easiest_to_reach", "one_continent"]}
 
 SCHEMAS["profiles"] = obj({
     "contract_version": VERSION,
     "status": {"type": "string"},
-    "defaults": {"type": "object"},
-    "global_hard_filters": {"type": "array", "items": obj({"id": ID, "rule": {"type": "string"}, "reason": {"type": "string"}})},
+    "defaults": obj({
+        "theta": NUM01, "nms_radius_km": {"type": "number"}, "candidates_top_n_per_factor": {"type": "integer"},
+        "candidate_min_score": {"type": "string"}, "portfolio_max_sites": {"type": "integer"},
+        "variants": {"type": "array", "minItems": 3, "maxItems": 3, "items": obj({
+            "id": VARIANT_ID, "display_name": {"type": "string"}, "pool_filter": nullable({"type": "string"}),
+            "help": {"type": "string"}, "unavailable_reason": {"type": "string"}, "source": {"type": "string"}},
+            required=["id", "display_name", "pool_filter"])},
+        "monte_carlo": obj({"draws": {"type": "integer", "minimum": 1}, "dirichlet_alpha_scale": {"type": "number"},
+                            "robust_top_frac": NUM01, "robust_min_freq": NUM01, "area_weighting": {"const": "cos_lat"},
+                            "rule": {"type": "string"}, "seed": {"type": "integer"}},
+                           required=["draws", "dirichlet_alpha_scale", "robust_top_frac", "robust_min_freq", "seed"]),
+        "secondary_factors": {"type": "array", "items": FACTOR_ID},
+        "percentiles": {"type": "string"}, "nms_distance": {"type": "string"},
+    }, required=["theta", "nms_radius_km", "portfolio_max_sites", "variants", "monte_carlo"]),
+    "global_hard_filters": {"type": "array", "items": FILTER},
     "profiles": {"type": "array", "minItems": 1, "items": obj({
         "id": PROFILE_ID, "code": {"type": "string", "pattern": "^P[0-9]+$"}, "name": {"type": "string"},
+        "display_name": {"type": "string", "description": "UI purpose name (spec v0.3 PURPOSE_UI)"},
+        "display_short": {"type": "string"},
         "bodies": {"type": "array", "items": TARGET_BODY, "minItems": 1},
         "disabled_for": {"type": "object"},
         "weights": {"type": "object", "propertyNames": {"pattern": "^F([1-9]|10)$"},
                     "additionalProperties": {"type": "number", "minimum": 0}, "minProperties": 10, "maxProperties": 10},
         "theta": NUM01, "nms_radius_km": {"type": "number", "exclusiveMinimum": 0},
-        "hard_filters": {"type": "array", "items": obj({"id": ID, "rule": {"type": "string"}, "reason": {"type": "string"}})},
+        "hard_filters": {"type": "array", "items": FILTER},
         "campaigns": {"type": "array", "items": {"type": "string"}},
-    }, required=["id", "code", "name", "bodies", "weights", "theta", "nms_radius_km", "hard_filters"])},
+    }, required=["id", "code", "name", "display_name", "bodies", "weights", "theta", "nms_radius_km", "hard_filters"])},
 }, required=["contract_version", "defaults", "global_hard_filters", "profiles"], title="profiles.json")
 
 SCORES = {"type": "object", "propertyNames": FACTOR_ID, "additionalProperties": nullable(NUM01)}
@@ -146,9 +186,12 @@ SITE_REF = obj({
     "factor_scores": SCORES,
     "covers": {"type": "array", "items": FACTOR_ID},
     "gaps": {"type": "object", "propertyNames": FACTOR_ID, "additionalProperties": {"type": "number", "minimum": 0}},
-    "robustness": obj({"median_rank": {"type": "number"}, "topk_freq": NUM01, "robust": {"type": "boolean"}}),
-    "logistics": obj({"travel_time_min": nullable({"type": "number"}), "airport_km": nullable({"type": "number"}),
-                      "nearest_airport": nullable({"type": "string"}), "cost": NUM01}),
+    "robustness": nullable(obj({"top5_freq": NUM01, "robust": {"type": "boolean"},
+                                "median_percentile": {"type": "number", "minimum": 0, "maximum": 100}},
+                               required=["top5_freq", "robust"],
+                               description="Share of MC draws in which the cell is in the top 5% of land (area-weighted); robust = top5_freq >= 0.8")),
+    "logistics": obj({"travel_time_min": nullable({"type": "number"}), "within_6h": nullable({"type": "boolean"}),
+                      "continent": nullable({"type": "string"}), "airport_km": nullable({"type": "number"})}),
     "known_analog": nullable({"type": "string"}),
     "candidate": {"type": "boolean", "description": "true = new candidate (>300 km from any known analog), needs field confirmation"},
 }, required=["site_id", "name", "lat", "lon", "cell_id", "score", "factor_scores", "covers"])
@@ -160,16 +203,26 @@ SCHEMAS["portfolio"] = obj({
     "theta": NUM01,
     "universe": {"type": "array", "items": FACTOR_ID},
     "uncoverable": {"type": "array", "items": FACTOR_ID},
+    "dropped_factors": {"type": "array", "items": FACTOR_ID,
+                        "description": "Weighted core factors with no target value (e.g. F3 for polar Moon targets); weights renormalised"},
     "variants": {"type": "array", "minItems": 1, "items": obj({
-        "id": {"enum": ["fidelity", "balanced", "accessible", "single-continent"]},
-        "lambda": {"type": "number", "minimum": 0},
+        "id": VARIANT_ID,
+        "available": {"type": "boolean"},
+        "unavailable_reason": nullable({"type": "string"}),
+        "continent": nullable({"type": "string"}),
+        "pool_size": {"type": "integer", "minimum": 0},
         "sites": {"type": "array", "items": SITE_REF, "maxItems": 5},
+        "covers": {"type": "array", "items": FACTOR_ID},
         "coverage": NUM01,
-    }, required=["id", "lambda", "sites", "coverage"])},
+    }, required=["id", "available", "sites", "coverage"])},
     "top_cells": {"type": "array", "items": SITE_REF, "description": "Top-ranked candidate pool after NMS (for map pins)"},
     "score_histogram": obj({"bins": {"type": "array", "items": {"type": "number"}},
                             "counts": {"type": "array", "items": {"type": "integer"}}}),
-    "monte_carlo": obj({"draws": {"type": "integer"}, "top_k": {"type": "integer"}, "seed": {"type": "integer"}}),
+    "monte_carlo": obj({"draws": {"type": "integer"}, "robust_top_frac": NUM01, "robust_min_freq": NUM01,
+                        "seed": {"type": "integer"}, "area_weighting": {"const": "cos_lat"}},
+                       required=["draws", "robust_top_frac", "robust_min_freq", "seed"]),
+    "earth_thresholds": obj({"top5": NUM01, "top1": NUM01, "median": NUM01},
+                            description="Area-weighted land quantiles of S (default weights): P95, P99, P50"),
 }, required=["contract_version", "target_id", "profile_id", "weights", "theta", "universe", "uncoverable", "variants"],
    title="portfolios/<target_id>_<profile_id>.json")
 
@@ -208,7 +261,9 @@ SCHEMAS["site"] = obj({
     "known_analog": nullable({"type": "string"}),
     "earth_features": {"type": "object", "additionalProperties": nullable({"type": "number"})},
     "drilldown": {"type": "object", "description": "Copernicus 90 m window stats, Macrostrat units, SoilGrids, airport"},
-    "best_for": {"type": "array", "items": obj({"target_id": TARGET_ID, "profile_id": PROFILE_ID, "score": NUM01, "rank": {"type": "integer"}})},
+    "best_for": {"type": "array", "items": obj({"target_id": TARGET_ID, "profile_id": PROFILE_ID, "score": NUM01, "rank": {"type": "integer"},
+                                                "percentile": {"type": "number", "minimum": 0, "maximum": 100},
+                                                "top5_freq": nullable(NUM01), "robust": {"type": "boolean"}})},
     "citations": {"type": "array", "items": {"type": "string"}},
     "attribution": {"type": "array", "items": {"type": "string"}},
 }, required=["contract_version", "site_id", "name", "lat", "lon", "cell_id", "summary"], title="sites/<site_id>.json")

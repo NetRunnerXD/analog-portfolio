@@ -254,25 +254,34 @@
             }
           },
           "robustness": {
-            "type": "object",
-            "properties": {
-              "median_rank": {
-                "type": "number"
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "top5_freq": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1
+                  },
+                  "robust": {
+                    "type": "boolean"
+                  },
+                  "median_percentile": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 100
+                  }
+                },
+                "additionalProperties": false,
+                "required": [
+                  "top5_freq",
+                  "robust"
+                ],
+                "description": "Share of MC draws in which the cell is in the top 5% of land (area-weighted); robust = top5_freq >= 0.8"
               },
-              "topk_freq": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              },
-              "robust": {
-                "type": "boolean"
+              {
+                "type": "null"
               }
-            },
-            "additionalProperties": false,
-            "required": [
-              "median_rank",
-              "topk_freq",
-              "robust"
             ]
           },
           "logistics": {
@@ -288,17 +297,17 @@
                   }
                 ]
               },
-              "airport_km": {
+              "within_6h": {
                 "anyOf": [
                   {
-                    "type": "number"
+                    "type": "boolean"
                   },
                   {
                     "type": "null"
                   }
                 ]
               },
-              "nearest_airport": {
+              "continent": {
                 "anyOf": [
                   {
                     "type": "string"
@@ -308,18 +317,23 @@
                   }
                 ]
               },
-              "cost": {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
+              "airport_km": {
+                "anyOf": [
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ]
               }
             },
             "additionalProperties": false,
             "required": [
               "travel_time_min",
-              "airport_km",
-              "nearest_airport",
-              "cost"
+              "within_6h",
+              "continent",
+              "airport_km"
             ]
           },
           "known_analog": {

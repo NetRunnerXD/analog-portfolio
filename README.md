@@ -15,7 +15,7 @@ NASA Space Apps Challenge 2026 · *Identify Earth Locations that Analog the Perm
 The challenge asks teams to identify and characterize Earth locations that analog NASA's permanent Moon base sites (Artemis south-polar regions, Shackleton Connecting Ridge for Moon Base I) and Mars landing/base sites. Most tools rank "the most Moon-like place". That framing is wrong: fidelity is factor-specific, and no Earth site matches everything.
 
 **Analog Portfolio** does three things:
-1. **Portfolio optimizer.** Pick a target and a mission purpose; a greedy weighted set cover returns the 2–5 Earth sites that *together* cover every requirement Earth can meet (highest-fidelity, balanced and most-accessible variants).
+1. **Portfolio optimizer.** Pick a target and a mission purpose; a greedy weighted set cover returns the 2–5 Earth sites that *together* cover every requirement Earth can meet (Best match, Easiest to reach: every site ≤ 6 h from a city of 50k+, and One continent).
 2. **Fidelity Gap report.** States what no Earth site can give (1/6 g or 3/8 g, vacuum, radiation 100–200× Earth's, ~40 K PSR floors, the lunar ~300 K diurnal swing) and the facility type that fills each gap.
 3. **Blind rediscovery validation.** Weights are pre-registered in git *before* scoring ([`docs/DATA_CONTRACT.md`](docs/DATA_CONTRACT.md)); we report how many of 21 famous analogs (Haughton, Atacama, Dry Valleys, Río Tinto, Mauna Kea, Ries, Sudbury, …) land in Earth's top 5% / 1%, versus 11 negative controls, and surface high-scoring unused regions as **new candidate analogs**.
 
@@ -33,7 +33,7 @@ Full spec: [`docs/DATA_CONTRACT.md`](docs/DATA_CONTRACT.md) (pre-registration) a
 - **Factors F1–F13:** mean surface temperature, diurnal ΔT, regolith thermophysics (thermal-inertia class), slope/landability, local relief, lithology, aridity, barrenness, ground ice / cold traps, illumination regime (core); atmospheric shielding, surface UV (capped tie-breakers); geomorphic flags.
 - **Normalization:** ESI-style ratio similarity, bounded fractions, Gaussian kernels, within-body ordinal classes, categorical similarity matrix; Earth-achievable clip with the residual gap shown.
 - **Aggregation:** hard filters → weighted geometric mean of F1–F10 → small secondary nudge from F11–F13. Logistics is a separate cost axis.
-- **Robustness:** 1,000-draw Dirichlet Monte Carlo on the weights; "robust" badge for sites in the top-k ≥ 80% of draws.
+- **Robustness:** 1,000-draw Dirichlet Monte Carlo on the weights; "robust" badge for sites whose cell stays in the top 5% of Earth land (cos(lat) area-weighted) in ≥ 80% of draws.
 - **Portfolio:** greedy weighted set cover with θ = 0.7 coverage threshold and 300 km non-max suppression.
 
 ## 4. Validation results

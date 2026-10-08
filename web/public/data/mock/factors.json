@@ -1,5 +1,5 @@
 {
- "contract_version": "1.0.0",
+ "contract_version": "1.1.0",
  "grid": {
   "resolution_deg": 0.5,
   "ncols": 720,
@@ -17,7 +17,10 @@
   "lon_centre_first": -179.75,
   "lat_centre_first": 89.75,
   "row_order": "north-to-south (row 0 = 89.75)",
-  "cell_id": "row * 720 + col, where col = floor((lon + 180) / 0.5), row = floor((90 - lat) / 0.5)"
+  "cell_id": "row * 720 + col, where col = floor((lon + 180) / 0.5), row = floor((90 - lat) / 0.5)",
+  "cell_size": "0.5 deg is ~55.6 km north-south but ~55.6*cos(lat) km east-west (about 56 x 12 km at 77.5 S); cells are not squares away from the equator",
+  "area_weighting": "cos(lat) of the cell centre; used for every land fraction, Earth percentile/median, P0.5/P99.5 clip, top-x% threshold and validation percentile",
+  "distance": "great-circle (haversine) with body radius (Earth 6371.0088 km, Moon 1737.4 km, Mars 3396.19 km)"
  },
  "factors": [
   {
@@ -278,9 +281,10 @@
    "airport_km"
   ],
   "layers": {
-   "earth": "MAP travel time to cities 2015 (CC BY, verify) + Natural Earth airports (public domain)"
+   "earth": "MAP travel time to the nearest city of 50k+ (Nelson et al. 2019, 2015 baseline; CC BY 4.0, verify) + Natural Earth airports (public domain, card only)"
   },
-  "cost_rule": "cost_j = 0.5 * min(1, travel_time_min / 1440) + 0.5 * min(1, airport_km / 1000)"
+  "easiest_to_reach_rule": "hard filter on the candidate pool before set cover: travel_time_min <= 360 (6 h); no cost weighting",
+  "display": "site card access line from travel_time_min ('< 1 h', '~{h} h' up to 48 h, then '~{d} days', '> 2 days')"
  },
  "not_scored": [
   "gravity",
@@ -518,6 +522,7 @@
   "core": "S_core = prod(max(s_i, floor) ^ (w_i / sum(w))) over F1-F10 with w_i > 0",
   "secondary": "S_sec = arithmetic mean of F11-F13",
   "final": "S = S_core * (0.9 + 0.1 * S_sec)",
-  "earth_clip": "t* = clip(t, Earth P0.5, Earth P99.5) over land cells; gap = |t - t*|"
+  "earth_clip": "t* = clip(t, Earth P0.5, Earth P99.5) over land cells (cos(lat) area-weighted quantiles); gap = |t - t*|",
+  "percentiles": "directional percentiles (F7, F11, F12) are cos(lat) area-weighted ranks among land cells"
  }
 }
