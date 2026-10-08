@@ -1,0 +1,1 @@
+Shipped precomputed assets (DATA_CONTRACT.md §5). `mock/` holds contract-shaped synthetic data for front-end development (`"mock": true`); real assets are exported here by `python -m analog_portfolio.export` in Phase B.

@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "analog-portfolio"
+version = "0.1.0"
+description = "Offline pipeline for Analog Portfolio: Earth analogs for Moon base and Mars sites (NASA Space Apps 2026)"
+readme = "../README.md"
+license = "Apache-2.0"
+requires-python = ">=3.11"
+dependencies = ["numpy>=1.26"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8", "jsonschema>=4.21"]
+# Heavy geospatial stack, only needed for real acquisition/extraction (not in CI)
+data = [
+  "rasterio>=1.4",
+  "xarray>=2024.1",
+  "rioxarray>=0.15",
+  "netCDF4>=1.6",
+  "scipy>=1.11",
+  "pystac-client>=0.7",
+  "planetary-computer>=1.0",
+  "requests>=2.31",
+  "ppigrf>=1.0",
+  "geopandas>=0.14",
+]
+
+[tool.setuptools.packages.find]
+include = ["analog_portfolio*"]
+
+[tool.setuptools.package-data]
+analog_portfolio = ["py.typed"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,4 @@
+# Minimal runtime + test deps (CI). Full geospatial stack: pip install -e ".[data]"
+numpy>=1.26
+jsonschema>=4.21
+pytest>=8

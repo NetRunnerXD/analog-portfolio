@@ -1,0 +1,680 @@
+{
+  "_schema": "Fidelity-gap lookup for the Analog Portfolio Fidelity Gap panel (plan.md §2.4). Top-level 'tiers' has three keys: 'never_on_earth' (condition does not occur at any natural Earth site; never scored, shown as a constant panel), 'beyond_earth_range' (Earth has the direction but not the magnitude; scored against the Earth-clipped target t*, residual shown), 'coverable' (Earth sites can match within range; normal set cover, optional lab augmentation). Each tier has 'description' and 'gaps' (list). Each gap: id (snake_case), label (UI text), factors (plan.md factor IDs F1–F13 it affects; 'not_scored' if it is outside the scored factors), values (moon/mars/earth with unit and source_urls; 'derived' notes our own arithmetic; null where not found), facility_types (generic), example_facilities (keys into top-level 'facilities'), handling (how the engine/UI treats it), citation_urls, optional note. 'facilities' maps id -> {name, type, operator, location, provides, url[, url_alt]}. Facility capability numbers are quoted from the linked page. Compiled 2026-10-08 IST by Researcher; on that date every non-DOI URL returned HTTP 200 to curl, and every DOI (doi.org / science.org) was confirmed to exist via the Crossref API (publishers often block automated fetches).",
+  "version": "1.0",
+  "generated": "2026-10-08T13:00+05:30",
+  "tiers": {
+    "never_on_earth": {
+      "description": "Conditions no natural Earth site provides. Not scored; shown with absolute numbers and the facility type that fills the gap.",
+      "gaps": [
+        {
+          "id": "partial_gravity",
+          "label": "Reduced gravity (1/6 g Moon, ~3/8 g Mars)",
+          "factors": [
+            "not_scored"
+          ],
+          "values": {
+            "moon": 1.62,
+            "mars": 3.73,
+            "earth": 9.82,
+            "unit": "m/s^2",
+            "source_urls": [
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+            ],
+            "derived": "Earth/Moon ≈ 6.1×, Earth/Mars ≈ 2.6×"
+          },
+          "facility_types": [
+            "parabolic_flight",
+            "drop_tower",
+            "drop_tower_partial_gravity",
+            "gravity_offload"
+          ],
+          "example_facilities": [
+            "novespace_air_zero_g",
+            "zarm_gravitower",
+            "zarm_drop_tower",
+            "nasa_grc_zero_g",
+            "nasa_jsc_argos"
+          ],
+          "handling": "Constant panel. Affects regolith mechanics, dust behaviour and EVA/mobility, which field analogs test only at 1 g.",
+          "citation_urls": [
+            "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+            "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+            "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+          ]
+        },
+        {
+          "id": "hard_vacuum",
+          "label": "Hard vacuum (Moon)",
+          "factors": [
+            "not_scored"
+          ],
+          "values": {
+            "moon": "3e-15 bar (night)",
+            "mars": "6.36 mb (see beyond_earth_range)",
+            "earth": "1014 mb",
+            "unit": "pressure",
+            "source_urls": [
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+            ]
+          },
+          "facility_types": [
+            "thermal_vacuum_chamber",
+            "cryo_vacuum_chamber"
+          ],
+          "example_facilities": [
+            "nasa_grc_armstrong_sec",
+            "nasa_jsc_chamber_a"
+          ],
+          "handling": "Constant panel; F11 enters only as a capped tie-breaker.",
+          "citation_urls": [
+            "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+            "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+          ]
+        },
+        {
+          "id": "ionizing_radiation",
+          "label": "Ionizing radiation dose (100–200× Earth background)",
+          "factors": [
+            "F11"
+          ],
+          "values": {
+            "moon": 1369,
+            "mars": 640,
+            "earth": 6.6,
+            "unit": "µSv/day",
+            "source_urls": [
+              "https://www.science.org/doi/10.1126/sciadv.aaz1334",
+              "https://www.science.org/doi/10.1126/science.1244797",
+              "https://www.unscear.org/unscear/en/publications/2008_1.html"
+            ],
+            "derived": "Earth 2.4 mSv/yr ÷ 365.25 ≈ 6.6 µSv/day; Mars/Earth ≈ 97×, Moon/Earth ≈ 208×"
+          },
+          "facility_types": [
+            "heavy_ion_beam"
+          ],
+          "example_facilities": [
+            "bnl_nsrl"
+          ],
+          "handling": "F11 is log10 + directional within-Earth percentile × cap c (plan.md §2.4); absolute doses shown alongside.",
+          "citation_urls": [
+            "https://www.science.org/doi/10.1126/sciadv.aaz1334",
+            "https://www.science.org/doi/10.1126/science.1244797",
+            "https://www.unscear.org/unscear/en/publications/2008_1.html",
+            "https://doi.org/10.1002/2016JE005206"
+          ],
+          "note": "Moon value: Chang'E-4 LND dose equivalent (far side). Mars value: MSL RAD at Gale, 0.64 ± 0.12 mSv/day."
+        },
+        {
+          "id": "surface_uv",
+          "label": "Unfiltered solar UV (Mars ~10³× present Earth, DNA-weighted; Moon unshielded)",
+          "factors": [
+            "F12"
+          ],
+          "values": {
+            "mars": "~1e3 × present Earth (inferred)",
+            "unit": "relative DNA-weighted irradiance",
+            "source_urls": [
+              "https://ntrs.nasa.gov/citations/20040088828"
+            ],
+            "derived": "Inferred: Cockell et al. 2000 put present Mars ≈ early (Archean) Earth and present Earth almost 3 orders of magnitude below Archean"
+          },
+          "facility_types": [
+            "uv_solar_simulator",
+            "mars_environment_chamber"
+          ],
+          "example_facilities": [
+            "dlr_mars_uv_simulator",
+            "dlr_paslab"
+          ],
+          "handling": "F12 capped tie-breaker only.",
+          "citation_urls": [
+            "https://ntrs.nasa.gov/citations/20040088828"
+          ],
+          "note": "No citable lunar surface UV dose number was used; Earth peak UVI reports of 43 (Cabrol 2014) are disputed (~25 ± 5 realistic)."
+        },
+        {
+          "id": "lunar_dust_electrostatics",
+          "label": "Electrostatically charged, abrasive lunar dust",
+          "factors": [
+            "not_scored"
+          ],
+          "values": {
+            "moon": "abrasive and electrostatic (qualitative)",
+            "unit": "qualitative",
+            "source_urls": [
+              "https://www.nasa.gov/wp-content/uploads/2026/04/moon-base-architecture-users-guide.pdf"
+            ]
+          },
+          "facility_types": [
+            "dusty_plasma_chamber",
+            "regolith_simulant"
+          ],
+          "example_facilities": [
+            "cu_impact_dusty_plasma",
+            "exolith_lhs1"
+          ],
+          "handling": "Shown on Moon target cards; no Earth field site reproduces UV/plasma-driven dust charging.",
+          "citation_urls": [
+            "https://www.nasa.gov/wp-content/uploads/2026/04/moon-base-architecture-users-guide.pdf",
+            "https://impact.colorado.edu/dustyPlasmaLabs.html"
+          ]
+        },
+        {
+          "id": "mars_co2_atmosphere",
+          "label": "Thin CO₂ atmosphere (95.1% CO₂)",
+          "factors": [
+            "not_scored"
+          ],
+          "values": {
+            "mars": "95.1% CO2 by volume",
+            "earth": "78.08% N2, 20.95% O2",
+            "unit": "composition",
+            "source_urls": [
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+            ]
+          },
+          "facility_types": [
+            "mars_environment_chamber"
+          ],
+          "example_facilities": [
+            "aarhus_awts2",
+            "dlr_paslab"
+          ],
+          "handling": "Not scored; relevant to dust/aeolian behaviour, ISRU chemistry and instrument testing.",
+          "citation_urls": [
+            "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+          ]
+        }
+      ]
+    },
+    "beyond_earth_range": {
+      "description": "Earth varies in the right direction but cannot reach the target magnitude. Scored against t* = clip(t, Earth P0.5, Earth P99.5); the panel shows 'best Earth: X; target: Y; residual: Z'.",
+      "gaps": [
+        {
+          "id": "lunar_diurnal_swing",
+          "label": "Lunar day–night temperature swing (~300 K)",
+          "factors": [
+            "F2"
+          ],
+          "values": {
+            "moon": "95–390 K at equator (ΔT ≈ 298 K from Diviner max 392.3 / min 94.3 K)",
+            "mars": "184–242 K (Viking 1 air)",
+            "earth": "283–293 K mean diurnal (NSSDC); Earth's maximum surface amplitude: not found as a citable value",
+            "unit": "K",
+            "source_urls": [
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html",
+              "https://doi.org/10.1016/j.icarus.2016.08.012",
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+            ],
+            "derived": "Moon ΔT 298 K and Mars ΔT 58 K are our subtraction"
+          },
+          "facility_types": [
+            "thermal_vacuum_chamber"
+          ],
+          "example_facilities": [
+            "nasa_grc_armstrong_sec"
+          ],
+          "handling": "Score vs t*; show residual. Mars ΔT is probably reachable in deserts (Earth max not verified), so Mars targets may fall in 'coverable'.",
+          "citation_urls": [
+            "https://doi.org/10.1016/j.icarus.2016.08.012",
+            "https://nssdc.gsfc.nasa.gov/planetary/factsheet/moonfact.html"
+          ]
+        },
+        {
+          "id": "psr_cryogenic_cold",
+          "label": "Permanently shadowed cold traps (<110 K; ~38 K at LCROSS site)",
+          "factors": [
+            "F1",
+            "F9"
+          ],
+          "values": {
+            "moon": "<110 K PSRs; ~38 K LCROSS site",
+            "unit": "K",
+            "source_urls": [
+              "https://www.hou.usra.edu/meetings/Artemis_III_2023/pdf/2040.pdf",
+              "https://www.science.org/doi/10.1126/science.1187726"
+            ]
+          },
+          "facility_types": [
+            "cryo_vacuum_chamber"
+          ],
+          "example_facilities": [
+            "nasa_jsc_chamber_a"
+          ],
+          "handling": "F9 matches functionally (permafrost/ground ice) but F1 temperature cannot reach PSR values; residual shown.",
+          "citation_urls": [
+            "https://www.hou.usra.edu/meetings/Artemis_III_2023/pdf/2040.pdf",
+            "https://www.science.org/doi/10.1126/science.1187726"
+          ]
+        },
+        {
+          "id": "polar_ridge_cold",
+          "label": "South-polar ridge temperatures (~200 K in summer; colder in shadow)",
+          "factors": [
+            "F1"
+          ],
+          "values": {
+            "moon": "~200 K summer on Connecting Ridge; ridge crests generally >~120 K",
+            "unit": "K",
+            "source_urls": [
+              "https://www.hou.usra.edu/meetings/lunarsurface2020/pdf/5105.pdf",
+              "https://www.hou.usra.edu/meetings/Artemis_III_2023/pdf/2040.pdf"
+            ]
+          },
+          "facility_types": [
+            "thermal_vacuum_chamber",
+            "cryo_vacuum_chamber"
+          ],
+          "example_facilities": [
+            "nasa_grc_armstrong_sec",
+            "nasa_jsc_chamber_a"
+          ],
+          "handling": "Score vs t*; coldest Earth cells (Antarctic plateau) define t*.",
+          "citation_urls": [
+            "https://www.hou.usra.edu/meetings/lunarsurface2020/pdf/5105.pdf",
+            "https://www.hou.usra.edu/meetings/Artemis_III_2023/pdf/2040.pdf"
+          ],
+          "note": "No citable Earth minimum mean surface temperature was compiled here; it will come from the Earth layer (P0.5)."
+        },
+        {
+          "id": "mars_surface_pressure",
+          "label": "Mars surface pressure (~6 mb)",
+          "factors": [
+            "F11"
+          ],
+          "values": {
+            "mars": "6.36 mb mean (4.0–8.7 seasonal)",
+            "earth": "1014 mb",
+            "unit": "mb",
+            "source_urls": [
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html",
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/earthfact.html"
+            ],
+            "derived": "Earth/Mars ≈ 160×; cap c at 0.5 bar = 1 − (500−6.36)/(500+6.36) ≈ 0.025"
+          },
+          "facility_types": [
+            "mars_environment_chamber"
+          ],
+          "example_facilities": [
+            "aarhus_awts2",
+            "dlr_paslab"
+          ],
+          "handling": "log10 + directional percentile × cap (plan.md §2.4).",
+          "citation_urls": [
+            "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+          ]
+        },
+        {
+          "id": "lunar_polar_low_sun",
+          "label": "Near-horizon sun with long shadows and black sky (lunar south pole)",
+          "factors": [
+            "F10"
+          ],
+          "values": {
+            "moon": "best ridge points sunlit ~89–96% of the time with the Sun near the horizon",
+            "mars": "latitude-driven",
+            "unit": "fraction of time sunlit",
+            "source_urls": [
+              "https://elib.dlr.de/94240/",
+              "https://www.nasa.gov/wp-content/uploads/2026/04/moon-base-architecture-users-guide.pdf"
+            ]
+          },
+          "facility_types": [
+            "lighting_regolith_testbed"
+          ],
+          "example_facilities": [
+            "nasa_ames_lunar_lab",
+            "esa_dlr_luna"
+          ],
+          "handling": "Gaussian on sun elevation; high-latitude Earth summers give low sun but not airless contrast or year-round near-horizon geometry.",
+          "citation_urls": [
+            "https://www.nasa.gov/wp-content/uploads/2026/04/moon-base-architecture-users-guide.pdf",
+            "https://www.nasa.gov/centers-and-facilities/ames/the-lunar-lab-and-regolith-testbeds/"
+          ],
+          "note": "Partly coverable: Earth polar-day sites match low sun elevation seasonally."
+        }
+      ]
+    },
+    "coverable": {
+      "description": "Earth sites can match within range; handled by normal set cover. Lab facilities listed are optional augmentation.",
+      "gaps": [
+        {
+          "id": "slope_landability",
+          "label": "Lander-safe slopes (Moon ≤8°, goal ≤5°; Starship <5° at 10 m)",
+          "factors": [
+            "F4"
+          ],
+          "values": {
+            "moon": "≤8° threshold, ≤5° goal",
+            "mars": "<5° at 10 m (Starship study); <~10° (NASA 2015 HLS workshop)",
+            "unit": "degrees",
+            "source_urls": [
+              "https://ntrs.nasa.gov/api/citations/20200001606/downloads/20200001606.pdf",
+              "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf"
+            ]
+          },
+          "facility_types": [],
+          "example_facilities": [],
+          "handling": "Fraction of area below threshold at a recorded baseline.",
+          "citation_urls": [
+            "https://ntrs.nasa.gov/api/citations/20200001606/downloads/20200001606.pdf",
+            "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf"
+          ]
+        },
+        {
+          "id": "local_relief",
+          "label": "Local relief (ridges, massifs, crater rims)",
+          "factors": [
+            "F5"
+          ],
+          "values": {
+            "unit": "m",
+            "source_urls": []
+          },
+          "facility_types": [],
+          "example_facilities": [],
+          "handling": "Ratio similarity on relief, never absolute elevation.",
+          "citation_urls": [
+            "https://www.hou.usra.edu/meetings/lpsc2026/pdf/1901.pdf"
+          ]
+        },
+        {
+          "id": "lithology",
+          "label": "Basaltic (Mars, mare) and anorthositic (lunar highland) rock",
+          "factors": [
+            "F6"
+          ],
+          "values": {
+            "moon": "anorthositic highlands at south pole",
+            "mars": "basaltic plains; local sulfates/clays",
+            "unit": "category",
+            "source_urls": [
+              "https://ares.jsc.nasa.gov/projects/simulants/nu-lht.html"
+            ]
+          },
+          "facility_types": [
+            "regolith_simulant",
+            "regolith_hall"
+          ],
+          "example_facilities": [
+            "exolith_lhs1",
+            "exolith_mgs1",
+            "nasa_nu_lht",
+            "esa_dlr_luna"
+          ],
+          "handling": "Similarity matrix; anorthosite is rare on Earth (e.g. Stillwater), so lunar-highland lithology may be thin in the portfolio.",
+          "citation_urls": [
+            "https://ares.jsc.nasa.gov/projects/simulants/nu-lht.html"
+          ]
+        },
+        {
+          "id": "aridity_barrenness",
+          "label": "Hyper-arid, barren, lifeless surface",
+          "factors": [
+            "F7",
+            "F8"
+          ],
+          "values": {
+            "moon": "dry, lifeless",
+            "mars": "hyper-arid, lifeless",
+            "unit": "index / fraction",
+            "source_urls": []
+          },
+          "facility_types": [],
+          "example_facilities": [],
+          "handling": "Directional within-Earth percentile (aridity) and bounded fraction (barrenness).",
+          "citation_urls": [
+            "https://www.frontiersin.org/journals/astronomy-and-space-sciences/articles/10.3389/fspas.2021.810426/full"
+          ]
+        },
+        {
+          "id": "ground_ice",
+          "label": "Ground ice / permafrost",
+          "factors": [
+            "F9"
+          ],
+          "values": {
+            "moon": "5.6 ± 2.9 wt% water ice (LCROSS, Cabeus)",
+            "mars": "ice table 4.6 cm at Phoenix; SWIM depth bands 0–1, 1–5, >5 m",
+            "unit": "various",
+            "source_urls": [
+              "https://www.science.org/doi/10.1126/science.1186986",
+              "https://doi.org/10.1029/2009JE003417",
+              "https://iopscience.iop.org/article/10.3847/PSJ/ad9b24"
+            ]
+          },
+          "facility_types": [
+            "regolith_simulant"
+          ],
+          "example_facilities": [
+            "exolith_mgs1"
+          ],
+          "handling": "Bounded fraction / depth-band match; Dry Valleys and Arctic permafrost are functional analogs.",
+          "citation_urls": [
+            "https://www.lpi.usra.edu/meetings/polar2011/pdf/6051.pdf"
+          ]
+        },
+        {
+          "id": "regolith_thermophysics",
+          "label": "Regolith thermophysical class (dusty ↔ rocky)",
+          "factors": [
+            "F3"
+          ],
+          "values": {
+            "mars": "exclude TI < 100 SI for landing",
+            "unit": "ordinal class",
+            "source_urls": [
+              "https://www.hou.usra.edu/meetings/lpsc2021/pdf/2420.pdf"
+            ]
+          },
+          "facility_types": [
+            "regolith_simulant",
+            "regolith_hall"
+          ],
+          "example_facilities": [
+            "exolith_lhs1",
+            "exolith_mgs1",
+            "esa_dlr_luna"
+          ],
+          "handling": "Within-body percentile → 5 classes; Earth ATI is ordinal only (not TI units).",
+          "citation_urls": [
+            "https://doi.org/10.1029/JC082i018p02582"
+          ]
+        },
+        {
+          "id": "mars_mean_temperature",
+          "label": "Mars mean surface temperature (~214 K)",
+          "factors": [
+            "F1"
+          ],
+          "values": {
+            "mars": "~214 K",
+            "unit": "K",
+            "source_urls": [
+              "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+            ]
+          },
+          "facility_types": [
+            "cryo_vacuum_chamber",
+            "mars_environment_chamber"
+          ],
+          "example_facilities": [
+            "aarhus_awts2"
+          ],
+          "handling": "Polar/high-altitude Earth cells approach it; if Earth P0.5 > 214 K the residual is shown (moves to beyond_earth_range).",
+          "citation_urls": [
+            "https://nssdc.gsfc.nasa.gov/planetary/factsheet/marsfact.html"
+          ],
+          "note": "Earth-side extreme to be read from the F1 layer; not asserted here."
+        },
+        {
+          "id": "geomorphic_features",
+          "label": "Impact craters, lava tubes/caves, periglacial terrain",
+          "factors": [
+            "F13"
+          ],
+          "values": {
+            "moon": "craters, PSRs, massifs",
+            "mars": "craters, caves, debris-covered glaciers",
+            "unit": "binary flags",
+            "source_urls": []
+          },
+          "facility_types": [],
+          "example_facilities": [],
+          "handling": "Binary match from cited lists.",
+          "citation_urls": [
+            "https://www.nasa-braille.org/about-braille/the-field-site/lava-tubes",
+            "https://www.lpi.usra.edu/science/kring/epo_web/impact_cratering/World_Craters_web/northamericacraters/Haughton.html"
+          ]
+        }
+      ]
+    }
+  },
+  "facilities": {
+    "novespace_air_zero_g": {
+      "name": "Novespace Air Zero G (A310 parabolic flights)",
+      "type": "parabolic_flight",
+      "operator": "Novespace",
+      "location": "Bordeaux-Mérignac, France",
+      "provides": "A310 weightless flights (public Air Zero G flights consist of 15 parabolas) plus scientific research flight campaigns; Novespace is a CNES subsidiary. Partial-gravity (Moon/Mars) parabola availability not confirmed on the linked page.",
+      "url": "https://www.novespace.com/en/",
+      "url_alt": "https://www.airzerog.com/"
+    },
+    "zarm_drop_tower": {
+      "name": "ZARM Bremen Drop Tower",
+      "type": "drop_tower",
+      "operator": "ZARM, University of Bremen",
+      "location": "Bremen, Germany",
+      "provides": "Up to 9.3 s of weightlessness (catapult mode).",
+      "url": "https://www.zarm.uni-bremen.de/en/drop-tower/general-information.html"
+    },
+    "zarm_gravitower": {
+      "name": "ZARM GraviTower Bremen Pro",
+      "type": "drop_tower_partial_gravity",
+      "operator": "ZARM, University of Bremen",
+      "location": "Bremen, Germany",
+      "provides": "High-cadence microgravity runs and partial-gravity runs 'as found on the Moon or Mars'.",
+      "url": "https://www.zarm.uni-bremen.de/en/"
+    },
+    "nasa_grc_zero_g": {
+      "name": "NASA Glenn Zero Gravity Research Facility",
+      "type": "drop_tower",
+      "operator": "NASA Glenn Research Center",
+      "location": "Cleveland, Ohio, USA",
+      "provides": "Near-weightless environment for 5.18 s in a vacuum drop shaft.",
+      "url": "https://www1.grc.nasa.gov/facilities/zero-g/"
+    },
+    "nasa_jsc_argos": {
+      "name": "NASA JSC Active Response Gravity Offload System (ARGOS)",
+      "type": "gravity_offload",
+      "operator": "NASA Johnson Space Center",
+      "location": "Houston, Texas, USA",
+      "provides": "Robotic overhead offload simulating lunar, Martian or micro-gravity for suited crew, rovers and robots.",
+      "url": "https://ntrs.nasa.gov/citations/20205003610",
+      "url_alt": "https://www.nasa.gov/software-robotics-and-simulation-division/dynamic-systems-test-branch/"
+    },
+    "nasa_grc_armstrong_sec": {
+      "name": "NASA Glenn Neil A. Armstrong Test Facility, Space Environments Complex (Space Simulation Vacuum Chamber, formerly Space Power Facility)",
+      "type": "thermal_vacuum_chamber",
+      "operator": "NASA Glenn Research Center",
+      "location": "Sandusky, Ohio, USA",
+      "provides": "World's largest vacuum chamber: 30.5 m dia × 37.2 m high; vacuum < 4×10⁻⁶ Torr; cryoshroud −160 °C to +80 °C.",
+      "url": "https://www.nasa.gov/centers-and-facilities/glenn/space-environments-complex/"
+    },
+    "nasa_jsc_chamber_a": {
+      "name": "NASA JSC Chamber A (Space Environment Simulation Laboratory)",
+      "type": "cryo_vacuum_chamber",
+      "operator": "NASA Johnson Space Center",
+      "location": "Houston, Texas, USA",
+      "provides": "Thermal-vacuum chamber with a 20 K helium-refrigerated shroud (commissioned for JWST cryo-vac testing).",
+      "url": "https://ntrs.nasa.gov/citations/20130013844"
+    },
+    "bnl_nsrl": {
+      "name": "NASA Space Radiation Laboratory (NSRL) at Brookhaven National Laboratory",
+      "type": "heavy_ion_beam",
+      "operator": "NASA / Brookhaven National Laboratory",
+      "location": "Upton, New York, USA",
+      "provides": "Accelerator beams of heavy ions and protons to study cosmic-radiation effects on biology and electronics.",
+      "url": "https://www.bnl.gov/nsrl/"
+    },
+    "dlr_paslab": {
+      "name": "DLR Planetary Analogue Simulation Laboratory (PASLAB)",
+      "type": "mars_environment_chamber",
+      "operator": "DLR Institute of Space Research",
+      "location": "Berlin, Germany",
+      "provides": "Three chambers simulating pressure, temperature, radiation, gas composition and humidity in diurnal cycles for present/early Mars.",
+      "url": "https://www.dlr.de/en/wr/research-transfer/research-infrastructure/planetary-simulation-laboratory"
+    },
+    "dlr_mars_uv_simulator": {
+      "name": "DLR Mars UV simulator",
+      "type": "uv_solar_simulator",
+      "operator": "DLR",
+      "location": "Germany",
+      "provides": "Lamp-based simulator of the incident Martian surface UV spectrum (published description; abstract-level record only).",
+      "url": "https://elib.dlr.de/47589/"
+    },
+    "aarhus_awts2": {
+      "name": "Aarhus Wind Tunnel II (AWTS II), Planetary Environment Facility",
+      "type": "mars_environment_chamber",
+      "operator": "Aarhus University",
+      "location": "Aarhus, Denmark",
+      "provides": "Pressure 1 bar to 10⁻³ mbar, CO₂/N₂/He gas mixes, sample temperature control to −170 °C, wind to 18 m/s; Mars dust/aeolian studies.",
+      "url": "https://phys.au.dk/forskning/forskningsomraader/planetology/aarhus-wind-tunnel-ii"
+    },
+    "cu_impact_dusty_plasma": {
+      "name": "University of Colorado IMPACT Dusty Plasma Laboratory",
+      "type": "dusty_plasma_chamber",
+      "operator": "IMPACT (formerly CCLDAS), University of Colorado Boulder",
+      "location": "Boulder, Colorado, USA",
+      "provides": "Vacuum chambers (51 cm and 60 cm 'KEG') for dusty-plasma, dust charging and photoelectron-sheath experiments relevant to lunar dust.",
+      "url": "https://impact.colorado.edu/dustyPlasmaLabs.html"
+    },
+    "nasa_ames_lunar_lab": {
+      "name": "NASA Ames Lunar Lab and Regolith Testbeds",
+      "type": "lighting_regolith_testbed",
+      "operator": "NASA Ames Research Center",
+      "location": "Moffett Field, California, USA",
+      "provides": "Simulant-filled testbeds with low-angle lighting reproducing south-polar long shadows and high-contrast glare for rover vision tests.",
+      "url": "https://www.nasa.gov/centers-and-facilities/ames/the-lunar-lab-and-regolith-testbeds/"
+    },
+    "esa_dlr_luna": {
+      "name": "ESA–DLR LUNA analogue facility",
+      "type": "regolith_hall",
+      "operator": "ESA / DLR",
+      "location": "Cologne, Germany",
+      "provides": "~700 m² hall with ~900 t of basalt-derived regolith simulant, lighting and a deep area for drilling/sampling; inaugurated 25 Sep 2024.",
+      "url": "https://www.esa.int/Newsroom/Press_Releases/ESA-DLR_lunar_analogue_facility_inaugurated",
+      "url_alt": "https://www.dlr.de/en/fm/research-and-transfer/research-infrastructure/luna"
+    },
+    "exolith_lhs1": {
+      "name": "Exolith Lab LHS-1 Lunar Highlands Simulant",
+      "type": "regolith_simulant",
+      "operator": "Exolith Lab (UCF spin-off)",
+      "location": "Orlando, Florida, USA",
+      "provides": "High-fidelity lunar highlands regolith simulant (south pole is highland terrain).",
+      "url": "https://exolithsimulants.com/products/lhs-1-lunar-highlands-simulant"
+    },
+    "exolith_mgs1": {
+      "name": "Exolith Lab MGS-1 Mars Global Simulant",
+      "type": "regolith_simulant",
+      "operator": "Exolith Lab (UCF spin-off)",
+      "location": "Orlando, Florida, USA",
+      "provides": "Mineralogy-based Mars global regolith simulant; used for ISRU/water-extraction tests.",
+      "url": "https://exolithsimulants.com/products/mgs-1-mars-global-simulant"
+    },
+    "nasa_nu_lht": {
+      "name": "NASA NU-LHT lunar highlands simulant",
+      "type": "regolith_simulant",
+      "operator": "NASA / USGS",
+      "location": "USA",
+      "provides": "Highlands simulant made from Stillwater norite, anorthosite and harzburgite plus Twin Sisters dunite.",
+      "url": "https://ares.jsc.nasa.gov/projects/simulants/nu-lht.html"
+    }
+  }
+}

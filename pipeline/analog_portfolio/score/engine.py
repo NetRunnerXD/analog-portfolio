@@ -1,0 +1,111 @@
+"""Vectorised reference scorer over Earth cells (numpy). JS port: web/src/scoring/."""
+from __future__ import annotations
+
+import numpy as np
+
+from ..contract import load
+from .normalize import FLOOR
+
+CORE = [f"F{i}" for i in range(1, 11)]
+SECONDARY = ["F11", "F12", "F13"]
+
+
+def _pct_rank(x: np.ndarray, higher_is_better: bool) -> np.ndarray:
+    """Within-Earth percentile in [0, 1], oriented so 1 = closest to the target direction. NaN -> 0."""
+    v = np.asarray(x, dtype="float64")
+    nan = ~np.isfinite(v)
+    order = np.argsort(np.where(nan, np.inf, v), kind="stable")
+    ranks = np.empty(len(v))
+    ranks[order] = np.arange(len(v))
+    n = max(int((~nan).sum()) - 1, 1)
+    p = np.clip(ranks / n, 0, 1)
+    if not higher_is_better:
+        p = 1.0 - p
+    p[nan] = 0.0
+    return p
+
+
+def lith_matrix() -> np.ndarray:
+    f = load("factors")
+    codes = {c["id"]: c["code"] for c in f["lithology_classes"]}
+    n = max(codes.values()) + 1
+    m = np.zeros((n, n))
+    np.fill_diagonal(m, f["lithology_similarity"]["default_same"])
+    m[0, 0] = 0.0
+    for a, b, s in f["lithology_similarity"]["pairs"]:
+        m[codes[a], codes[b]] = m[codes[b], codes[a]] = s
+    return m
+
+
+def clip_targets(target_values: dict[str, float], earth: dict[str, np.ndarray]) -> dict[str, tuple[float, float]]:
+    """Return {factor: (t_star, gap)} for factors with earth_clip=true."""
+    out = {}
+    for f in load("factors")["factors"]:
+        t = target_values.get(f["id"])
+        if t is None or not f["earth_clip"]:
+            continue
+        x = earth[f["feature"]]
+        lo, hi = np.nanpercentile(x, [0.5, 99.5])
+        ts = float(min(max(t, lo), hi))
+        out[f["id"]] = (ts, abs(t - ts))
+    return out
+
+
+def factor_scores(earth: dict[str, np.ndarray], target_values: dict[str, float], body: str) -> dict[str, np.ndarray]:
+    """Per-factor similarity arrays s_F in [0, 1] for every Earth cell."""
+    fac = {f["id"]: f for f in load("factors")["factors"]}
+    clips = clip_targets(target_values, earth)
+    s: dict[str, np.ndarray] = {}
+
+    def tstar(fid):
+        return clips[fid][0] if fid in clips else target_values[fid]
+
+    def ratio(x, t):
+        with np.errstate(invalid="ignore", divide="ignore"):
+            r = 1.0 - np.abs(x - t) / (x + t)
+        return np.where(x + t == 0, 1.0, r)
+
+    s["F1"] = ratio(earth["ts_mean_k"], tstar("F1"))
+    s["F2"] = ratio(earth["dt_k"], tstar("F2"))
+    s["F3"] = 1.0 - np.abs(earth["ti_class"] - target_values["F3"]) / 4.0
+    s["F4"] = np.clip(1.0 - np.abs(earth["slope_lt5_frac"] - target_values["F4"]), 0, 1)
+    s["F5"] = ratio(earth["relief_m"], tstar("F5"))
+    lm = lith_matrix()
+    lc = np.nan_to_num(earth["lith_class"]).astype(int)
+    s["F6"] = lm[lc, int(target_values["F6"])]
+    s["F7"] = _pct_rank(earth["aridity_index"], higher_is_better=False)
+    s["F8"] = np.clip(1.0 - np.abs(earth["barren_frac"] - target_values["F8"]), 0, 1)
+    s["F9"] = np.clip(1.0 - np.abs(earth["ice_index"] - target_values["F9"]), 0, 1)
+    tau = fac["F10"]["params"]["tau"]
+    s["F10"] = np.exp(-0.5 * ((earth["noon_sun_elev_deg"] - tstar("F10")) / tau) ** 2)
+    p11 = 0.5 * (_pct_rank(earth["column_mass_gcm2"], False) + _pct_rank(earth["cutoff_rigidity_gv"], False))
+    s["F11"] = fac["F11"]["params"]["cap"][body] * p11
+    s["F12"] = fac["F12"]["params"]["cap"][body] * _pct_rank(earth["uv_index"], True)
+    tf = int(target_values["F13"])
+    want = bin(tf).count("1")
+    ef = np.nan_to_num(earth["geomorph_flags"]).astype(int)
+    s["F13"] = np.array([bin(v & tf).count("1") / want if want else 0.0 for v in ef])
+    return {k: np.nan_to_num(np.clip(v, 0, 1)) for k, v in s.items()}
+
+
+def aggregate(s: dict[str, np.ndarray], weights: dict[str, float]) -> tuple[np.ndarray, np.ndarray]:
+    """Return (S_core, S) arrays."""
+    wsum = sum(w for f, w in weights.items() if w > 0)
+    log = np.zeros_like(s["F1"])
+    for f, w in weights.items():
+        if w > 0:
+            log += (w / wsum) * np.log(np.maximum(s[f], FLOOR))
+    core = np.exp(log)
+    sec = np.mean([s[f] for f in SECONDARY], axis=0)
+    return core, core * (0.9 + 0.1 * sec)
+
+
+def hard_filter_mask(earth: dict[str, np.ndarray], profile: dict) -> np.ndarray:
+    m = (np.nan_to_num(earth["water_frac"]) < 0.5) & (np.nan_to_num(earth["builtup_frac"]) < 0.5)
+    ids = {h["id"] for h in profile.get("hard_filters", [])}
+    if "frozen_ground" in ids:
+        m &= (np.nan_to_num(earth["ice_index"]) > 0) | (earth["ts_mean_k"] < 273.15)
+    if "dry_or_cold_desert" in ids:
+        ai = earth["aridity_index"]
+        m &= (ai < 0.2) | ((earth["ts_mean_k"] < 273.15) & (ai < 0.5))
+    return m
