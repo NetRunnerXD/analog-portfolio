@@ -28,6 +28,7 @@
  ],
  "uncoverable": [],
  "dropped_factors": [],
+ "insufficient_cells": 0,
  "variants": [
   {
    "id": "best_match",
@@ -45,6 +46,7 @@
      "score": 0.8433,
      "score_core": 0.9197,
      "earth_percentile": 100.0,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.993,
       "F2": 0.8086,
@@ -119,6 +121,7 @@
      "score": 0.8244,
      "score_core": 0.9158,
      "earth_percentile": 99.98,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.975,
       "F2": 0.8407,
@@ -193,6 +196,7 @@
      "score": 0.7455,
      "score_core": 0.8281,
      "earth_percentile": 99.12,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.9294,
       "F2": 0.805,
@@ -245,6 +249,7 @@
      "score": 0.237,
      "score_core": 0.2633,
      "earth_percentile": 81.83,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.9675,
       "F2": 0.3063,
@@ -309,6 +314,7 @@
    "score": 0.8433,
    "score_core": 0.9197,
    "earth_percentile": 100.0,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.993,
     "F2": 0.8086,
@@ -363,6 +369,7 @@
    "score": 0.8413,
    "score_core": 0.9176,
    "earth_percentile": 100.0,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9947,
     "F2": 0.8374,
@@ -417,6 +424,7 @@
    "score": 0.8287,
    "score_core": 0.9038,
    "earth_percentile": 99.99,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9955,
     "F2": 0.8221,
@@ -471,6 +479,7 @@
    "score": 0.8269,
    "score_core": 0.9186,
    "earth_percentile": 99.99,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9863,
     "F2": 0.8532,
@@ -525,6 +534,7 @@
    "score": 0.8244,
    "score_core": 0.9158,
    "earth_percentile": 99.98,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.975,
     "F2": 0.8407,
@@ -579,6 +589,7 @@
    "score": 0.8226,
    "score_core": 0.9138,
    "earth_percentile": 99.97,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9777,
     "F2": 0.8407,
@@ -633,6 +644,7 @@
    "score": 0.8226,
    "score_core": 0.9137,
    "earth_percentile": 99.96,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.8945,
     "F2": 0.8771,
@@ -687,6 +699,7 @@
    "score": 0.8225,
    "score_core": 0.9136,
    "earth_percentile": 99.95,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9969,
     "F2": 0.8104,
@@ -741,6 +754,7 @@
    "score": 0.8223,
    "score_core": 0.9135,
    "earth_percentile": 99.95,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9756,
     "F2": 0.8506,
@@ -795,6 +809,7 @@
    "score": 0.8222,
    "score_core": 0.9134,
    "earth_percentile": 99.94,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9995,
     "F2": 0.8019,
@@ -849,6 +864,7 @@
    "score": 0.8208,
    "score_core": 0.9118,
    "earth_percentile": 99.94,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9779,
     "F2": 0.8238,
@@ -903,6 +919,7 @@
    "score": 0.8202,
    "score_core": 0.9111,
    "earth_percentile": 99.93,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.974,
     "F2": 0.865,
@@ -957,6 +974,7 @@
    "score": 0.8199,
    "score_core": 0.9107,
    "earth_percentile": 99.92,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9757,
     "F2": 0.8563,
@@ -1011,6 +1029,7 @@
    "score": 0.819,
    "score_core": 0.9098,
    "earth_percentile": 99.92,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9668,
     "F2": 0.8561,
@@ -1065,6 +1084,7 @@
    "score": 0.8186,
    "score_core": 0.9094,
    "earth_percentile": 99.91,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9624,
     "F2": 0.8612,
@@ -1119,6 +1139,7 @@
    "score": 0.817,
    "score_core": 0.9076,
    "earth_percentile": 99.91,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9928,
     "F2": 0.8461,
@@ -1173,6 +1194,7 @@
    "score": 0.8166,
    "score_core": 0.9071,
    "earth_percentile": 99.9,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9786,
     "F2": 0.8046,
@@ -1227,6 +1249,7 @@
    "score": 0.8156,
    "score_core": 0.906,
    "earth_percentile": 99.89,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9732,
     "F2": 0.8716,
@@ -1281,6 +1304,7 @@
    "score": 0.8149,
    "score_core": 0.9052,
    "earth_percentile": 99.89,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9704,
     "F2": 0.8724,
@@ -1335,6 +1359,7 @@
    "score": 0.814,
    "score_core": 0.9042,
    "earth_percentile": 99.88,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.8834,
     "F2": 0.9658,
@@ -1389,6 +1414,7 @@
    "score": 0.8137,
    "score_core": 0.9039,
    "earth_percentile": 99.86,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9706,
     "F2": 0.8638,
@@ -1443,6 +1469,7 @@
    "score": 0.8126,
    "score_core": 0.9027,
    "earth_percentile": 99.86,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9644,
     "F2": 0.8617,
@@ -1497,6 +1524,7 @@
    "score": 0.8047,
    "score_core": 0.8939,
    "earth_percentile": 99.84,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.986,
     "F2": 0.823,
@@ -1551,6 +1579,7 @@
    "score": 0.8034,
    "score_core": 0.8925,
    "earth_percentile": 99.84,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9742,
     "F2": 0.8525,
@@ -1605,6 +1634,7 @@
    "score": 0.8026,
    "score_core": 0.8753,
    "earth_percentile": 99.83,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9218,
     "F2": 0.8394,

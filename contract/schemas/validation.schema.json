@@ -253,6 +253,12 @@
               "minimum": 0
             }
           },
+          "data_coverage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Share of the active profile weight with Earth data in this cell (scored only if >= 0.7, DATA_CONTRACT 3.2 item 6)"
+          },
           "robustness": {
             "anyOf": [
               {

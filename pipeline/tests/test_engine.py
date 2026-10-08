@@ -49,10 +49,19 @@ def scores(earth):
     return factor_scores(earth, TARGET, "mars")
 
 
-def test_scores_bounded_and_finite(scores):
+MISSING_CELLS = {3, 50}
+
+
+def test_scores_bounded_finite_except_missing(scores):
+    """Scores are in [0, 1]; NaN (missing, review-01 decision #2) only where an Earth input is missing."""
     assert set(scores) == set(CORE + SECONDARY)
     for f, s in scores.items():
-        assert np.isfinite(s).all() and (s >= 0).all() and (s <= 1).all(), f
+        nan = set(np.flatnonzero(np.isnan(s)).tolist())
+        assert nan <= MISSING_CELLS, f
+        fin = s[np.isfinite(s)]
+        assert (fin >= 0).all() and (fin <= 1).all(), f
+    for f in ("F1", "F6", "F7", "F13"):  # fed by the NaN columns of the fixture
+        assert np.isnan(scores[f][list(MISSING_CELLS)]).all(), f
 
 
 def test_engine_matches_scalar_reference(earth, scores):
@@ -64,29 +73,31 @@ def test_engine_matches_scalar_reference(earth, scores):
     for i in range(len(earth["cell_id"])):
         x = {k: earth[k][i] for k in earth}
         exp = {}
-        exp["F1"] = ratio_sim(x["ts_mean_k"], ts["F1"]) if not math.isnan(x["ts_mean_k"]) else 0.0
+        exp["F1"] = ratio_sim(x["ts_mean_k"], ts["F1"]) if not math.isnan(x["ts_mean_k"]) else math.nan
         exp["F2"] = ratio_sim(x["dt_k"], ts["F2"])
         exp["F3"] = max(0.0, ordinal_class(x["ti_class"], TARGET["F3"]))
         exp["F4"] = bounded_fraction(x["slope_lt5_frac"], TARGET["F4"])
         exp["F5"] = ratio_sim(x["relief_m"], ts["F5"])
-        exp["F6"] = lm[0 if math.isnan(x["lith_class"]) else int(x["lith_class"]), TARGET["F6"]]
+        exp["F6"] = math.nan if math.isnan(x["lith_class"]) else lm[int(x["lith_class"]), TARGET["F6"]]
         exp["F8"] = bounded_fraction(x["barren_frac"], TARGET["F8"])
         exp["F9"] = bounded_fraction(x["ice_index"], TARGET["F9"])
         exp["F10"] = gaussian(x["noon_sun_elev_deg"], ts["F10"], tau)
-        g = 0 if math.isnan(x["geomorph_flags"]) else int(x["geomorph_flags"])
-        exp["F13"] = flag_match(g, TARGET["F13"])
+        g = x["geomorph_flags"]
+        exp["F13"] = math.nan if math.isnan(g) else flag_match(int(g), TARGET["F13"])
         for f, v in exp.items():
-            assert scores[f][i] == pytest.approx(v, abs=1e-12), (f, i)
+            assert scores[f][i] == pytest.approx(v, abs=1e-12, nan_ok=True), (f, i)
 
 
 def test_aggregate_matches_scalar_geometric_mean(scores):
+    """Vectorised and scalar aggregation agree, including the missing-data cells 3 and 50."""
     for pid, prof in PROFILES.items():
         core, total = aggregate(scores, prof["weights"])
-        for i in range(0, len(core), 37):
+        for i in sorted(set(range(0, len(core), 37)) | MISSING_CELLS):
             sc = {f: float(scores[f][i]) for f in CORE}
-            c = geometric_mean(sc, prof["weights"])
-            assert core[i] == pytest.approx(c, rel=1e-12), pid
-            assert total[i] == pytest.approx(total_score(c, [float(scores[f][i]) for f in SECONDARY]), rel=1e-12)
+            c = geometric_mean(sc, prof["weights"], min_coverage=engine.MIN_WEIGHT_COVERAGE)
+            assert core[i] == pytest.approx(c, rel=1e-12, nan_ok=True), (pid, i)
+            t = total_score(c, [float(scores[f][i]) for f in SECONDARY])
+            assert total[i] == pytest.approx(t, rel=1e-12, nan_ok=True), (pid, i)
 
 
 def test_lith_matrix_symmetric_and_nodata_zero():
@@ -126,10 +137,13 @@ class TestPercentile:
             assert np.array_equal(_pct_rank(x, hib)[perm], _pct_rank(x[perm], hib))
 
     def test_direction_nan_and_degenerate(self):
+        """Non-finite inputs are missing: NaN out, and they do not count in n (decision #2)."""
         x = np.array([0.1, np.nan, 0.3, np.inf, 0.2])
-        assert _pct_rank(x, False).tolist() == pytest.approx([5 / 6, 0.0, 1 / 6, 0.0, 0.5])  # lower is better
-        assert _pct_rank(x, True).tolist() == pytest.approx([1 / 6, 0.0, 5 / 6, 0.0, 0.5])
+        nan = math.nan
+        assert _pct_rank(x, False).tolist() == pytest.approx([5 / 6, nan, 1 / 6, nan, 0.5], nan_ok=True)  # lower is better
+        assert _pct_rank(x, True).tolist() == pytest.approx([1 / 6, nan, 5 / 6, nan, 0.5], nan_ok=True)
         assert _pct_rank(np.full(4, 2.0), True).tolist() == [0.5] * 4  # all tied
+        assert np.isnan(_pct_rank(np.array([np.nan, np.nan]), True)).all()  # all missing: no crash
         assert _pct_rank(np.array([5.0]), False).tolist() == [0.5]
 
 
@@ -152,10 +166,10 @@ class TestAggregateEdges:
         core, total = aggregate(s, {f: 0 for f in CORE})
         assert core.tolist() == [0.0, 0.0] and total.tolist() == [0.0, 0.0]
 
-    def test_missing_earth_value_counts_as_zero_similarity(self, earth):
-        """Documents current behaviour (review-01 finding H2): a NaN Earth cell scores s=0 -> floored, not masked."""
+    def test_missing_earth_value_is_missing_not_zero(self, earth):
+        """Fixed (review-01 H2): a NaN Earth input gives a missing score, not s = 0 -> floor 0.01."""
         s = factor_scores(earth, TARGET, "mars")
-        assert s["F1"][3] == 0.0 and s["F7"][3] == 0.0 and s["F6"][3] == 0.0
+        assert np.isnan(s["F1"][3]) and np.isnan(s["F7"][3]) and np.isnan(s["F6"][3])
 
 
 class TestHardFilters:
