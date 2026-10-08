@@ -26,6 +26,10 @@ def _pct_rank(x: np.ndarray, higher_is_better: bool, w: np.ndarray | None = None
     return weighted_pct_rank(v, np.ones_like(v) if w is None else w, higher_is_better)
 
 
+# popcount lookup for uint8 geomorph flag bitmasks (F13)
+_POPCOUNT8 = np.array([bin(i).count("1") for i in range(256)], dtype="float64")
+
+
 def lith_matrix() -> np.ndarray:
     f = load("factors")
     codes = {c["id"]: c["code"] for c in f["lithology_classes"]}
@@ -86,15 +90,17 @@ def factor_scores(earth: dict[str, np.ndarray], target_values: dict[str, float],
     s["F12"] = fac["F12"]["params"]["cap"][body] * _pct_rank(earth["uv_index"], True, aw)
     tf = int(target_values["F13"])
     want = bin(tf).count("1")
-    ef = np.nan_to_num(earth["geomorph_flags"]).astype(int)
-    s["F13"] = np.array([bin(v & tf).count("1") / want if want else 0.0 for v in ef])
+    ef = np.nan_to_num(earth["geomorph_flags"]).astype(np.int64) & 0xFF
+    s["F13"] = _POPCOUNT8[ef & tf] / want if want else np.zeros(len(ef))
     return {k: np.nan_to_num(np.clip(v, 0, 1)) for k, v in s.items()}
 
 
 def aggregate(s: dict[str, np.ndarray], weights: dict[str, float]) -> tuple[np.ndarray, np.ndarray]:
     """Return (S_core, S) arrays. Factors missing from s (no target data) are dropped and the weights renormalised."""
     wsum = sum(w for f, w in weights.items() if w > 0 and f in s)
-    log = np.zeros_like(s["F1"])
+    log = np.zeros_like(s["F1"], dtype="float64")
+    if wsum <= 0:  # match normalize.geometric_mean: no active weights -> score 0, not ZeroDivisionError
+        return log, log.copy()
     for f, w in weights.items():
         if w > 0 and f in s:
             log += (w / wsum) * np.log(np.maximum(s[f], FLOOR))
