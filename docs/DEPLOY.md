@@ -13,10 +13,10 @@ Live URL (after go-live): https://netrunnerxd.github.io/analog-portfolio/
 | Base path | `web/vite.config.ts` → `base: process.env.VITE_BASE ?? './'` | Default `./` (relative) works on any host. Pages builds set `VITE_BASE=/analog-portfolio/`. |
 | Data paths | `web/src/data.ts` | Uses `import.meta.env.BASE_URL`, so the data under `/analog-portfolio/data/...` resolves correctly. |
 | SPA fallback | n/a | The app has no client-side router (single view), so no `404.html` copy is needed. If a router is added later, use hash routing or copy `dist/index.html` to `dist/404.html` after the build. |
-| `.nojekyll` | `web/public/.nojekyll` | Harmless with the Actions deploy (no Jekyll runs). It covers the case where a branch deploy is ever used. |
+| `.nojekyll` | `web/public/.nojekyll` | Not needed for the Actions deploy (no Jekyll runs, and `upload-pages-artifact` skips dotfiles). It covers the case where a branch deploy is ever used. |
 | CSP | `web/vite.config.ts` (`CSP`, injected as `<meta>` at **build** time only, so `npm run dev` is unaffected) | `default-src 'self'`, no `unsafe-inline` or `unsafe-eval`, `object-src 'none'`, `base-uri 'self'`. The only external origin is `img-src https://gibs.earthdata.nasa.gov` (basemap tiles). A meta CSP cannot set `frame-ancestors`, and GitHub Pages cannot send custom headers. |
 | Full header set (mirrors) | `web/public/_headers` (Cloudflare), `web/vercel.json` (Vercel) | CSP plus `frame-ancestors 'none'`, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy`, `X-Frame-Options: DENY`, `COOP`. |
-| Deploy workflow | `.github/workflows/pages.yml` | Pinned action SHAs and minimal permissions (`contents: read`; the deploy job adds `pages: write` + `id-token: write`). **Both jobs skip while the repo is private**, so merging the workflow early is harmless. |
+| Deploy workflow | `.github/workflows/pages.yml` | Pinned action SHAs and minimal permissions (`contents: read`; the deploy job adds `pages: write` + `id-token: write`). **Both jobs skip while the repo is private**, it is not triggered by PRs, and it never enables Pages itself (`enablement: false`). |
 
 > If you add a new external origin (another tile server, a font CDN, etc.), add it to the CSP in **all three** places (`vite.config.ts`, `_headers`, `vercel.json`) and re-run the preview check below.
 
@@ -36,18 +36,17 @@ B=http://127.0.0.1:4173/analog-portfolio
 for p in / data/mock/targets.json data/mock/earth_features.bin; do curl -s -o /dev/null -w "%{http_code} $p\n" "$B/$p"; done
 ```
 
-## Prerequisite: `workflow` token scope (do this before Nov 14)
+## Done before Nov 14
 
-Pushing anything under `.github/workflows/` needs the `workflow` scope on the gh token:
-
-```bash
-gh auth refresh -h github.com -s workflow     # Sounak approves in the browser
-gh auth status                                # scopes should include 'workflow'
-```
-
-After that:
-1. Fast-forward push local `main` so the CI commit (`845610c`, `.github/workflows/ci.yml`) lands. Plain `git push origin main`, never force.
-2. Add `.github/workflows/pages.yml` to the deploy PR branch (a ready copy was kept outside the repo, at `/workspace/space-apps-analog/pages.yml.pending` on the shared box, until the scope was granted).
+- [x] gh token has the `workflow` scope (`gh auth status` lists `workflow`).
+- [x] CI is on `main` (`.github/workflows/ci.yml`, merged in PR #5). It runs on every PR and every push to `main`, with two jobs:
+  `Python pipeline (pytest)` and `Web (vitest + build)`. Those are the required-check names used in step 8 below.
+- [x] `.github/workflows/pages.yml` was added in the deploy/security PR (#2). It is safe while the repo is private:
+  - it is **not** triggered by pull requests (only push to `main` and manual `workflow_dispatch`),
+  - both jobs have `if: !github.event.repository.private`, so they **skip** while the repo is private and never fail,
+  - it never changes repo settings: `actions/configure-pages` runs with `enablement: false`, so Pages is only enabled by step 3 below.
+- [x] Vulnerability alerts and Dependabot security updates are enabled. `.github/dependabot.yml` is in the PR.
+- [ ] Review and merge PR #2 (this can wait until Nov 14 step 1).
 
 ## Go-live: Nov 14, 2026, morning IST
 
