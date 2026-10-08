@@ -12,9 +12,10 @@ requires-python = ">=3.11"
 dependencies = ["numpy>=1.26"]
 
 [project.optional-dependencies]
-dev = ["pytest>=8", "jsonschema>=4.21"]
+dev = ["pytest>=8", "jsonschema>=4.21", "scipy>=1.12"]
 # Heavy geospatial stack, only needed for real acquisition/extraction (not in CI)
 data = [
+  "pyproj>=3.6",
   "rasterio>=1.4",
   "xarray>=2024.1",
   "rioxarray>=0.15",
