@@ -33,6 +33,8 @@ EARTH_COLUMNS: list[tuple[str, str | None, str, float, float, str]] = [
     ("travel_time_min", None, "uint16", 1, 0, "minutes to nearest city >50k"),
     ("airport_km", None, "uint16", 1, 0, "km to nearest airport"),
     ("continent", None, "uint8", 1, 0, "continent code (manifest codes; Natural Earth admin-0 CONTINENT)"),
+    ("permafrost_frac", None, "uint8", 0.004, 0, "fraction (ESA CCI PFR; Mars gate clause C)"),
+    ("moss_lichen_frac", None, "uint8", 0.004, 0, "fraction of land (WorldCover moss & lichen; Mars gate clause C)"),
 ]
 
 PLANET_COLUMNS: list[tuple[str, str | None, str, float, float, str]] = [

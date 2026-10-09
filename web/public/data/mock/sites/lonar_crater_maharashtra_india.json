@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.2",
+ "contract_version": "1.2.0",
  "mock": true,
  "site_id": "lonar_crater_maharashtra_india",
  "name": "Lonar crater (Maharashtra, India)",
@@ -35,7 +35,9 @@
   "builtup_frac": 0.0,
   "travel_time_min": 367.0,
   "airport_km": 188.0,
-  "continent": 3.0
+  "continent": 3.0,
+  "permafrost_frac": null,
+  "moss_lichen_frac": 0.0
  },
  "drilldown": {},
  "best_for": [],

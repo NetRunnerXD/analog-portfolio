@@ -63,3 +63,34 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+
+def scoring_constants(earth: dict, profiles: dict) -> dict:
+    """Full-precision Earth constants the browser rescorer needs to mirror the pipeline exactly (targets.json ->
+    scoring_constants). Computed from the SHIPPED (quantized, decoded) earth_features grid, as the pipeline scores it."""
+    from ..contract import load
+    from ..score.engine import earth_range
+
+    aw = area_weights(earth)
+    fac = load("factors")["factors"]
+    clip = {}
+    for f in fac:
+        if f["earth_clip"]:
+            lo, hi = weighted_quantile(earth[f["feature"]], aw, [0.005, 0.995])
+            clip[f["id"]] = dict(feature=f["feature"], p0_5=float(lo), p99_5=float(hi))
+    rng = {}
+    for fid, col in (("F1", "ts_mean_k"), ("F2", "dt_k")):
+        lo, hi = earth_range(dict(earth), col)
+        rng[fid] = dict(feature=col, p01=float(lo), p99=float(hi), span=float(hi - lo))
+    g = profiles["defaults"].get("candidate_gates", {})
+    return dict(
+        note=("Full float64 precision. All quantiles are cos(lat) area-weighted over the cells of earth_features.bin as "
+              "decoded (raw * scale + add_offset), midpoint (Hazen) interpolation of the weighted CDF, NaN skipped. "
+              "Target values in features.*.value / t_star are unrounded; t_star = min(max(value, p0_5), p99_5)."),
+        earth_clip=clip,
+        range_norm=dict(rule="s = max(0, 1 - |x - t_star| / (p99 - p01))", factors=rng),
+        gates={b: dict(params="profiles.json defaults.candidate_gates." + b,
+                       inputs=["aridity_index", "barren_frac", "permafrost_frac", "moss_lichen_frac", "geomorph_flags"],
+                       missing=v.get("missing")) for b, v in g.items()},
+        f7_note="F7 has no target value (null on every target): it is scored Earth-only as the area-weighted aridity percentile.",
+    )

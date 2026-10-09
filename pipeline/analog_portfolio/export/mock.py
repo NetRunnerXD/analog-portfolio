@@ -9,6 +9,7 @@ from __future__ import annotations
 import csv
 import json
 import math
+import os
 import re
 from pathlib import Path
 
@@ -23,10 +24,11 @@ from ..grid.area import weighted_pct_rank, weighted_quantile
 from ..score.engine import (CORE, SECONDARY, aggregate, area_weights, clip_targets, dropped_factors, factor_scores,
                             hard_filter_mask)
 from ..score.robust import top_frac_freq
+from ..score.gates import candidate_gate
 from ..score.variants import build_variants
-from .reference import earth_reference
+from .reference import earth_reference, scoring_constants
 
-OUT = WEB_DATA_DIR / "mock"
+OUT = Path(os.environ.get("AP_MOCK_OUT") or WEB_DATA_DIR / "mock")  # AP_MOCK_OUT: build elsewhere, then swap
 INPUTS = REPO_ROOT / "pipeline" / "inputs"
 VALIDATION_CSV = REPO_ROOT / "docs" / "validation.csv"
 RNG = np.random.default_rng(20261114)
@@ -100,6 +102,8 @@ def synth_cell(lat: float, lon: float) -> dict:
         water_frac=float(np.clip(RNG.normal(0.05, 0.05), 0, 1)), builtup_frac=float(np.clip(RNG.normal(0.02, 0.05), 0, 1)),
         travel_time_min=float(np.clip(RNG.gamma(2, 300) * (3 if alat > 60 else 1), 10, 9000)),
         airport_km=float(np.clip(RNG.gamma(2, 80) * (3 if alat > 60 else 1), 2, 2500)),
+        permafrost_frac=ice if ice > 0.1 else float("nan"),
+        moss_lichen_frac=float(np.clip(0.4 * (1 - barren), 0, 1)) if alat > 60 else 0.0,
     )
 
 
@@ -267,7 +271,7 @@ def main() -> None:
                                 features=feats, card=card))
     eref = earth_reference(earth, "MOCK: synthetic grid (not real data)", "MOCK synthetic Earth grid")
     write("targets.json", dict(rtargets, contract_version=CONTRACT_VERSION, mock=True, targets=out_targets,
-                               earth_reference=eref))
+                               earth_reference=eref, scoring_constants=scoring_constants(earth, profiles)))
     write("profiles.json", profiles)
     write("factors.json", factors)
     write("gaps.json", dict(rgaps, contract_version=CONTRACT_VERSION, mock=False))
@@ -288,13 +292,16 @@ def main() -> None:
             w = prof["weights"]
             s = factor_scores(earth, tvals[tid], body)
             core, total = aggregate(s, w)
-            mask = hard_filter_mask(earth, prof)
+            mask0 = hard_filter_mask(earth, prof)
+            gate = candidate_gate(earth, body, profiles)  # Mars gate (contract v1.2, research.md §8): acts as a hard filter
+            mask = mask0 & gate
             total_f = np.where(mask, total, 0.0)
             median = float(weighted_quantile(total_f[mask], aw[mask], 0.5)[0]) if mask.any() else 0.0
-            pct = 100.0 * weighted_pct_rank(total_f, aw)  # area-weighted rank among land cells (filtered = 0)
-            thr = weighted_quantile(total_f, aw, [0.5, 0.95, 0.99])
+            tf_rank = np.where(gate, total_f, np.nan)  # gate-failing cells leave the ranking (Mars)
+            pct = 100.0 * weighted_pct_rank(tf_rank, aw)  # area-weighted rank among land cells (filtered = 0)
+            thr = weighted_quantile(tf_rank, aw, [0.5, 0.95, 0.99])
             freq = top_frac_freq(s, w, mask, aw, draws=mc["draws"], alpha_scale=mc["dirichlet_alpha_scale"],
-                                 top_frac=mc["robust_top_frac"], seed=mc["seed"])
+                                 top_frac=mc["robust_top_frac"], seed=mc["seed"], valid=gate)
             # candidate pool: top-N per factor (w>0) with S >= median, then NMS
             cand_idx = set()
             for f, wf in w.items():
@@ -353,7 +360,10 @@ def main() -> None:
                     continue
                 i = idx_of[cell_id(v["lat"], v["lon"])]
                 results[slug(v["name"])].append(dict(target_id=tid, profile_id=pid, percentile=round(float(pct[i]), 2),
-                                                     in_top5=bool(pct[i] >= 95), in_top1=bool(pct[i] >= 99)))
+                                                     in_top5=bool(pct[i] >= 95), in_top1=bool(pct[i] >= 99),
+                                                     status="scored" if mask[i] else "gate_excluded" if mask0[i] else
+                                                     "land_filter_excluded" if earth["water_frac"][i] >= 0.5 else
+                                                     "hard_filter_excluded"))
 
     pos = [r for v in validation if v["kind"] == "positive" for r in results[slug(v["name"])]]
     aucs = []

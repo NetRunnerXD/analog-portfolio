@@ -16,6 +16,15 @@ def ratio_sim(x: float, t: float) -> float:
     return 1.0 - abs(x - t) / (x + t)
 
 
+def range_sim(x: float, t_star: float, p01: float, p99: float) -> float:
+    """Range-normalised similarity (contract v1.2, F1/F2): 1 - |x - t*| / (Earth P99 - Earth P1), floored at 0.
+    t* is the target already clipped to Earth's P0.5-P99.5; P1/P99 are cos(lat) area-weighted over land."""
+    span = p99 - p01
+    if span <= 0:
+        return 1.0 if x == t_star else 0.0
+    return max(0.0, 1.0 - abs(x - t_star) / span)
+
+
 def bounded_fraction(x: float, t: float) -> float:
     return max(0.0, 1.0 - abs(x - t))
 

@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.1.2",
+  "contract_version": "1.2.0",
   "status": "pre-registered (provisional until the Oct 28 statement diff; weights frozen before first scoring run)",
   "defaults": {
     "theta": 0.7,
@@ -66,6 +66,31 @@
         "cell_id asc"
       ],
       "greedy": "earliest in pool order"
+    },
+    "candidate_gates": {
+      "mars": {
+        "id": "mars_analog_gate",
+        "applies_to": "every profile of a Mars target (P1-P5, including P5), after the land (water_frac < 0.5) and built-up (builtup_frac < 0.5) filters",
+        "rule": "A || B || C || D",
+        "clauses": {
+          "A": "aridity_index <= ai_max (arid or hyper-arid, UNEP)",
+          "B": "barren_frac >= f8_min (bare/sparse + snow/ice, fraction of land pixels)",
+          "C": "permafrost_frac >= pf_min && barren_frac + moss_lichen_frac >= f8_moss_min (polar / cold desert)",
+          "D": "(geomorph_flags & d_flag_mask) != 0 && (aridity_index <= d_ai_max || barren_frac >= d_f8_min) (impact or Holocene volcanic, not massif)"
+        },
+        "ai_max": 0.2,
+        "f8_min": 0.5,
+        "pf_min": 0.5,
+        "f8_moss_min": 0.5,
+        "d_flag_mask": 65,
+        "d_ai_max": 0.5,
+        "d_f8_min": 0.1,
+        "missing": "aridity_index NaN fails A and the AI part of D; NaN barren/permafrost/moss/flags read as 0",
+        "effect": "acts as a hard filter for Mars targets: failing cells score S = 0 (like profile hard filters), so Earth percentiles, top-5%/top-1% thresholds, Monte Carlo robustness, candidates and validation percentiles are all computed after gating",
+        "provenance": "Researcher, docs/research.md §8 (2026-10-08). Designed after the first validation run, using the 15 Mars-relevant analogs and 11 negative controls in validation.csv, before the validation freeze; expected exception: Rio Tinto (sub-cell acid river in semi-arid woodland) fails and is reported as gate-excluded, not whitelisted",
+        "ui_short": "Mars-like ground only",
+        "ui_tooltip": "For Mars, a site must be dry (aridity index 0.2 or less), at least half bare ground, a cold desert on permafrost, or an impact or young volcanic landscape that is not wet and green."
+      }
     }
   },
   "global_hard_filters": [
@@ -240,15 +265,7 @@
       },
       "theta": 0.7,
       "nms_radius_km": 300,
-      "hard_filters": [
-        {
-          "id": "dry_or_cold_desert",
-          "rule": "aridity_index < 0.2 || (ts_mean_k < 273.15 && aridity_index < 0.5)",
-          "reason": "Arid or cold desert",
-          "ui_short": "not dry enough",
-          "ui_tooltip": "not dry enough (needed for Search for life)"
-        }
-      ],
+      "hard_filters": [],
       "campaigns": [
         "NASA ASTEP / ARADS, Atacama [R56]",
         "McMurdo Dry Valleys [R58]"

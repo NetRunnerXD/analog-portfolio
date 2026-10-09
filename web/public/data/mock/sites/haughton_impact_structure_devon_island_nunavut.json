@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.2",
+ "contract_version": "1.2.0",
  "mock": true,
  "site_id": "haughton_impact_structure_devon_island_nunavut",
  "name": "Haughton impact structure, Devon Island (Nunavut)",
@@ -35,7 +35,9 @@
   "builtup_frac": 0.0,
   "travel_time_min": 1762.0,
   "airport_km": 382.0,
-  "continent": 5.0
+  "continent": 5.0,
+  "permafrost_frac": 1.0,
+  "moss_lichen_frac": 0.4
  },
  "drilldown": {},
  "best_for": [],

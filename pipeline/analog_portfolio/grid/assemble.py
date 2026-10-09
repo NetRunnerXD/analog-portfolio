@@ -79,17 +79,25 @@ def build_earth() -> dict:
             missing.append(f"{v} (Copernicus slope pass in progress)")
     G["relief_m"] = _nc("earth_relief_m", "relief_m"); src["relief_m"] = "ETOPO 2022 60 arc-sec, mean P95-P5 of 0.25 deg sub-blocks (TAE)"
     G["elevation_m"] = _nc("earth_relief_m", "elev_land_mean_m"); src["elevation_m"] = "ETOPO 2022 land mean (TAE)"
-    G["lith_class"] = _nc("earth_lith_class", "lith_class"); src["lith_class"] = "GLiM dominant class (TAE)"
-    ai = _nc("earth_aridity_index", "aridity_index")
+    lith = _nc("earth_lith_class", "lith_class").astype("float64")
+    G["lith_class"] = np.where(lith == 0, np.nan, lith)  # GLiM code 0 = 'nd' (no data) -> NaN, never a rock class
+    src["lith_class"] = "GLiM dominant class (TAE); code 0 (nd, no data) mapped to NaN"
+    ai = _nc("earth_aridity_land", "aridity_index")  # land pixels only (ET0 != 65535); v1.2 fix
+    ai_src = "Global-AI v3.1 land-pixel mean (P1 earth_aridity_land; ET0 == 65535 ocean pixels masked)"
+    if ai is None:
+        ai = _nc("earth_aridity_index", "aridity_index"); ai_src = "Global-AI v3.1 (TAE, ocean zeros NOT masked)"
     antarctic = np.zeros_like(land); antarctic[300:, :] = True
     G["aridity_index"] = np.where(np.isfinite(ai), ai, np.where(antarctic & land, ANTARCTIC_AI_FILL, np.nan))
-    src["aridity_index"] = f"Global-AI v3.1 (TAE); Antarctic land (no coverage) filled with {ANTARCTIC_AI_FILL} (hyper-arid polar desert, P1 assumption)"
+    src["aridity_index"] = f"{ai_src}; Antarctic land (no coverage) filled with {ANTARCTIC_AI_FILL} (hyper-arid polar desert, P1 assumption)"
     G["barren_frac"] = _nc("earth_barren", "barren_frac_of_land")
     src["barren_frac"] = "WorldCover bare/sparse + snow/ice fraction of land pixels (TAE barren_frac_of_land); Antarctica 1"
     G["builtup_frac"] = _nc("earth_barren", "builtup_frac"); src["builtup_frac"] = "WorldCover built-up fraction (TAE)"
     pf = _nc("earth_permafrost", "permafrost_frac")
     cold = (G["ts_mean_k"] < 273.15).astype(float) if "ts_mean_k" in G else np.full_like(pf, np.nan)
     G["ice_index"] = np.where(np.isfinite(pf), pf, cold)
+    G["permafrost_frac"] = pf; src["permafrost_frac"] = "ESA CCI Permafrost v5.0 PFR fraction (P1); NaN = no CCI value (gate reads 0)"
+    G["moss_lichen_frac"] = _nc("earth_moss_lichen", "moss_lichen_frac_of_land")
+    src["moss_lichen_frac"] = "WorldCover 2021 moss & lichen (class 100) fraction of land pixels (P1); Antarctic fallback 0"
     src["ice_index"] = "ESA CCI Permafrost v5.0 PFR fraction (P1); where no CCI value (25N-60S band, ice sheets, gaps): 1 if POWER TS < 273.15 K else 0"
     for col, (f, v) in dict(noon_sun_elev_deg=("earth_noon_sun_elev_deg", "noon_sun_elev_deg"),
                             column_mass_gcm2=("earth_column_mass_gcm2", "column_mass_gcm2"),
