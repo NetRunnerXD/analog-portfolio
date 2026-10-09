@@ -1,0 +1,236 @@
+{
+ "contract_version": "1.1.2",
+ "body": "moon",
+ "mock": false,
+ "grid": {
+  "resolution_deg": 0.5,
+  "ncols": 720,
+  "nrows": 360,
+  "lon_centre_first": -179.75,
+  "lat_centre_first": 89.75,
+  "row_order": "north-to-south"
+ },
+ "layout": "sparse",
+ "n_cells": 10,
+ "binary": "moon_grid.bin",
+ "byte_order": "little",
+ "arrays": [
+  {
+   "name": "cell_id",
+   "factor": null,
+   "dtype": "uint32",
+   "byte_offset": 0,
+   "length": 10,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": null,
+   "units": "cell id (sparse layout only)",
+   "stats": null,
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "ts_mean_k",
+   "factor": "F1",
+   "dtype": "uint16",
+   "byte_offset": 40,
+   "length": 10,
+   "scale": 0.01,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "K",
+   "stats": {
+    "p005": 40.98013246536255,
+    "p50": 97.79315567016602,
+    "p995": 138.93626934051514,
+    "min": 39.90257263183594,
+    "max": 139.56922912597656
+   },
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "dt_k",
+   "factor": "F2",
+   "dtype": "uint16",
+   "byte_offset": 60,
+   "length": 10,
+   "scale": 0.01,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "K",
+   "stats": {
+    "p005": 46.16885463752746,
+    "p50": 169.35507152557372,
+    "p995": 201.62843184394836,
+    "min": 41.76150238037109,
+    "max": 202.86595405578612
+   },
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "ti_class",
+   "factor": "F3",
+   "dtype": "uint8",
+   "byte_offset": 80,
+   "length": 10,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "class 1-5",
+   "stats": null,
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "slope_lt5_frac",
+   "factor": "F4",
+   "dtype": "uint8",
+   "byte_offset": 92,
+   "length": 10,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.04638651032635225,
+    "p50": 0.2021060844759231,
+    "p995": 0.4230921783417865,
+    "min": 0.04604726976365118,
+    "max": 0.4244894664621842
+   },
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "relief_m",
+   "factor": "F5",
+   "dtype": "uint16",
+   "byte_offset": 104,
+   "length": 10,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "m",
+   "stats": {
+    "p005": 595.97775,
+    "p50": 1941.4375,
+    "p995": 4085.78,
+    "min": 567.0,
+    "max": 4086.5
+   },
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "lith_class",
+   "factor": "F6",
+   "dtype": "uint8",
+   "byte_offset": 124,
+   "length": 10,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "lithology code",
+   "stats": {
+    "p005": 16.0,
+    "p50": 16.0,
+    "p995": 16.0,
+    "min": 16.0,
+    "max": 16.0
+   },
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "ice_index",
+   "factor": "F9",
+   "dtype": "uint8",
+   "byte_offset": 136,
+   "length": 10,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "index 0-1",
+   "stats": {
+    "p005": 0.06561404412467248,
+    "p50": 0.8822019395322305,
+    "p995": 1.0,
+    "min": 0.06093912379244181,
+    "max": 1.0
+   },
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "noon_sun_elev_deg",
+   "factor": "F10",
+   "dtype": "uint8",
+   "byte_offset": 148,
+   "length": 10,
+   "scale": 0.5,
+   "add_offset": -30,
+   "nodata": 255,
+   "units": "deg",
+   "stats": {
+    "p005": 0.6332083333333334,
+    "p50": 4.3845833333333335,
+    "p995": 7.6385958333333335,
+    "min": 0.5908333333333333,
+    "max": 7.743333333333333
+   },
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "column_mass_gcm2",
+   "factor": "F11",
+   "dtype": "uint16",
+   "byte_offset": 160,
+   "length": 10,
+   "scale": 0.01,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "g/cm^2",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 0.0,
+    "min": 0.0,
+    "max": 0.0
+   },
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "geomorph_flags",
+   "factor": "F13",
+   "dtype": "uint8",
+   "byte_offset": 180,
+   "length": 10,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "bitmask",
+   "stats": {
+    "p005": 16.0,
+    "p50": 33.0,
+    "p995": 49.0,
+    "min": 16.0,
+    "max": 49.0
+   },
+   "source": "target window (extract.targets)"
+  },
+  {
+   "name": "elevation_m",
+   "factor": null,
+   "dtype": "uint16",
+   "byte_offset": 192,
+   "length": 10,
+   "scale": 1,
+   "add_offset": -10000,
+   "nodata": 65535,
+   "units": "m",
+   "stats": {
+    "p005": -3778.8005000000003,
+    "p50": -103.34999999999991,
+    "p995": 5483.937,
+    "min": -3809.9,
+    "max": 5493.0
+   },
+   "source": "target window (extract.targets)"
+  }
+ ],
+ "generated_at": "2026-10-08T08:10:52+00:00"
+}

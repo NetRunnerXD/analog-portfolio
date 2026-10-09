@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.1",
+ "contract_version": "1.1.2",
  "status": "pre-registered (provisional until the Oct 28 statement diff; weights frozen before first scoring run)",
  "defaults": {
   "theta": 0.7,
