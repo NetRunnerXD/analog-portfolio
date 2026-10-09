@@ -17,6 +17,7 @@ dev = ["pytest>=8", "jsonschema>=4.21", "scipy>=1.12"]
 data = [
   "pyproj>=3.6",
   "rasterio>=1.4",
+  "pyshp>=2.3",
   "xarray>=2024.1",
   "rioxarray>=0.15",
   "netCDF4>=1.6",
