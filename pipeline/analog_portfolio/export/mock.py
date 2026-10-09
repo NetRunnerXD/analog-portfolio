@@ -24,6 +24,7 @@ from ..score.engine import (CORE, SECONDARY, aggregate, area_weights, clip_targe
                             hard_filter_mask)
 from ..score.robust import top_frac_freq
 from ..score.variants import build_variants
+from .reference import earth_reference
 
 OUT = WEB_DATA_DIR / "mock"
 INPUTS = REPO_ROOT / "pipeline" / "inputs"
@@ -117,26 +118,6 @@ def mock_continent(lat: float, lon: float) -> str:
     if -25 <= lon <= 40 and lat >= 36:
         return "Europe"
     return "Asia"
-
-
-def earth_reference(earth: dict, label: str, source: str) -> dict:
-    """Area-weighted land extremes and clip quantiles of F1/F2 from the Earth grid (gap panel values)."""
-    aw = area_weights(earth)
-    land = np.nan_to_num(earth["water_frac"], nan=1.0) < 0.5
-    out = dict(label=label, source=source, grid="0.5 deg land cells (water_frac < 0.5)", area_weighting="cos_lat",
-               n_land_cells=int(land.sum()), stats={})
-    for col in ("ts_mean_k", "dt_k"):
-        x = np.where(land, earth[col], np.nan)
-        ok = np.isfinite(x)
-        i_min = int(np.nanargmin(x)); i_max = int(np.nanargmax(x))
-        q = weighted_quantile(x[ok], aw[ok], [0.005, 0.5, 0.995])
-
-        def ext(i):
-            cid = int(earth["cell_id"][i]); la, lo = cell_centre(cid)
-            return dict(value=round(float(x[i]), 2), cell_id=cid, lat=la, lon=lo)
-        out["stats"][col] = dict(units="K", min=ext(i_min), max=ext(i_max), p0_5=round(float(q[0]), 2),
-                                 p50=round(float(q[1]), 2), p99_5=round(float(q[2]), 2))
-    return out
 
 
 def slug(name: str) -> str:
