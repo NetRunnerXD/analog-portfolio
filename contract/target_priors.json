@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.1",
+ "contract_version": "1.1.2",
  "note": "Engine-side priors keyed by Researcher target IDs (pipeline/inputs/targets.json is the source of truth for IDs, anchors, sample radii and literature values). lith_class/geomorph_flags are provisional target-side codes (factors.json vocabularies); window_offset applies to targets that share an IAU anchor; citations are research.md [R#] keys. short_name/description are UI display strings (spec v0.3 §8.6 TARGET_META, fact-checked in design/factcheck.md #17-#20).",
  "targets": {
   "moon_peak_near_cabeus_b": {
