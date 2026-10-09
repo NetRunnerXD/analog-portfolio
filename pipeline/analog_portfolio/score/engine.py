@@ -52,6 +52,15 @@ def clip_targets(target_values: dict[str, float], earth: dict[str, np.ndarray]) 
     return out
 
 
+def earth_range(earth: dict[str, np.ndarray], col: str) -> tuple[float, float]:
+    """Area-weighted Earth land P1 and P99 of a column (range normalisation span for F1/F2), cached per grid."""
+    key = f"_p01_p99_{col}"
+    if key not in earth:
+        lo, hi = weighted_quantile(earth[col], area_weights(earth), [0.01, 0.99])
+        earth[key] = (float(lo), float(hi))
+    return earth[key]
+
+
 def factor_scores(earth: dict[str, np.ndarray], target_values: dict[str, float], body: str) -> dict[str, np.ndarray]:
     """Per-factor similarity arrays s_F in [0, 1] for every Earth cell."""
     fac = {f["id"]: f for f in load("factors")["factors"]}
@@ -67,8 +76,12 @@ def factor_scores(earth: dict[str, np.ndarray], target_values: dict[str, float],
             r = 1.0 - np.abs(x - t) / (x + t)
         return np.where(x + t == 0, 1.0, r)
 
-    s["F1"] = ratio(earth["ts_mean_k"], tstar("F1"))
-    s["F2"] = ratio(earth["dt_k"], tstar("F2"))
+    def range_sim(col, fid):  # contract v1.2: F1/F2 range-normalised after the Earth clip
+        lo, hi = earth_range(earth, col)
+        return np.maximum(0.0, 1.0 - np.abs(earth[col] - tstar(fid)) / (hi - lo))
+
+    s["F1"] = range_sim("ts_mean_k", "F1")
+    s["F2"] = range_sim("dt_k", "F2")
     if target_values.get("F3") is not None:  # polar Moon targets have no F3 data -> factor dropped
         s["F3"] = 1.0 - np.abs(earth["ti_class"] - target_values["F3"]) / 4.0
     s["F4"] = np.clip(1.0 - np.abs(earth["slope_lt5_frac"] - target_values["F4"]), 0, 1)

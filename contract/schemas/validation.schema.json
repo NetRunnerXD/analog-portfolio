@@ -59,6 +59,70 @@
               "type": "null"
             }
           ]
+        },
+        "n_scored": {
+          "type": "integer",
+          "description": "Positive evaluations that passed every filter and the gate"
+        },
+        "gate_excluded": {
+          "type": "object",
+          "properties": {
+            "sites": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "n_evaluations": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "sites",
+            "n_evaluations"
+          ]
+        },
+        "land_filter_excluded": {
+          "type": "object",
+          "properties": {
+            "sites": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "n_evaluations": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "sites",
+            "n_evaluations"
+          ]
+        },
+        "hard_filter_excluded": {
+          "type": "object",
+          "properties": {
+            "sites": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "n_evaluations": {
+              "type": "integer"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "sites",
+            "n_evaluations"
+          ]
+        },
+        "denominators_note": {
+          "type": "string"
         }
       },
       "additionalProperties": false,
@@ -124,6 +188,27 @@
             "minimum": 0,
             "maximum": 259199
           },
+          "eval_cell_id": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 259199,
+            "description": "Cell actually scored: the site's own cell, or the nearest >= 50% land cell within 1 cell"
+          },
+          "snapped": {
+            "type": "boolean"
+          },
+          "snap_km": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0,
+                "description": "Great-circle km from the site to the snapped cell centre"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "results": {
             "type": "array",
             "items": {
@@ -147,6 +232,15 @@
                 },
                 "in_top1": {
                   "type": "boolean"
+                },
+                "status": {
+                  "enum": [
+                    "scored",
+                    "gate_excluded",
+                    "land_filter_excluded",
+                    "hard_filter_excluded"
+                  ],
+                  "description": "scored = passed land/built-up, profile hard filters and the body gate; excluded evaluations stay in the denominators as misses"
                 }
               },
               "additionalProperties": false,
@@ -385,6 +479,10 @@
           "covers"
         ]
       }
+    },
+    "method": {
+      "type": "string",
+      "description": "Validation method notes (snapping, percentiles, gates)"
     }
   },
   "additionalProperties": false,

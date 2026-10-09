@@ -2974,7 +2974,7 @@
    }
   }
  ],
- "contract_version": "1.1.2",
+ "contract_version": "1.2.0",
  "mock": true,
  "earth_reference": {
   "label": "MOCK: synthetic grid (not real data)",
@@ -3020,5 +3020,61 @@
     "p99_5": 37.05
    }
   }
+ },
+ "scoring_constants": {
+  "note": "Full float64 precision. All quantiles are cos(lat) area-weighted over the cells of earth_features.bin as decoded (raw * scale + add_offset), midpoint (Hazen) interpolation of the weighted CDF, NaN skipped. Target values in features.*.value / t_star are unrounded; t_star = min(max(value, p0_5), p99_5).",
+  "earth_clip": {
+   "F1": {
+    "feature": "ts_mean_k",
+    "p0_5": 222.31,
+    "p99_5": 301.73947975875376
+   },
+   "F2": {
+    "feature": "dt_k",
+    "p0_5": 2.0,
+    "p99_5": 37.05354208190868
+   },
+   "F5": {
+    "feature": "relief_m",
+    "p0_5": 65.95812507648887,
+    "p99_5": 2384.0
+   },
+   "F10": {
+    "feature": "noon_sun_elev_deg",
+    "p0_5": 7.0,
+    "p99_5": 78.0
+   }
+  },
+  "range_norm": {
+   "rule": "s = max(0, 1 - |x - t_star| / (p99 - p01))",
+   "factors": {
+    "F1": {
+     "feature": "ts_mean_k",
+     "p01": 224.67000000000002,
+     "p99": 300.03470959243515,
+     "span": 75.36470959243513
+    },
+    "F2": {
+     "feature": "dt_k",
+     "p01": 2.0067912532383314,
+     "p99": 35.980000000000004,
+     "span": 33.97320874676167
+    }
+   }
+  },
+  "gates": {
+   "mars": {
+    "params": "profiles.json defaults.candidate_gates.mars",
+    "inputs": [
+     "aridity_index",
+     "barren_frac",
+     "permafrost_frac",
+     "moss_lichen_frac",
+     "geomorph_flags"
+    ],
+    "missing": "aridity_index NaN fails A and the AI part of D; NaN barren/permafrost/moss/flags read as 0"
+   }
+  },
+  "f7_note": "F7 has no target value (null on every target): it is scored Earth-only as the area-weighted aridity percentile."
  }
 }

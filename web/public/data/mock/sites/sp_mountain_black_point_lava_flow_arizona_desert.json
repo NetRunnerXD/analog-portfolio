@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.2",
+ "contract_version": "1.2.0",
  "mock": true,
  "site_id": "sp_mountain_black_point_lava_flow_arizona_desert",
  "name": "SP Mountain / Black Point lava flow (Arizona), Desert RATS",
@@ -35,7 +35,9 @@
   "builtup_frac": 0.0,
   "travel_time_min": 243.0,
   "airport_km": 206.0,
-  "continent": 5.0
+  "continent": 5.0,
+  "permafrost_frac": 0.264,
+  "moss_lichen_frac": 0.0
  },
  "drilldown": {},
  "best_for": [],
