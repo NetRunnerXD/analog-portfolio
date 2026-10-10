@@ -1,0 +1,128 @@
+{
+ "contract_version": "1.0.0",
+ "body": "earth",
+ "mock": true,
+ "grid": {
+  "resolution_deg": 0.5,
+  "ncols": 720,
+  "nrows": 360,
+  "lon_centre_first": -179.75,
+  "lat_centre_first": 89.75,
+  "row_order": "north-to-south"
+ },
+ "layout": "sparse",
+ "n_cells": 7,
+ "binary": "parity_grid.bin",
+ "byte_order": "little",
+ "arrays": [
+  {
+   "name": "cell_id",
+   "factor": null,
+   "dtype": "uint32",
+   "byte_offset": 0,
+   "length": 7,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": null,
+   "units": "",
+   "stats": null,
+   "source": ""
+  },
+  {
+   "name": "ts_mean_k",
+   "factor": "F1",
+   "dtype": "uint16",
+   "byte_offset": 28,
+   "length": 7,
+   "scale": 0.01,
+   "add_offset": 150,
+   "nodata": 65535,
+   "units": "",
+   "stats": {
+    "p005": 101.25,
+    "p50": 256.687,
+    "p995": 995.13325,
+    "min": 100.0,
+    "max": 1000.0
+   },
+   "source": ""
+  },
+  {
+   "name": "ti_class",
+   "factor": "F3",
+   "dtype": "uint8",
+   "byte_offset": 44,
+   "length": 7,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "",
+   "stats": {
+    "p005": 0.025,
+    "p50": 2.5,
+    "p995": 4.975,
+    "min": 0.0,
+    "max": 5.0
+   },
+   "source": ""
+  },
+  {
+   "name": "barren_frac",
+   "factor": "F8",
+   "dtype": "uint8",
+   "byte_offset": 52,
+   "length": 7,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "",
+   "stats": {
+    "p005": 5e-05,
+    "p50": 0.748,
+    "p995": 1.0195,
+    "min": 0.0,
+    "max": 1.02
+   },
+   "source": ""
+  },
+  {
+   "name": "noon_sun_elev_deg",
+   "factor": "F10",
+   "dtype": "uint8",
+   "byte_offset": 60,
+   "length": 7,
+   "scale": 0.5,
+   "add_offset": -30,
+   "nodata": 255,
+   "units": "",
+   "stats": {
+    "p005": -29.2565,
+    "p50": 45.15,
+    "p995": 197.41249999999997,
+    "min": -30.0,
+    "max": 200.0
+   },
+   "source": ""
+  },
+  {
+   "name": "elevation_m",
+   "factor": null,
+   "dtype": "uint16",
+   "byte_offset": 68,
+   "length": 7,
+   "scale": 1,
+   "add_offset": -500,
+   "nodata": 65535,
+   "units": "",
+   "stats": {
+    "p005": -985.75,
+    "p50": 4424.0,
+    "p995": 69875.84999999999,
+    "min": -1000.0,
+    "max": 70000.0
+   },
+   "source": ""
+  }
+ ],
+ "generated_at": "fixture"
+}
