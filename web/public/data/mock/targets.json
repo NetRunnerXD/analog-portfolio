@@ -258,6 +258,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 1.62
    }
@@ -418,6 +427,7 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [],
    "card": {
     "gravity_ms2": 1.62
    }
@@ -585,6 +595,7 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [],
    "card": {
     "gravity_ms2": 1.62
    }
@@ -745,6 +756,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 1.62
    }
@@ -908,6 +928,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 1.62
    }
@@ -1071,6 +1100,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 1.62
    }
@@ -1234,6 +1272,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 1.62
    }
@@ -1391,6 +1438,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 1.62
    }
@@ -1548,6 +1604,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 1.62
    }
@@ -1711,6 +1776,7 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [],
    "card": {
     "gravity_ms2": 1.62,
     "illumination": [
@@ -1871,6 +1937,7 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [],
    "card": {
     "gravity_ms2": 3.73
    }
@@ -2037,6 +2104,7 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [],
    "card": {
     "gravity_ms2": 3.73
    }
@@ -2191,6 +2259,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 3.73
    }
@@ -2347,6 +2424,7 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [],
    "card": {
     "gravity_ms2": 3.73
    }
@@ -2503,6 +2581,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 3.73
    }
@@ -2658,6 +2745,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 3.73
    }
@@ -2814,6 +2910,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 3.73
    }
@@ -2969,6 +3074,15 @@
      "source": "MOCK"
     }
    },
+   "dropped_factors": [
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    "F9",
+    "F10"
+   ],
    "card": {
     "gravity_ms2": 3.73
    }
