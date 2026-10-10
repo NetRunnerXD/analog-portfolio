@@ -29,6 +29,7 @@
  ],
  "uncoverable": [],
  "dropped_factors": [],
+ "insufficient_cells": 0,
  "variants": [
   {
    "id": "best_match",
@@ -46,6 +47,7 @@
      "score": 0.777,
      "score_core": 0.8631,
      "earth_percentile": 100.0,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.9975,
       "F2": 0.9662,
@@ -101,6 +103,7 @@
      "score": 0.3067,
      "score_core": 0.3407,
      "earth_percentile": 91.89,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.9056,
       "F2": 0.6947,
@@ -175,6 +178,7 @@
      "score": 0.7746,
      "score_core": 0.8605,
      "earth_percentile": 99.99,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.9987,
       "F2": 0.9956,
@@ -230,6 +234,7 @@
      "score": 0.3067,
      "score_core": 0.3407,
      "earth_percentile": 91.89,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.9056,
       "F2": 0.6947,
@@ -304,6 +309,7 @@
      "score": 0.3102,
      "score_core": 0.3445,
      "earth_percentile": 92.23,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.9055,
       "F2": 0.9078,
@@ -357,6 +363,7 @@
      "score": 0.3829,
      "score_core": 0.4253,
      "earth_percentile": 93.47,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.9998,
       "F2": 0.2675,
@@ -406,6 +413,7 @@
      "score": 0.3046,
      "score_core": 0.3384,
      "earth_percentile": 91.68,
+     "data_coverage": 1.0,
      "factor_scores": {
       "F1": 0.9056,
       "F2": 0.9532,
@@ -474,6 +482,7 @@
    "score": 0.777,
    "score_core": 0.8631,
    "earth_percentile": 100.0,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9975,
     "F2": 0.9662,
@@ -529,6 +538,7 @@
    "score": 0.775,
    "score_core": 0.861,
    "earth_percentile": 100.0,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 1.0,
     "F2": 0.9789,
@@ -584,6 +594,7 @@
    "score": 0.775,
    "score_core": 0.8609,
    "earth_percentile": 99.99,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9895,
     "F2": 0.9789,
@@ -639,6 +650,7 @@
    "score": 0.7747,
    "score_core": 0.8606,
    "earth_percentile": 99.99,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9968,
     "F2": 0.9542,
@@ -694,6 +706,7 @@
    "score": 0.7746,
    "score_core": 0.8605,
    "earth_percentile": 99.99,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9987,
     "F2": 0.9956,
@@ -749,6 +762,7 @@
    "score": 0.7742,
    "score_core": 0.86,
    "earth_percentile": 99.99,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9913,
     "F2": 0.9608,
@@ -804,6 +818,7 @@
    "score": 0.7729,
    "score_core": 0.8586,
    "earth_percentile": 99.98,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9927,
     "F2": 0.9938,
@@ -859,6 +874,7 @@
    "score": 0.7725,
    "score_core": 0.8581,
    "earth_percentile": 99.98,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9969,
     "F2": 0.9675,
@@ -914,6 +930,7 @@
    "score": 0.7699,
    "score_core": 0.8553,
    "earth_percentile": 99.97,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9901,
     "F2": 0.9836,
@@ -969,6 +986,7 @@
    "score": 0.7686,
    "score_core": 0.8538,
    "earth_percentile": 99.95,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9979,
     "F2": 0.9165,
@@ -1024,6 +1042,7 @@
    "score": 0.7673,
    "score_core": 0.8524,
    "earth_percentile": 99.93,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9886,
     "F2": 0.9536,
@@ -1079,6 +1098,7 @@
    "score": 0.7668,
    "score_core": 0.8518,
    "earth_percentile": 99.92,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9895,
     "F2": 0.9936,
@@ -1134,6 +1154,7 @@
    "score": 0.7661,
    "score_core": 0.851,
    "earth_percentile": 99.91,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9992,
     "F2": 0.8648,
@@ -1189,6 +1210,7 @@
    "score": 0.7617,
    "score_core": 0.8462,
    "earth_percentile": 99.85,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9947,
     "F2": 0.9972,
@@ -1244,6 +1266,7 @@
    "score": 0.7558,
    "score_core": 0.8396,
    "earth_percentile": 99.66,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9803,
     "F2": 0.9991,
@@ -1299,6 +1322,7 @@
    "score": 0.7519,
    "score_core": 0.8352,
    "earth_percentile": 99.51,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9991,
     "F2": 0.9142,
@@ -1354,6 +1378,7 @@
    "score": 0.7472,
    "score_core": 0.83,
    "earth_percentile": 99.32,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9961,
     "F2": 0.8575,
@@ -1409,6 +1434,7 @@
    "score": 0.7453,
    "score_core": 0.8279,
    "earth_percentile": 99.23,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9892,
     "F2": 0.8892,
@@ -1464,6 +1490,7 @@
    "score": 0.7289,
    "score_core": 0.8097,
    "earth_percentile": 98.78,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9874,
     "F2": 0.8742,
@@ -1519,6 +1546,7 @@
    "score": 0.7267,
    "score_core": 0.8073,
    "earth_percentile": 98.74,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9857,
     "F2": 0.9804,
@@ -1574,6 +1602,7 @@
    "score": 0.7221,
    "score_core": 0.8021,
    "earth_percentile": 98.68,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9999,
     "F2": 0.9265,
@@ -1629,6 +1658,7 @@
    "score": 0.7217,
    "score_core": 0.8017,
    "earth_percentile": 98.67,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.988,
     "F2": 0.999,
@@ -1684,6 +1714,7 @@
    "score": 0.72,
    "score_core": 0.7999,
    "earth_percentile": 98.63,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9848,
     "F2": 0.9553,
@@ -1739,6 +1770,7 @@
    "score": 0.7195,
    "score_core": 0.7992,
    "earth_percentile": 98.62,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9868,
     "F2": 0.9726,
@@ -1794,6 +1826,7 @@
    "score": 0.717,
    "score_core": 0.7965,
    "earth_percentile": 98.56,
+   "data_coverage": 1.0,
    "factor_scores": {
     "F1": 0.9991,
     "F2": 0.9421,

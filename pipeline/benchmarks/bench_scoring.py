@@ -6,7 +6,9 @@
 Synthetic Earth columns quantized like earth_features.bin (so ties are realistic). Measures:
   1. engine.factor_scores + engine.aggregate per (target, profile)  -- current code
   2. naive Monte Carlo: engine.aggregate once per Dirichlet draw     -- what a direct port would do
-  3. log-space matmul Monte Carlo, draws chunked, float32            -- proposed
+  3. score.robust.top_frac_freq: log-space matmul MC, float32, draws chunked, area-weighted top-5% threshold
+     per draw over all land cells (the shipped implementation, review-01 decision #3)
+--missing F sets a fraction F of cells to NaN in two Earth columns to exercise the missing-data path.
 Peak memory = tracemalloc peak of numpy allocations inside each stage.
 """
 from __future__ import annotations
@@ -20,8 +22,9 @@ import tracemalloc
 import numpy as np
 
 from analog_portfolio.contract import load
-from analog_portfolio.score.engine import CORE, SECONDARY, aggregate, factor_scores, hard_filter_mask
-from analog_portfolio.score.normalize import FLOOR
+from analog_portfolio.score.engine import CORE, aggregate, area_weights, factor_scores, hard_filter_mask, score_cells
+from analog_portfolio.score import robust
+from analog_portfolio.score.robust import top_frac_freq
 
 
 def q(x, step, lo=None, hi=None):
@@ -69,29 +72,6 @@ def timed(fn, *a, **k):
     return out, dt, peak
 
 
-def mc_matmul(s, w, mask, draws, rng, chunk, top_k, cand):
-    """Proposed MC: S_d = exp(w_d . L) * nudge, float32, draws in chunks of `chunk`, (draw x cell) layout so the
-    per-draw top-k partition runs over contiguous memory. Returns top-k frequency and median rank (within the
-    candidate pool) for each candidate index in `cand`."""
-    act = [f for f in CORE if w.get(f, 0) > 0]  # Dirichlet over active factors only (alpha must be > 0)
-    Lt = np.stack([np.log(np.maximum(s[f], FLOOR)) for f in act]).astype("float32")  # K x N
-    nudge = (0.9 + 0.1 * np.mean([s[f] for f in SECONDARY], axis=0)).astype("float32") * mask  # filtered -> 0
-    alpha = 50 * np.array([w[f] for f in act], dtype="float64") / sum(w[f] for f in act)  # alpha0 = 50
-    W = rng.dirichlet(alpha, size=draws).astype("float32")  # D x K, rows sum to 1
-    n = Lt.shape[1]
-    topk_hits = np.zeros(len(cand), dtype="int32")
-    ranks = np.empty((draws, len(cand)), dtype="int32")
-    for d0 in range(0, draws, chunk):
-        S = W[d0:d0 + chunk] @ Lt  # c x N log-scores
-        np.exp(S, out=S)
-        S *= nudge
-        kth = np.partition(S, n - top_k, axis=1)[:, n - top_k]  # k-th largest per draw
-        Sc = S[:, cand]  # c x C
-        topk_hits += (Sc >= kth[:, None]).sum(axis=0)
-        ranks[d0:d0 + chunk] = np.argsort(np.argsort(-Sc, axis=1, kind="stable"), axis=1) + 1
-    return topk_hits / draws, np.median(ranks, axis=0)
-
-
 _CTX = None
 
 
@@ -99,11 +79,8 @@ def _pair_job(tp):
     earth, cache, draws, chunk = _CTX
     t, pid = tp
     p = next(x for x in load("profiles")["profiles"] if x["id"] == pid)
-    ss = cache[t]
-    mk = hard_filter_mask(earth, p).astype("float32")
-    _, tot = aggregate(ss, p["weights"])
-    cd = np.argsort(-np.where(mk > 0, tot, 0), kind="stable")[:500]
-    mc_matmul(ss, p["weights"], mk, draws, np.random.default_rng(20261114), chunk, 10, cd)
+    top_frac_freq(cache[t], p["weights"], hard_filter_mask(earth, p), area_weights(earth), draws=draws, chunk=chunk,
+                  valid=score_cells(cache[t], p["weights"])["sufficient"])
     return tp
 
 
@@ -114,9 +91,16 @@ def main():
     ap.add_argument("--chunk", type=int, default=100)
     ap.add_argument("--naive-draws", type=int, default=1000, help="draws to time for the naive per-draw aggregate")
     ap.add_argument("--jobs", type=int, default=os.cpu_count(), help="processes for the parallel all-pairs run")
+    ap.add_argument("--missing", type=float, default=0.0, help="fraction of NaN cells in ts_mean_k and lith_class")
+    ap.add_argument("--full-sort-pair", action="store_true", help="also time one pair with the full-sort threshold")
     a = ap.parse_args()
     profiles = load("profiles")["profiles"]
     earth = synth_earth(a.cells)
+    if a.missing:
+        r = np.random.default_rng(1)
+        for k in ("ts_mean_k", "lith_class"):
+            earth[k][r.uniform(size=a.cells) < a.missing] = np.nan
+    aw = area_weights(earth)
     pairs = [(t, p) for t in TARGETS for p in profiles if t.split("_")[0] in p["bodies"]]
     print(f"cells={a.cells} targets={len(TARGETS)} pairs={len(pairs)} draws={a.draws}")
 
@@ -136,7 +120,7 @@ def main():
     for t, p in pairs:
         aggregate(cache[t], p["weights"])
     t_cached = time.perf_counter() - t0
-    print(f"[1] all {len(pairs)} pairs, per-profile recompute (mock.py style): {t_all:.2f} s; factor_scores cached per target: {t_cached:.2f} s")
+    print(f"[1] all {len(pairs)} pairs, per-profile recompute (pre-review mock.py): {t_all:.2f} s; factor_scores cached per target: {t_cached:.2f} s")
 
     # 2. naive MC: aggregate per draw for one pair
     rng = np.random.default_rng(20261114)
@@ -153,31 +137,36 @@ def main():
     _, t_nv, m_nv = timed(naive)
     print(f"[2] naive MC, {a.naive_draws} draws, one pair: {t_nv:.2f} s (peak {m_nv/2**20:.0f} MiB, float64 D x N kept)")
 
-    # 3. proposed MC
-    mask = hard_filter_mask(earth, profiles[1]).astype("float32")
-    core, total = aggregate(s, w)
-    cand = np.argsort(-np.where(mask > 0, total, 0), kind="stable")[:500]
-    (freq, med), t_mm, m_mm = timed(mc_matmul, s, w, mask, a.draws, np.random.default_rng(20261114), a.chunk, 10, cand)
-    print(f"[3] matmul MC, {a.draws} draws (chunk {a.chunk}), 500 candidates, one pair: {t_mm:.2f} s (peak {m_mm/2**20:.0f} MiB)")
+    # 3. shipped MC (score.robust.top_frac_freq)
+    mask = hard_filter_mask(earth, profiles[1])
+    print(f"    insufficient_data cells for this pair: {int((~score_cells(s, w)['sufficient']).sum())}")
+    _, t_mm, m_mm = timed(top_frac_freq, s, w, mask, aw, draws=a.draws, chunk=a.chunk)
+    print(f"[3] top_frac_freq, {a.draws} draws (chunk {a.chunk}), one pair: {t_mm:.2f} s (peak {m_mm/2**20:.0f} MiB)")
+    if a.full_sort_pair:
+        fast = robust._wq_rows
+        robust._wq_rows = robust._wq_rows_full  # merged v1.1.1 threshold: full stable sort of every draw
+        try:
+            ref, t_fs1, _ = timed(top_frac_freq, s, w, mask, aw, draws=a.draws, chunk=a.chunk)
+        finally:
+            robust._wq_rows = fast
+        same = np.array_equal(ref, top_frac_freq(s, w, mask, aw, draws=a.draws, chunk=a.chunk))
+        print(f"[3] same pair with the full-sort threshold (_wq_rows_full): {t_fs1:.2f} s; identical frequencies: {same}")
 
     t0 = time.perf_counter()
     tracemalloc.start()
     for t, p in pairs:
-        ss = cache[t]
-        mk = hard_filter_mask(earth, p).astype("float32")
-        _, tot = aggregate(ss, p["weights"])
-        cd = np.argsort(-np.where(mk > 0, tot, 0), kind="stable")[:500]
-        mc_matmul(ss, p["weights"], mk, a.draws, np.random.default_rng(20261114), a.chunk, 10, cd)
+        top_frac_freq(cache[t], p["weights"], hard_filter_mask(earth, p), aw, draws=a.draws, chunk=a.chunk,
+                      valid=score_cells(cache[t], p["weights"])["sufficient"])
     peak = tracemalloc.get_traced_memory()[1]
     tracemalloc.stop()
-    print(f"[3] matmul MC, all {len(pairs)} pairs x {a.draws} draws: {time.perf_counter()-t0:.1f} s (peak {peak/2**20:.0f} MiB)")
+    print(f"[3] top_frac_freq, all {len(pairs)} pairs x {a.draws} draws: {time.perf_counter()-t0:.1f} s (peak {peak/2**20:.0f} MiB)")
     if a.jobs > 1:
         global _CTX
         _CTX = (earth, cache, a.draws, a.chunk)
         t0 = time.perf_counter()
         with ProcessPoolExecutor(a.jobs) as ex:  # fork: workers inherit _CTX
             list(ex.map(_pair_job, [(t, p["id"]) for t, p in pairs]))
-        print(f"[3] matmul MC, all {len(pairs)} pairs x {a.draws} draws, {a.jobs} processes: {time.perf_counter()-t0:.1f} s")
+        print(f"[3] top_frac_freq, all {len(pairs)} pairs x {a.draws} draws, {a.jobs} processes: {time.perf_counter()-t0:.1f} s")
     full = 720 * 360 * len(TARGETS) * 5 * a.draws
     print(f"naive full broadcast would be {full:.3g} values = {full*8/1e9:.0f} GB float64 / {full*4/1e9:.0f} GB float32")
 

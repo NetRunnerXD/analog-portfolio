@@ -2,7 +2,8 @@
 
 *Reviewer: Code Optimizer and Evaluator (Grok Bot), first pass, Thu Oct 8, 2026 (IST). Requested by Project 1.*
 *Reviewed: `origin/main` @ `d3c98bd` (line numbers below refer to that commit unless marked "after fix"). The owner's local `main` has one unpushed CI commit (`845610c`). This branch is based on `origin/main` on purpose, so it **does not** carry that commit. GitHub CI therefore won't run on this PR until the CI commit lands on `main`. `feat/web-ui` doesn't exist on the remote yet, so the TS port was reviewed on `main` only.*
-*Spec: `docs/plan.md` §2, `docs/DATA_CONTRACT.md`, `contract/*.json`. No contract file was changed. Proposed contract changes are listed in §7.*
+*Spec: `docs/plan.md` §2, `docs/DATA_CONTRACT.md`, `contract/*.json`. No contract file was changed in the first pass. Proposed contract changes are listed in §7.*
+*Update 2 (same day): Project 1 decided §7 C1/C2/C4/C5 and merged them as contract v1.1 + v1.1.1 (`origin/main` @ `90454a3`). This branch is now **rebased onto `origin/main` @ `038cde4`** (v1.1.1 plus the CI and deploy merges) and implements the decisions in code. CI (`.github/workflows/ci.yml`) is now on `main`, so it will run on this PR. See §0.1. Line numbers in §1 still refer to `d3c98bd`.*
 
 Every number in this document comes from a real run on the shared box (8 vCPU, 15 GB RAM, numpy 2.5.3 + OpenBLAS, Node 20.19, Vite 8.3.3). The box is shared with other agents, so expect roughly ±20% timing noise. Numbers marked *extrapolated* are explicitly scaled from a measured run.
 
@@ -23,6 +24,24 @@ The scalar math matches the spec. All 9 normalization/aggregation rules, the Ear
 
 These need settling before the real data lands.
 
+## 0.1 Update 2: decisions implemented (rebased on contract v1.1.1)
+
+The v1.1.1 merge already had the decisions in the contract text, plus α normalisation, chunked float32 MC, area-weighted mid-rank percentiles and the canonical tie-break in `mock.py`. The engine still mapped every NaN to 0, crashed on null target values other than F3 and on all-missing columns, and had no 70% rule. This commit closes those gaps.
+
+| Decision | Status | Where |
+|---|---|---|
+| #2 Earth NaN: drop the factor, renormalise, score only if ≥ 70% of active weight present, else `insufficient_data` (excluded from ranking, percentiles, thresholds, pool, set cover, robustness) | **Done** | `score/engine.py` (`score_cells`, `score_profile`, `candidate_indices`), `export/mock.py`, `score/setcover.py` (null never covers) |
+| #2 Coverage per cell | **Done**: `data_coverage` on every site; `insufficient_cells` per portfolio | `engine.score_cells`, schemas |
+| #2 Target nulls after sampling: drop + renormalise + flag | **Done**: `targets.json → targets[].dropped_factors` (documented in DATA_CONTRACT §3.2 item 5 and §5); F7/F11/F12 never dropped (Earth-only) | `engine.target_dropped_factors`, `factor_scores` |
+| #2 Never crash on null/NaN | **Done**: all-missing cells, columns, targets and empty grids are tested with `RuntimeWarning` promoted to error | `tests/test_missing_data.py` |
+| #3 Dirichlet α = 50·w, w normalised over active factors, zero weights exactly zero | Already in v1.1.1 (`robust.draw_weights` samples active factors only); now tested | `tests/test_robust.py` |
+| #3 Robust = area-weighted top 5% of land in ≥ 80% of draws, chunked float32 matmul, seeded | Already in v1.1.1. **Made ~7× faster per pair with bit-identical frequencies** (threshold from the top of each draw instead of a full stable sort; §2.1). `valid=` now passed so insufficient cells are excluded. `robust_flags` is the single 0.8 rule | `score/robust.py` |
+| #4 Mid-rank | Already in v1.1.1 (area-weighted, Hazen-type). Engine percentiles now keep missing as NaN instead of 0 | `engine._pct_rank` |
+| #5 Stable sort with cell-index tie-break | `mock.py` already had it inline (s_f → S → index). Moved into `engine.candidate_indices` (single source for the real exporter), missing s_f never ranks | `engine.candidate_indices` |
+| Perf: per-target factor cache | **Done** (`engine.FactorCache`, used by `mock.py`) | |
+
+Mock assets were regenerated. **All existing scores, percentiles, pools and `top5_freq` values are byte-identical.** The mock grid has no NaN cells, so the only changes are the new fields (`dropped_factors` on 18 targets, `data_coverage` on every site, `insufficient_cells: 0`). That's a good check that the rewrite didn't change behaviour on complete data.
+
 ## 1. Findings
 
 ### High
@@ -41,13 +60,15 @@ These need settling before the real data lands.
 - `engine.py:88` applies `np.nan_to_num(...)` to every factor score, so a missing Earth value becomes s = 0. `aggregate` then floors that to 0.01. For P2 (F9 weight 30) a single missing ice value multiplies S_core by 0.01^0.30 ≈ **0.25**. `_pct_rank` also maps NaN to 0 (F7/F11/F12), and the F6 lithology lookup sends NaN to class 0 (no data), which scores 0.
 - On the target side, `engine.py:61/70/71/75/77/78/84` index `target_values[F]` directly. Researcher's `targets.json` deliberately has `null` values ("sample it in the pipeline"), so any target with a still-missing factor raises `KeyError`/`TypeError`.
 - **Why it matters:** real Earth layers will have gaps (coastal cells, small islands, Antarctica in some products, GLiM no-data). Those cells get silently pushed down the ranking, which biases blind-rediscovery validation, because famous analogs are often on coasts and islands (Lanzarote, Svalbard, Devon Island).
-- **Fix:** a contract decision is needed (§7 C1). Recommended: renormalize weights over the factors that have data in each cell, require at least 80% of profile weight to be present (otherwise S = NaN, excluded and shown as "insufficient data"), and treat target nulls as "factor dropped for this target", listed in `targets.json`. The current behaviour is pinned by `test_missing_earth_value_counts_as_zero_similarity`, so the change will be deliberate.
+- **Status (update 2): resolved.** Contract v1.1.1 §3.2 items 5–6 and this branch's engine/mock changes (§0.1). Threshold is 70% (not the 80% proposed here). `test_missing_earth_value_is_missing_not_zero` replaces the old pinning test.
+- **Original fix proposal:** a contract decision is needed (§7 C1). Recommended: renormalize weights over the factors that have data in each cell, require at least 80% of profile weight to be present (otherwise S = NaN, excluded and shown as "insufficient data"), and treat target nulls as "factor dropped for this target", listed in `targets.json`. The current behaviour is pinned by `test_missing_earth_value_counts_as_zero_similarity`, so the change will be deliberate.
 
 **H3. The Monte Carlo spec is ambiguous enough to make the "robust" badge meaningless.** MC isn't implemented yet: mock writes `draws: 0`, and `median_rank` is the NMS index (`mock.py:294, 320`).
 - **α scale.** `profiles.json → monte_carlo.dirichlet_alpha_scale = 50` with "α = 50·w". If w is the integer percent weights (Σ = 100), α0 = 5,000 and the F9 weight in P2 moves by only **0.64 pp** (SD, measured over 20k draws), so nearly every site would be "robust". If w is normalized (Σ = 1), α0 = 50 and the SD is **6.39 pp**, which matches what the plan means.
 - **Zero weights.** Every profile has at least one w = 0. `numpy.random.default_rng().dirichlet` returns 0 for α = 0, but legacy `np.random.dirichlet` raises `alpha <= 0`, and gamma-based JS samplers return NaN.
 - **Rank definitions.** "Median rank" and "top-k frequency" don't say whether ranks are among all Earth cells, cells passing the hard filters, or the candidate pool.
-- **Fix:** see §7 C4. The benchmark's proposed implementation (`pipeline/benchmarks/bench_scoring.py`) uses normalized α over active factors only.
+- **Status (update 2): resolved.** v1.1 replaced top-k with "area-weighted top 5% of land in ≥ 80% of draws", and v1.1.1 normalised α over active factors. MC is implemented in `score/robust.py` and is now tested: α scale/variance, exact-zero weights, seeding, chunk invariance, float64 reference, threshold, 0.8 boundary.
+- **Original fix proposal:** see §7 C4. The benchmark's proposed implementation (`pipeline/benchmarks/bench_scoring.py`) uses normalized α over active factors only.
 
 ### Medium
 
@@ -58,7 +79,8 @@ These need settling before the real data lands.
   - `uv_index`: spread 0.021.
   - `aridity_index`: spread 0.011.
 - Real uint8 columns (rigidity, UV: ≤ 254 distinct values over ~85k cells) will have much larger tie groups. This would also break JS parity, since any port that orders ties differently gives different scores.
-- **Fix (applied):** midrank, P = midrank / (n_finite − 1), NaN → 0 as before. Tests check order independence under permutation. **Mock assets will change slightly when regenerated.**
+- **Status (update 2):** superseded by v1.1.1's area-weighted mid-rank (`grid.area.weighted_pct_rank`, P = (weight below + ½ tie weight) / total). The engine keeps missing values as NaN.
+- **Fix (applied in the first pass):** midrank, P = midrank / (n_finite − 1), NaN → 0 as before. Tests check order independence under permutation. **Mock assets will change slightly when regenerated.**
 
 **M2. The Earth clip has two possible sources that disagree.** `engine.clip_targets` (`engine.py:48`) runs `np.nanpercentile` (linear) on decoded, quantized values. The manifest's `stats.p005/p995` come from **pre-quantization** values (`grid/binary.py:48-54`). A JS port will naturally read the manifest, so t* can differ by up to one quantization step.
 - Neither source applies the cos(lat) area weighting that `DATA_CONTRACT.md` §1 mentions for "global statistics".
@@ -66,12 +88,14 @@ These need settling before the real data lands.
 
 **M3. Candidate-pool selection isn't reproducible when scores tie.** `export/mock.py:274` uses `np.argsort(-s[f][ok])` with the default unstable quicksort. Several factors have discrete scores: F3 ∈ {0, .25, .5, .75, 1}, F6 takes matrix values, F8 = 1 for every fully barren cell, F13 is a fraction of bits. So which 50 cells enter the pool for those factors depends on the numpy version and platform, and a JS port can't match it.
 - **Fix:** `np.lexsort((cell_id, -S, -s_f))`: s_f descending, then S descending, then cell_id ascending. Write the rule into the contract (§7 C5).
+- **Status (update 2): resolved.** Contract v1.1.1 §3.2 item 7; `engine.candidate_indices` implements it, with tests for exact ties at the top-N cut.
 
 **M4. Performance at production scale.** Full numbers are in §2.
 - The naive Monte Carlo (one `aggregate` call per draw) costs 3.2 s per (target, profile) at 85k cells. That's about **4.3 min** for 80 pairs (*extrapolated*), with 652 MiB for a 1000 × N float64 block.
 - A full broadcast (720·360·18·5·1000 = 2.33e10 values) would be **187 GB** in float64. Nothing in the repo does this, but nothing chunks either, because MC doesn't exist yet.
 - `mock.py:262` recomputes `factor_scores` for each profile. Caching per target cuts the 80-pair deterministic pass from 4.56 s to 1.11 s.
 - Recommended design: measured 8.3 s for all 80 pairs × 1000 draws on 8 processes, peak 105 MiB per process.
+- **Status (update 2):** factor cache adopted (`engine.FactorCache`). The merged area-weighted MC was 6.8–7.0× slower per pair than needed because it fully sorted every draw. Fixed, see §2.1.
 
 **M5. Quantization clips out-of-range values silently and turns ±inf into valid numbers.** `grid/binary.py:22-31`.
 - The fixture shows it: in the Earth `ts_mean_k` column (offset 150 K), 100 K decodes as **150 K** and 1000 K as **805.34 K**. `+inf` becomes 65534 (a valid value), not nodata.
@@ -88,14 +112,14 @@ These need settling before the real data lands.
 
 ### Low
 
-- **L1. NaN in the scalar geometric mean depends on argument order.** `normalize.py:58`: `max(nan, 0.01)` is `nan`, but `max(0.01, nan)` is `0.01`. JS `Math.max(NaN, …)` is NaN (`normalize.ts:31`), while the engine floors NaN. That's three different behaviours. A missing score key raises `KeyError` in Python but gives NaN in JS. Align these with the H2 decision.
+- **L1. NaN in the scalar geometric mean depends on argument order.** `normalize.py:58`: `max(nan, 0.01)` is `nan`, but `max(0.01, nan)` is `0.01`. JS `Math.max(NaN, …)` is NaN (`normalize.ts:31`), while the engine floors NaN. That's three different behaviours. A missing score key raises `KeyError` in Python but gives NaN in JS. Align these with the H2 decision. **Python resolved (update 2):** `geometric_mean` drops absent/None/NaN scores, renormalises, and takes an optional `min_coverage`; `total_score` averages the secondaries that are present. **JS `normalize.ts` still needs the same change** (Programmer).
 - **L2. Set cover depended on the hash seed. Fixed.** `setcover.py` summed gains over a Python `set` of factor IDs, so the order (and so the last float bits) depended on `PYTHONHASHSEED`, which could flip exact ties. `s in chosen` was an O(n) deep dict comparison. Now it uses ordered lists, tracks sites by index, and has a hash-seed regression test.
   - Remaining: JS `greedyPortfolio` returns only the chosen sites, while Python also returns covered and uncoverable. The tie rule (first site in pool order wins) should go in the contract (§7 C5).
 - **L3. All-zero weights crashed `aggregate()`. Fixed.** It raised `ZeroDivisionError` (`engine.py:97`), for example when a Custom profile has every slider at 0, while scalar `geometric_mean` returns 0. It now returns zeros.
 - **L4. F13 used a per-cell Python loop. Fixed.** `engine.py:84-87` took 12.4 ms of ~60 ms per `factor_scores` call at 85k cells. A popcount lookup table takes 0.2 ms, with identical results (tested for all 256 flag values).
-- **L5. Hard filters aren't applied inside the engine.** Callers have to remember `np.where(mask, total, 0)` (`mock.py:265`), and "P5 disabled for Moon" isn't enforced in the engine. Add a single `score(earth, target, profile) -> (S_core, S, mask)` entry point.
+- **L5. Hard filters aren't applied inside the engine.** Callers have to remember `np.where(mask, total, 0)` (`mock.py:265`), and "P5 disabled for Moon" isn't enforced in the engine. Add a single `score(earth, target, profile) -> (S_core, S, mask)` entry point. **Resolved (update 2):** `engine.score_profile` returns core, total, S (filtered 0, insufficient NaN), mask, coverage and sufficient.
 - **L6. `cell_id` has no lower clamp.** `grid/__init__.py:32` and `normalize.ts:42`: lat > 90 gives a negative ID. A NaN latitude raises in Python and gives NaN in JS. Validate inputs.
-- **L7. Mock robustness fields are placeholders.** `median_rank` is the NMS index, `topk_freq` is 0 and `draws` is 0 (`mock.py:294, 320`), and the pool is cut to 200 sites (`mock.py:301`; the spec says ~500). The UI shouldn't show "robust" badges from mock data.
+- **L7. Mock robustness fields are placeholders.** `median_rank` is the NMS index, `topk_freq` is 0 and `draws` is 0 (`mock.py:294, 320`), and the pool is cut to 200 sites (`mock.py:301`; the spec says ~500). The UI shouldn't show "robust" badges from mock data. **Update 2:** v1.1.1 mock now runs the real MC. The 200-site pool cut remains.
 - **L8. Two MapView bugs (Programmer).** `onSelect` is captured once at mount, so it goes stale (`MapView.tsx:56-62`). In StrictMode dev, the double mount creates two `Map` instances, and cleanup only calls `setTarget(undefined)` (`:63`). Call `map.dispose()` and keep the callback in a ref.
 - **L9. Tests aren't type-checked.** `web/tsconfig.app.json` excludes `src/**/*.test.ts`, and vitest doesn't type-check. Add a `tsconfig.test.json` or run `vitest --typecheck`.
 
@@ -139,6 +163,23 @@ Script: `pipeline/benchmarks/bench_scoring.py`. It uses synthetic Earth columns 
 
 Per-chunk breakdown at 85k cells, 100 draws: GEMM 2.9 ms, `exp` 8.1 ms, partition 18.0 ms, candidate argsort 0.9 ms.
 
+### 2.1 Update 2: shipped MC (`score/robust.top_frac_freq`, contract v1.1.1 rule)
+
+Same script, on contract v1.1.1 (`90454a3`) plus this branch, `OPENBLAS_NUM_THREADS=1`, 1000 draws, chunks of 100. The box load average was 4–11 during these runs because other agents were working, so treat timings as ±30%.
+
+| Stage | 85,000 land cells | 259,200 cells (full 720×360) |
+|---|---|---|
+| One pair, merged v1.1.1 threshold (`_wq_rows_full`: full stable sort of every draw) | 12.30 s | 27.13 s |
+| One pair, this branch (`_wq_rows`: top slice) | **1.82 s** (6.8×), peak 80 MiB | **3.88 s** (7.0×), peak 243 MiB |
+| Frequencies identical to the full-sort version | yes (`np.array_equal`) | yes |
+| All 80 pairs, serial | 152.5 s | 353.5 s |
+| **All 80 pairs, 8 processes** | **17.1 s** | **61.9 s** |
+| Deterministic pass, 80 pairs, per-profile recompute → `FactorCache` | 10.76 s → 3.16 s | 21.24 s → 6.41 s |
+
+**Why it was slow.** The v1.1 rule needs an area-weighted P95 per draw, not just the k-th largest value. `_wq_rows_full` did a stable `argsort` of every c × N chunk, which took ~700 ms per 50 draws at 85k. P95 only depends on the top ~5% of cells. So `_wq_rows` does one batched `np.partition` per chunk to get each draw's m-th largest value (m ≈ 1.3 × 5% × N). Then, per draw, it stable-sorts only the cells ≥ that value (whole tie groups, same index order as the full sort) and rebuilds the weighted CDF of that suffix from the total area. If the first suffix cell is already above q (the top cells hold little area), it widens m 4× and repeats. It then applies the same Hazen interpolation, so the result equals `grid.area.weighted_quantile`. Thresholds agree to ≤ 1e-12 relative (float summation order). Tests: `test_fast_rows_match_full_sort` (ties, S = 0 cells, random weights) and `test_widening_when_top_cells_have_little_area`. The deterministic pass is slower than in §2 (3.16 s vs 1.11 s at 85k) because v1.1 made every percentile and clip area-weighted.
+
+A full-grid run (80 pairs × 1000 draws) now fits in about a minute on 8 cores. Peak memory is ~340 MiB per process at 259k cells with chunk 100. Lower `chunk` if memory matters.
+
 ## 3. Web bundle (measured with `vite build`, Vite 8.3.3)
 
 | Variant | Initial JS (min / gzip) | Lazy JS (gzip) | Total JS gzip | Vite warning |
@@ -172,6 +213,8 @@ These trials ran in a scratch copy. **No `web/` source change is in this PR** ap
 | vitest | 9 passed. `normalize.ts` 90.8% statements / 78.4% branches; `data.ts` 0% | **19 passed**. `normalize.ts` 92.3% / 83.8%; `data.ts` 79.3% / 90% (`loadGrid` now tested) |
 | `npm run build` | passes (warning) | passes (warning unchanged, see §3) |
 
+**After update 2** (rebased on v1.1.1): pytest **136 passed**, total 66% statements+branches; `engine.py` 99%, `robust.py` 98%, `setcover.py` 96%, `normalize.py` 91%. `mock.py` is still 0% (exercised only by regenerating the assets, whose schemas the suite validates). vitest 19 passed; build passes with the same warning.
+
 Still untested:
 - `export/mock.py` (candidate pool, NMS, validation metrics, AUC). It's generator code, but the real exporter will copy it, so test pool, NMS and AUC on toy inputs.
 - `grid.haversine_km`, `lon_centres` and `lat_centres`.
@@ -190,14 +233,34 @@ Still untested:
 | `pipeline/benchmarks/bench_scoring.py` | New benchmark used for §2. Not part of the test suite |
 | `.gitignore` | Coverage artefacts |
 
-**Regenerating mock assets** (`python -m analog_portfolio.export.mock`) after this PR will change F7/F11/F12 scores slightly, because of the tie fix. The committed mock files weren't regenerated, to keep this PR small.
+**Regenerating mock assets** (first pass): not done then, to keep the PR small.
+
+**Update 2 commit** (on top of contract v1.1.1):
+
+| File | Change |
+|---|---|
+| `pipeline/analog_portfolio/score/engine.py` | Missing-data rule (NaN = missing, per-cell renormalisation, 70% coverage, `insufficient_data`); null/non-finite target values drop target-dependent factors; never raises on null/NaN/absent columns/empty grids; `score_cells`, `score_profile`, `candidate_indices` (canonical tie-break), `target_dropped_factors`, `FactorCache` |
+| `pipeline/analog_portfolio/score/robust.py` | `_wq_rows` top-slice threshold (7×, identical output), guard for nothing-scorable, `robust_flags` |
+| `pipeline/analog_portfolio/score/setcover.py` | A null/NaN factor score never covers |
+| `pipeline/analog_portfolio/score/normalize.py` | Scalar `geometric_mean`/`total_score` skip missing scores (L1, Python side) |
+| `pipeline/analog_portfolio/export/mock.py` | Factor cache, `score_profile`/`candidate_indices`, `valid=` to MC, `data_coverage`, `insufficient_cells`, `targets[].dropped_factors`, insufficient cells skipped in validation |
+| `pipeline/analog_portfolio/schemas_gen.py` + `contract/schemas/{targets,portfolio,validation}.schema.json` | Minimal additive fields: `targets[].dropped_factors`, site `data_coverage`, portfolio `insufficient_cells` (regenerated; drift check clean) |
+| `docs/DATA_CONTRACT.md` | Documents those fields and the active-weight / null-export details; changelog row. No rule or value changed |
+| `web/public/data/mock/*` | Regenerated: only the new fields are added; existing values byte-identical |
+| `pipeline/tests/test_missing_data.py`, `test_robust.py`, `test_engine.py` | 70% boundary (exact, just above, just below, 10 equal weights), all-NaN cell / grid / columns, empty grid, target null, invalid F6 code, zero weights in MC, MC determinism and chunk invariance, float64 MC reference, threshold vs full sort and widening, area weighting, 0.8 boundary, dominant/filtered/insufficient cells, tie-break and pool exclusion |
+| `pipeline/benchmarks/bench_scoring.py` | Times the shipped `top_frac_freq`; `--full-sort-pair`, `--missing` |
 
 ## 6. Not done / follow-ups
 
 - No JS engine-level parity yet: the JS engine doesn't exist. See H1 and §7 C7.
 - `feat/web-ui` wasn't on the remote at review time, so the TS scorer on that branch wasn't reviewed.
 - Bundle variants A, C and D were measured in a scratch copy, not applied, because `web/` belongs to Programmer.
-- MC isn't implemented. The benchmark's `mc_matmul` is a reference design, not production code.
+- ~~MC isn't implemented.~~ Implemented in v1.1.1, sped up and tested in update 2.
+- **Update 2 follow-ups (not done here):**
+  - JS: `normalize.ts` `geometricMean`/`totalScore` and the `feat/web-ui` engine (`nan0`/`clip01` map NaN → 0) need the same missing-data rule. JS `greedyPortfolio` must treat null as "doesn't cover". `web/src/types/contract.ts` still types `robustness{median_rank, topk_freq}` and `monte_carlo{top_k}` (type-only, unused). Left to Programmer (`web/`).
+  - GLiM code 0 (`nd`) is still class 0 with similarity 0, not missing (literal reading of the contract). If GLiM `nd` really means "no data", map it to NaN in the extractor.
+  - `uncoverable` still lists dropped factors (unchanged v1.1.1 behaviour). The UI may want to show them as "no target data" instead.
+  - Real data with NaNs will change S for affected cells. The mock grid has no NaN cells, so the mock can't show this.
 
 ## 7. Proposed contract changes (NOT applied; Project 1 to decide)
 
