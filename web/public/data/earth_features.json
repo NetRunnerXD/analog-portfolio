@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.2",
+ "contract_version": "1.2.0",
  "body": "earth",
  "mock": false,
  "grid": {
@@ -194,10 +194,10 @@
     "p005": 1.0,
     "p50": 10.0,
     "p995": 14.0,
-    "min": 0.0,
+    "min": 1.0,
     "max": 15.0
    },
-   "source": "GLiM dominant class (TAE)"
+   "source": "GLiM dominant class (TAE); code 0 (nd, no data) mapped to NaN"
   },
   {
    "name": "aridity_index",
@@ -210,13 +210,13 @@
    "nodata": 65535,
    "units": "P/PET",
    "stats": {
-    "p005": 0.001873882340732962,
-    "p50": 0.3798234462738037,
-    "p995": 5.2443258500099175,
+    "p005": 0.0019935630285181105,
+    "p50": 0.38517671823501587,
+    "p995": 5.031841750144951,
     "min": 0.0,
-    "max": 6.553500175476074
+    "max": 6.512879848480225
    },
-   "source": "Global-AI v3.1 (TAE); Antarctic land (no coverage) filled with 0.03 (hyper-arid polar desert, P1 assumption)"
+   "source": "Global-AI v3.1 land-pixel mean (P1 earth_aridity_land; ET0 == 65535 ocean pixels masked); Antarctic land (no coverage) filled with 0.03 (hyper-arid polar desert, P1 assumption)"
   },
   {
    "name": "barren_frac",
@@ -401,10 +401,10 @@
    "units": "fraction",
    "stats": {
     "p005": 0.0,
-    "p50": 0.0002829334407579154,
-    "p995": 0.4683641181886195,
+    "p50": 0.0,
+    "p995": 0.468,
     "min": 0.0,
-    "max": 0.4996017813682556
+    "max": 0.496
    },
    "source": "ESA WorldCover 2021 (TAE earth_barren) water + ocean nodata; fallback 1 - Natural Earth land_frac"
   },
@@ -421,9 +421,9 @@
    "stats": {
     "p005": 0.0,
     "p50": 0.0,
-    "p995": 0.11359778046607971,
+    "p995": 0.112,
     "min": 0.0,
-    "max": 0.6976290345191956
+    "max": 0.6960000000000001
    },
    "source": "WorldCover built-up fraction (TAE)"
   },
@@ -482,7 +482,7 @@
     "min": 1.0,
     "max": 7.0
    },
-   "source": "Natural Earth 1:50m admin-0 CONTINENT of the cell's modal country (extract.earth_admin)",
+   "source": "Natural Earth 1:50m admin-0 CONTINENT of the cell's modal country, except Russia, which is split at 60 deg E by cell-centre longitude (west = Europe, east = Asia). 0 = no country (open water / unassigned).",
    "codes": {
     "1": "Africa",
     "2": "Antarctica",
@@ -491,8 +491,47 @@
     "5": "North America",
     "6": "Oceania",
     "7": "South America"
-   }
+   },
+   "codes_note": "Natural Earth 1:50m admin-0 CONTINENT of the cell's modal country, except Russia, which is split at 60 deg E by cell-centre longitude (west = Europe, east = Asia). 0 = no country (open water / unassigned)."
+  },
+  {
+   "name": "permafrost_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 3146776,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction (ESA CCI PFR; Mars gate clause C)",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.6493600010871887,
+    "p995": 1.0,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "ESA CCI Permafrost v5.0 PFR fraction (P1); NaN = no CCI value (gate reads 0)"
+  },
+  {
+   "name": "moss_lichen_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 3231824,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction of land (WorldCover moss & lichen; Mars gate clause C)",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 0.839150657057762,
+    "min": 0.0,
+    "max": 0.997842013835907
+   },
+   "source": "WorldCover 2021 moss & lichen (class 100) fraction of land pixels (P1); Antarctic fallback 0"
   }
  ],
- "generated_at": "2026-10-08T08:10:51+00:00"
+ "generated_at": "2026-10-12T17:09:35+00:00"
 }
