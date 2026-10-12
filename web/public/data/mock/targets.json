@@ -3160,7 +3160,7 @@
    }
   },
   "range_norm": {
-   "rule": "s = max(0, 1 - |x - t_star| / (p99 - p01))",
+   "rule": "s = max(0, 1 - |x - t_star| / (p99 - p01)); if p99 == p01: 1 on exact match else 0",
    "factors": {
     "F1": {
      "feature": "ts_mean_k",
@@ -3174,7 +3174,9 @@
      "p99": 35.980000000000004,
      "span": 33.97320874676167
     }
-   }
+   },
+   "zero_share_of_land": {},
+   "design_note": "Intended (review M3): t* is clipped to Earth's P0.5/P99.5, so for targets beyond Earth's range every target rewards closeness to the same Earth extreme (F2 t* = P99.5 for all 18 targets). Cells farther than one P1-P99 span from t* get s = 0 and hit the 0.01 floor of the geometric mean; zero_share_of_land gives that share per target (cos(lat) area-weighted)."
   },
   "gates": {
    "mars": {
