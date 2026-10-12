@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.1.1",
+  "contract_version": "1.2.0",
   "grid": {
     "resolution_deg": 0.5,
     "ncols": 720,
@@ -29,16 +29,20 @@
       "tier": "core",
       "units": "K",
       "feature": "ts_mean_k",
-      "normalization": "ratio",
+      "normalization": "range_normalised",
       "direction": "match",
       "earth_clip": true,
       "layers": {
         "earth": "NASA POWER TS climatology (annual mean)",
-        "moon": "Diviner GCP 0.5 deg Tbol mean over local time; polar targets from GCP 90S-80S band",
+        "moon": "Diviner GCP 0.5 deg Tbol mean over local time (grid); polar targets: Diviner Polar Resource Product (south) annual temp_avg, mean of ~470 m triangles in the target window",
         "mars": "Mars Climate Database v6.2 tsurf, mean over Ls x local time"
       },
       "ui_label": "Average ground temperature",
-      "ui_copy": "The average temperature of the ground over a full day and year. Cold limits how batteries, rovers and people work, and it controls whether water stays frozen. The Moon's shadowed polar craters are far colder than anywhere on Earth, so we match as closely as Earth allows and show what's left over."
+      "ui_copy": "The average temperature of the ground over a full day and year. Cold limits how batteries, rovers and people work, and it controls whether water stays frozen. The Moon's shadowed polar craters are far colder than anywhere on Earth, so we match as closely as Earth allows and show what's left over.",
+      "params": {
+        "range": "Earth land P1..P99 (cos(lat) area-weighted)",
+        "formula": "s = max(0, 1 - |x - t*| / (P99 - P1)), t* = target clipped to Earth P0.5..P99.5; gap = |t - t*| on the unclipped target"
+      }
     },
     {
       "id": "F2",
@@ -46,16 +50,20 @@
       "tier": "core",
       "units": "K",
       "feature": "dt_k",
-      "normalization": "ratio",
+      "normalization": "range_normalised",
       "direction": "match",
       "earth_clip": true,
       "layers": {
-        "earth": "NASA POWER TS_MAX - TS_MIN climatology (upgrade: MOD11C3 day-night LST)",
+        "earth": "NASA POWER hourly-LST skin temperature climatology TS_00/05/06/13/14 (2001-2020): mean over months of (max_h - min_h). Not TS_MAX(ANN) - TS_MIN(ANN), whose ANN values are the extreme months",
         "moon": "Diviner GCP max - min over local time",
         "mars": "MCD tsurf max - min over local time"
       },
       "ui_label": "Day–night temperature swing",
-      "ui_copy": "How much the ground heats up and cools down between day and night. Big swings stress materials, seals and electronics. The Moon's equator swings by roughly 300 °C, which no place on Earth comes close to. Mars swings less, and some Earth deserts get closer to it."
+      "ui_copy": "How much the ground heats up and cools down between day and night. Big swings stress materials, seals and electronics. The Moon's equator swings by roughly 300 °C, which no place on Earth comes close to. Mars swings less, and some Earth deserts get closer to it.",
+      "params": {
+        "range": "Earth land P1..P99 (cos(lat) area-weighted)",
+        "formula": "s = max(0, 1 - |x - t*| / (P99 - P1)), t* = target clipped to Earth P0.5..P99.5; gap = |t - t*| on the unclipped target"
+      }
     },
     {
       "id": "F3",
@@ -100,7 +108,8 @@
       },
       "note": "Slope baseline is recorded per body in provenance.json.",
       "ui_label": "Flat, landable ground",
-      "ui_copy": "The share of the area flat enough for a lander to set down safely. NASA's lunar lander requirement is a tilt of 8° or less, with 5° as the goal. Steep, broken ground is risky for landers, rovers and walking astronauts."
+      "ui_copy": "The share of the area flat enough for a lander to set down safely. NASA's lunar lander requirement is a tilt of 8° or less, with 5° as the goal. Steep, broken ground is risky for landers, rovers and walking astronauts.",
+      "notes": "Known limitation (resolution mismatch): Earth slope comes from Copernicus GLO-90 read at overview level 4 (~360 m posting at the equator), Moon polar targets from LOLA 240 m, Mars from MOLA MEGDR (~463 m). Coarser postings smooth slopes, so Earth cells look flatter than they would at the Moon's 240 m baseline; F4 similarity for Moon targets is biased toward Earth cells looking landable. Not corrected (documented only)."
     },
     {
       "id": "F5",
@@ -146,7 +155,7 @@
       "direction": "lower_is_better",
       "earth_clip": false,
       "layers": {
-        "earth": "Global Aridity Index v3.1 (Zomer et al. 2022, CC BY 4.0)",
+        "earth": "Global Aridity Index v3.1 (Zomer et al. 2022, CC BY 4.0); Antarctica (not covered) filled with AI = 0.03 (hyper-arid polar desert, documented assumption)",
         "moon": "constant target: hyper-arid (AI = 0)",
         "mars": "constant target: hyper-arid (AI = 0)"
       },
@@ -180,7 +189,7 @@
       "direction": "match",
       "earth_clip": false,
       "layers": {
-        "earth": "ESA CCI Permafrost extent fraction; fallback NSIDC GGD318, then POWER mean annual TS < 273.15 K",
+        "earth": "ESA CCI Permafrost v5.0 PFR area fraction (2019-2023 mean); where CCI has no value (25N-60S band, ice sheets): 1 if POWER mean annual TS < 273.15 K else 0",
         "moon": "min(1, PSR area fraction in target window / 0.10), raised to >= Ice Favorability Index (0-1 rescaled)",
         "mars": "SWIM v4 depth band: 0-1 m -> 1.0, 1-5 m -> 0.67, >5 m -> 0.33, none -> 0; fallback Odyssey GRS WEH"
       },
@@ -227,7 +236,7 @@
       "layers": {
         "earth": "Column mass from elevation (barometric, P/g) + IGRF dipole Stormer cutoff 14.9 cos^4(lambda_m) GV",
         "moon": "constant 0 (no atmosphere, no global field); 1369 uSv/d [R20] on the gap panel",
-        "mars": "MCD surface pressure / g_mars; checked against MSL RAD 0.64 mSv/d at Gale [R31]"
+        "mars": "Hydrostatic column from MOLA window-mean elevation, 610 Pa * exp(-z/11.1 km) / g_mars (MCD v6.2 GCM topography is too coarse: Gale 619 Pa vs REMS ~850 Pa); checked against MSL RAD 0.64 mSv/d at Gale [R31]"
       },
       "ui_label": "Air & radiation shielding (tie-breaker)",
       "ui_copy": "How much air and magnetic field sit overhead to block cosmic radiation. The Moon has neither, and Mars has very thin air. Their surfaces receive roughly 100–200 times the natural radiation dose on Earth, so no Earth site truly matches. This factor only breaks ties between places that already score well, and the real gap appears in the Fidelity Gap panel."
@@ -266,7 +275,7 @@
       "direction": "match",
       "earth_clip": false,
       "layers": {
-        "earth": "Hand-curated cited lists: impact structures, lava tubes/caves, periglacial terrain, debris-covered glaciers, massifs",
+        "earth": "Complete catalogues, no hand-picking: impact structures (PASSC Earth Impact Database), Holocene volcanoes (Smithsonian GVP), periglacial = CCI permafrost >= 0.1, massif = land relief >= area-weighted P90; no Earth source for caves, debris-covered glaciers, cold traps",
         "moon": "craters, PSRs, massifs from target context",
         "mars": "craters, MGC3 caves, debris-covered glaciers, periglacial terrain"
       },

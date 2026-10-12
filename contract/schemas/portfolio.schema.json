@@ -52,6 +52,11 @@
       },
       "description": "Weighted core factors with no target value (e.g. F3 for polar Moon targets); weights renormalised"
     },
+    "insufficient_cells": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Earth cells flagged insufficient_data (< 70% of the active weight present): excluded from ranking, thresholds, pool and robustness"
+    },
     "variants": {
       "type": "array",
       "minItems": 1,
@@ -170,6 +175,12 @@
                     "type": "number",
                     "minimum": 0
                   }
+                },
+                "data_coverage": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1,
+                  "description": "Share of the active profile weight with Earth data in this cell (scored only if >= 0.7, DATA_CONTRACT 3.2 item 6)"
                 },
                 "robustness": {
                   "anyOf": [
@@ -405,6 +416,12 @@
               "type": "number",
               "minimum": 0
             }
+          },
+          "data_coverage": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Share of the active profile weight with Earth data in this cell (scored only if >= 0.7, DATA_CONTRACT 3.2 item 6)"
           },
           "robustness": {
             "anyOf": [

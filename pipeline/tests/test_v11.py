@@ -78,7 +78,7 @@ def test_variants_easy_filter_and_continent():
 
 def test_profiles_ui_fields():
     p = load("profiles")
-    assert p["contract_version"] == CONTRACT_VERSION and CONTRACT_VERSION.startswith("1.1")
+    assert p["contract_version"] == CONTRACT_VERSION and CONTRACT_VERSION.startswith("1.")
     assert [v["id"] for v in p["defaults"]["variants"]] == ["best_match", "easiest_to_reach", "one_continent"]
     mc = p["defaults"]["monte_carlo"]
     assert mc["robust_top_frac"] == 0.05 and mc["robust_min_freq"] == 0.8 and "top_k" not in mc
@@ -117,7 +117,8 @@ def test_v111_continent_column_radius_labels():
     from analog_portfolio.grid.binary import read_grid
     from analog_portfolio.grid.columns import CONTINENT_CODES, EARTH_COLUMNS
 
-    assert EARTH_COLUMNS[-1][0] == "continent" and len(EARTH_COLUMNS) == 25
+    names = [c[0] for c in EARTH_COLUMNS]
+    assert names[24] == "continent" and names[25:] == ["permafrost_frac", "moss_lichen_frac"] and len(names) == 27
     m = json.loads((WEB_DATA_DIR / "mock" / "earth_features.json").read_text())
     arr = {a["name"]: a for a in m["arrays"]}
     assert arr["continent"]["codes"] == {str(k): v for k, v in CONTINENT_CODES.items()}

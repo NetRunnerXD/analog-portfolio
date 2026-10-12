@@ -9,6 +9,7 @@ from __future__ import annotations
 import csv
 import json
 import math
+import os
 import re
 from pathlib import Path
 
@@ -20,12 +21,15 @@ from ..grid import cell_centre, cell_id, haversine_km
 from ..grid.binary import read_grid, write_grid
 from ..grid.columns import COLUMN_CODES, CONTINENT_CODES, EARTH_COLUMNS, PLANET_COLUMNS
 from ..grid.area import weighted_pct_rank, weighted_quantile
-from ..score.engine import (CORE, SECONDARY, aggregate, area_weights, clip_targets, dropped_factors, factor_scores,
-                            hard_filter_mask)
-from ..score.robust import top_frac_freq
+from ..score.engine import (CORE, SECONDARY, FactorCache, area_weights, candidate_indices, clip_targets,
+                            dropped_factors, score_profile, target_dropped_factors)
+from ..score.gates import candidate_gate
+from ..score.robust import robust_flags, top_frac_freq
 from ..score.variants import build_variants
+from .reference import earth_reference, scoring_constants
 
-OUT = WEB_DATA_DIR / "mock"
+HEADLINE_CAVEAT_UI = ("Moon results are a blind test: the scoring never saw these sites. Mars results are not blind, because the Mars dryness rule was designed using these same sites.")  # user-facing (same text as export/real.py)
+OUT = Path(os.environ.get("AP_MOCK_OUT") or WEB_DATA_DIR / "mock")  # AP_MOCK_OUT: build elsewhere, then swap
 INPUTS = REPO_ROOT / "pipeline" / "inputs"
 VALIDATION_CSV = REPO_ROOT / "docs" / "validation.csv"
 RNG = np.random.default_rng(20261114)
@@ -99,6 +103,8 @@ def synth_cell(lat: float, lon: float) -> dict:
         water_frac=float(np.clip(RNG.normal(0.05, 0.05), 0, 1)), builtup_frac=float(np.clip(RNG.normal(0.02, 0.05), 0, 1)),
         travel_time_min=float(np.clip(RNG.gamma(2, 300) * (3 if alat > 60 else 1), 10, 9000)),
         airport_km=float(np.clip(RNG.gamma(2, 80) * (3 if alat > 60 else 1), 2, 2500)),
+        permafrost_frac=ice if ice > 0.1 else float("nan"),
+        moss_lichen_frac=float(np.clip(0.4 * (1 - barren), 0, 1)) if alat > 60 else 0.0,
     )
 
 
@@ -117,26 +123,6 @@ def mock_continent(lat: float, lon: float) -> str:
     if -25 <= lon <= 40 and lat >= 36:
         return "Europe"
     return "Asia"
-
-
-def earth_reference(earth: dict, label: str, source: str) -> dict:
-    """Area-weighted land extremes and clip quantiles of F1/F2 from the Earth grid (gap panel values)."""
-    aw = area_weights(earth)
-    land = np.nan_to_num(earth["water_frac"], nan=1.0) < 0.5
-    out = dict(label=label, source=source, grid="0.5 deg land cells (water_frac < 0.5)", area_weighting="cos_lat",
-               n_land_cells=int(land.sum()), stats={})
-    for col in ("ts_mean_k", "dt_k"):
-        x = np.where(land, earth[col], np.nan)
-        ok = np.isfinite(x)
-        i_min = int(np.nanargmin(x)); i_max = int(np.nanargmax(x))
-        q = weighted_quantile(x[ok], aw[ok], [0.005, 0.5, 0.995])
-
-        def ext(i):
-            cid = int(earth["cell_id"][i]); la, lo = cell_centre(cid)
-            return dict(value=round(float(x[i]), 2), cell_id=cid, lat=la, lon=lo)
-        out["stats"][col] = dict(units="K", min=ext(i_min), max=ext(i_max), p0_5=round(float(q[0]), 2),
-                                 p50=round(float(q[1]), 2), p99_5=round(float(q[2]), 2))
-    return out
 
 
 def slug(name: str) -> str:
@@ -283,10 +269,10 @@ def main() -> None:
         if ill is not None:
             card["illumination"] = ill
         out_targets.append(dict(t, short_name=pr["short_name"], description=pr["description"], status=pr["status"], window_offset=pr["window_offset"], citations=pr["citations"],
-                                features=feats, card=card))
+                                features=feats, dropped_factors=target_dropped_factors(v), card=card))
     eref = earth_reference(earth, "MOCK: synthetic grid (not real data)", "MOCK synthetic Earth grid")
     write("targets.json", dict(rtargets, contract_version=CONTRACT_VERSION, mock=True, targets=out_targets,
-                               earth_reference=eref))
+                               earth_reference=eref, scoring_constants=scoring_constants(earth, profiles)))
     write("profiles.json", profiles)
     write("factors.json", factors)
     write("gaps.json", dict(rgaps, contract_version=CONTRACT_VERSION, mock=False))
@@ -299,50 +285,51 @@ def main() -> None:
     aw = area_weights(earth)
     mc = profiles["defaults"]["monte_carlo"]
     results: dict[str, list] = {slug(v["name"]): [] for v in validation}
+    cache = FactorCache(earth)  # factor scores are profile-independent: once per target (review-01 M4)
     for tid in MOCK_TARGET_VALUES:
         body = tid.split("_")[0]
+        s = cache.get(tid, tvals[tid], body)
+        clips = clip_targets(tvals[tid], earth)
         for pid, prof in prof_by_id.items():
             if body not in prof["bodies"]:
                 continue
             w = prof["weights"]
-            s = factor_scores(earth, tvals[tid], body)
-            core, total = aggregate(s, w)
-            mask = hard_filter_mask(earth, prof)
-            total_f = np.where(mask, total, 0.0)
-            median = float(weighted_quantile(total_f[mask], aw[mask], 0.5)[0]) if mask.any() else 0.0
-            pct = 100.0 * weighted_pct_rank(total_f, aw)  # area-weighted rank among land cells (filtered = 0)
-            thr = weighted_quantile(total_f, aw, [0.5, 0.95, 0.99])
+            r = score_profile(earth, s, prof)
+            core, mask0, ok_data = r["core"], r["mask"], r["sufficient"]
+            gate = candidate_gate(earth, body, profiles)  # Mars gate (contract v1.2, research.md §8): acts as a hard filter
+            mask = mask0 & gate
+            # total_f: filtered/gated cells 0, insufficient_data cells NaN (excluded from every rank, quantile and pool)
+            total_f = np.where(ok_data, np.where(mask, r["total"], 0.0), np.nan)
+            pop = ok_data & gate  # ranking population: Mars-gate failures leave the ranking (research.md §8.5)
+            rank_s = np.where(pop, total_f, np.nan)
+            pct = 100.0 * weighted_pct_rank(rank_s, aw)  # area-weighted rank among scorable land (filtered = 0)
+            pct[~ok_data] = np.nan
+            thr = weighted_quantile(rank_s, aw, [0.5, 0.95, 0.99]) if pop.any() else np.zeros(3)
             freq = top_frac_freq(s, w, mask, aw, draws=mc["draws"], alpha_scale=mc["dirichlet_alpha_scale"],
-                                 top_frac=mc["robust_top_frac"], seed=mc["seed"])
-            # candidate pool: top-N per factor (w>0) with S >= median, then NMS
-            cand_idx = set()
-            for f, wf in w.items():
-                if wf <= 0:
-                    continue
-                ok = np.where(mask & (total_f >= median))[0]
-                # canonical tie-break (contract 3.2.7): stable sort s_f desc, then S desc, then cell index asc
-                o = np.lexsort((ok, -total_f[ok], -s[f][ok]))
-                cand_idx.update(ok[o][: profiles["defaults"]["candidates_top_n_per_factor"]].tolist())
-            pool = sorted(cand_idx, key=lambda i: (-total_f[i], i))
+                                 top_frac=mc["robust_top_frac"], seed=mc["seed"], valid=pop)
+            robust = robust_flags(freq, mc["robust_min_freq"])
+            # candidate pool: top-N per factor (w>0) with S >= area-weighted median, canonical tie-break, then NMS
+            pool = candidate_indices(s, total_f, mask, w, aw, profiles["defaults"]["candidates_top_n_per_factor"])
             kept: list[int] = []
             for i in pool:
                 if all(haversine_km(lat_c[i], lon_c[i], lat_c[j], lon_c[j]) > prof["nms_radius_km"] for j in kept):
                     kept.append(i)
-            clips = clip_targets(tvals[tid], earth)
 
             def site(i: int) -> dict:
                 cid = int(earth["cell_id"][i])
                 name = known_cells.get(cid, f"Candidate cell {lat_c[i]:.2f}, {lon_c[i]:.2f}")
                 sid = slug(name) if cid in known_cells else f"cell_{cid}"
-                fs = {f: round(float(s[f][i]), 4) for f in CORE + SECONDARY}
+                fs = {f: (round(float(s[f][i]), 4) if f in s and np.isfinite(s[f][i]) else None)
+                      for f in CORE + SECONDARY}  # null = missing / dropped
                 near_known = min((haversine_km(lat_c[i], lon_c[i], *cell_centre(k)) for k in known_cells), default=1e9)
                 return dict(site_id=sid, name=name, lat=float(lat_c[i]), lon=float(lon_c[i]), cell_id=cid,
                             score=round(float(total_f[i]), 4), score_core=round(float(core[i]), 4),
-                            earth_percentile=round(float(pct[i]), 2), factor_scores=fs,
-                            covers=[f for f in CORE if w[f] > 0 and fs[f] >= prof["theta"]],
+                            earth_percentile=round(float(pct[i]), 2), data_coverage=round(float(r["coverage"][i]), 4),
+                            factor_scores=fs,
+                            covers=[f for f in CORE if w[f] > 0 and fs[f] is not None and fs[f] >= prof["theta"]],
                             gaps={f: round(g, 3) for f, (_t, g) in clips.items() if g > 0},
                             robustness=dict(top5_freq=round(float(freq[i]), 3),
-                                            robust=bool(freq[i] >= mc["robust_min_freq"])),
+                                            robust=bool(robust[i])),
                             country=None, admin1=None,
                             logistics=dict(travel_time_min=round(float(earth["travel_time_min"][i]), 1),
                                            within_6h=bool(earth["travel_time_min"][i] <= 360),
@@ -353,13 +340,13 @@ def main() -> None:
             pool_sites = [site(i) for i in kept[:200]]
             variants = build_variants(pool_sites, w, prof["theta"], profiles["defaults"]["portfolio_max_sites"])
             active = [f for f in CORE if w[f] > 0]
-            universe = sorted({f for f in active if any(ps["factor_scores"][f] >= prof["theta"] for ps in pool_sites)},
+            universe = sorted({f for f in active if any((ps["factor_scores"][f] or 0) >= prof["theta"] for ps in pool_sites)},
                               key=lambda x: int(x[1:]))
-            hist, bins = np.histogram(total_f[mask], bins=20, range=(0, 1))
+            hist, bins = np.histogram(total_f[mask & ok_data], bins=20, range=(0, 1))
             write(f"portfolios/{tid}_{pid}.json", dict(
                 contract_version=CONTRACT_VERSION, mock=True, target_id=tid, profile_id=pid, weights=w,
                 theta=prof["theta"], universe=universe, uncoverable=[f for f in active if f not in universe],
-                dropped_factors=dropped_factors(s, w), variants=variants, top_cells=pool_sites[:25],
+                dropped_factors=dropped_factors(s, w), insufficient_cells=int((~ok_data).sum()), variants=variants, top_cells=pool_sites[:25],
                 score_histogram=dict(bins=[round(b, 3) for b in bins.tolist()], counts=hist.astype(int).tolist()),
                 monte_carlo=dict(draws=mc["draws"], robust_top_frac=mc["robust_top_frac"],
                                  robust_min_freq=mc["robust_min_freq"], seed=mc["seed"], area_weighting="cos_lat"),
@@ -371,8 +358,15 @@ def main() -> None:
                 if not match:
                     continue
                 i = idx_of[cell_id(v["lat"], v["lon"])]
+                if not ok_data[i]:  # insufficient_data: no percentile; stays in the denominators as a miss
+                    results[slug(v["name"])].append(dict(target_id=tid, profile_id=pid, percentile=0.0, in_top5=False,
+                                                         in_top1=False, status="insufficient_data"))
+                    continue
                 results[slug(v["name"])].append(dict(target_id=tid, profile_id=pid, percentile=round(float(pct[i]), 2),
-                                                     in_top5=bool(pct[i] >= 95), in_top1=bool(pct[i] >= 99)))
+                                                     in_top5=bool(pct[i] >= 95), in_top1=bool(pct[i] >= 99),
+                                                     status="scored" if mask[i] else "gate_excluded" if mask0[i] else
+                                                     "land_filter_excluded" if earth["water_frac"][i] >= 0.5 else
+                                                     "hard_filter_excluded"))
 
     pos = [r for v in validation if v["kind"] == "positive" for r in results[slug(v["name"])]]
     aucs = []
@@ -388,7 +382,8 @@ def main() -> None:
                      n_negative=sum(v["kind"] == "negative" for v in validation), n_evaluations=len(pos),
                      pct_top5=round(sum(r["in_top5"] for r in pos) / max(len(pos), 1), 4),
                      pct_top1=round(sum(r["in_top1"] for r in pos) / max(len(pos), 1), 4),
-                     rank_auc=round(float(np.mean(aucs)), 4) if aucs else None),
+                     rank_auc=round(float(np.mean(aucs)), 4) if aucs else None,
+                     headline_caveat_ui=HEADLINE_CAVEAT_UI),
         sites=[dict(v, cell_id=cell_id(v["lat"], v["lon"]), results=results[slug(v["name"])]) for v in validation],
         new_candidates=[]))
 
