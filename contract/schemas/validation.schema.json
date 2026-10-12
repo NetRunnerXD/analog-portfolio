@@ -124,6 +124,10 @@
         "denominators_note": {
           "type": "string"
         },
+        "headline_caveat_ui": {
+          "type": "string",
+          "description": "User-facing caveat shown next to validation figures"
+        },
         "headline_caveat": {
           "type": "string",
           "description": "Pooled headline mixes blind (Moon) and post-hoc (Mars) evaluations"

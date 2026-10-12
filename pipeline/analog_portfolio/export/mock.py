@@ -28,6 +28,7 @@ from ..score.robust import robust_flags, top_frac_freq
 from ..score.variants import build_variants
 from .reference import earth_reference, scoring_constants
 
+HEADLINE_CAVEAT_UI = ("Moon results are a blind test: the scoring never saw these sites. Mars results are not blind, because the Mars dryness rule was designed using these same sites.")  # user-facing (same text as export/real.py)
 OUT = Path(os.environ.get("AP_MOCK_OUT") or WEB_DATA_DIR / "mock")  # AP_MOCK_OUT: build elsewhere, then swap
 INPUTS = REPO_ROOT / "pipeline" / "inputs"
 VALIDATION_CSV = REPO_ROOT / "docs" / "validation.csv"
@@ -381,7 +382,8 @@ def main() -> None:
                      n_negative=sum(v["kind"] == "negative" for v in validation), n_evaluations=len(pos),
                      pct_top5=round(sum(r["in_top5"] for r in pos) / max(len(pos), 1), 4),
                      pct_top1=round(sum(r["in_top1"] for r in pos) / max(len(pos), 1), 4),
-                     rank_auc=round(float(np.mean(aucs)), 4) if aucs else None),
+                     rank_auc=round(float(np.mean(aucs)), 4) if aucs else None,
+                     headline_caveat_ui=HEADLINE_CAVEAT_UI),
         sites=[dict(v, cell_id=cell_id(v["lat"], v["lon"]), results=results[slug(v["name"])]) for v in validation],
         new_candidates=[]))
 

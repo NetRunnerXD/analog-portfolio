@@ -9,7 +9,8 @@
   "n_evaluations": 147,
   "pct_top5": 0.034,
   "pct_top1": 0.0068,
-  "rank_auc": 0.8307
+  "rank_auc": 0.8307,
+  "headline_caveat_ui": "Moon results are a blind test: the scoring never saw these sites. Mars results are not blind, because the Mars dryness rule was designed using these same sites."
  },
  "sites": [
   {
