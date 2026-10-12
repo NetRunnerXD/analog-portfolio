@@ -311,7 +311,7 @@ def provenance_layers() -> list[dict]:
 C_GIT_DIRTY: bool | None = None
 
 
-def git_dirty() -> bool | None:
+def _git_dirty() -> bool | None:
     """True if tracked files differ from HEAD outside web/public/data (the export's own output); None without git."""
     r = subprocess.run(["git", "-C", str(REPO_ROOT), "status", "--porcelain", "--untracked-files=no", "--", ".",
                         ":(exclude)web/public/data"], capture_output=True, text=True)
@@ -372,7 +372,7 @@ def main() -> None:
     a = ap.parse_args()
     from pathlib import Path
     global C_GIT_DIRTY
-    C_GIT_DIRTY = git_dirty()  # checked BEFORE writing anything (the export itself dirties web/public/data)
+    C_GIT_DIRTY = _git_dirty()  # checked BEFORE writing anything (the export itself dirties web/public/data)
     if a.frozen_commit and C_GIT_DIRTY and not a.allow_dirty:
         raise SystemExit("refusing --frozen-commit on a dirty tree (uncommitted changes outside web/public/data); "
                          "commit first or pass --allow-dirty (recorded as provenance.pipeline.git_dirty)")
