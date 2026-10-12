@@ -53,6 +53,7 @@ HEADLINE_CAVEAT = ("The pooled headline mixes blind and non-blind evaluations: t
                    "Mars gate was designed (Researcher, research.md §8) after the first validation run using this same "
                    "validation set (15 Mars-relevant analogs, 11 negative controls), before the freeze. Quote summary.by_body: "
                    "the Moon figures are blind (no Moon rule was set using validation), the Mars figures are post hoc.")
+HEADLINE_CAVEAT_UI = ("Moon results are a blind test: the scoring never saw these sites. Mars results are not blind, because the Mars dryness rule was designed using these same sites.")  # user-facing copy
 MOON_BLIND_NOTE = "Blind: weights and every Moon-side rule were fixed before the validation freeze without using validation results."
 MARS_POSTHOC_NOTE = ("Post hoc, not blind: the Mars gate was designed on these same analogs and negatives after the first "
                      "validation run (before the freeze).")
@@ -511,7 +512,7 @@ def main() -> None:
                      gate_excluded=_excl("gate_excluded"), land_filter_excluded=_excl("land_filter_excluded"),
                      hard_filter_excluded=_excl("hard_filter_excluded"),
                      by_body=dict(moon=_metrics("moon"), mars=_metrics("mars")),
-                     headline_caveat=HEADLINE_CAVEAT,
+                     headline_caveat=HEADLINE_CAVEAT, headline_caveat_ui=HEADLINE_CAVEAT_UI,
                      denominators_note=("Excluded evaluations stay in every denominator and count as misses (gate- and "
                                         "land-filter-excluded: percentile 0; hard-filter-excluded: percentile of S = 0)")),
         sites=[dict(v, cell_id=snaps[i][0], eval_cell_id=snaps[i][1] if snaps[i][1] is not None else snaps[i][0],

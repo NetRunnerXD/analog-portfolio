@@ -268,6 +268,7 @@ SCHEMAS["validation"] = obj({
                               required=["sites", "n_evaluations"])
                        for k in ("gate_excluded", "land_filter_excluded", "hard_filter_excluded")},
                     "denominators_note": {"type": "string"},
+                    "headline_caveat_ui": {"type": "string", "description": "User-facing caveat shown next to validation figures"},
                     "headline_caveat": {"type": "string", "description": "Pooled headline mixes blind (Moon) and post-hoc (Mars) evaluations"},
                     "by_body": obj({b: obj({"n_evaluations": {"type": "integer"}, "n_scored": {"type": "integer"},
                                             "pct_top5": NUM01, "pct_top1": NUM01, "rank_auc": nullable(NUM01),
