@@ -1,0 +1,537 @@
+{
+ "contract_version": "1.2.0",
+ "body": "earth",
+ "mock": false,
+ "grid": {
+  "resolution_deg": 0.5,
+  "ncols": 720,
+  "nrows": 360,
+  "lon_centre_first": -179.75,
+  "lat_centre_first": 89.75,
+  "row_order": "north-to-south"
+ },
+ "layout": "sparse",
+ "n_cells": 85048,
+ "binary": "earth_features.bin",
+ "byte_order": "little",
+ "arrays": [
+  {
+   "name": "cell_id",
+   "factor": null,
+   "dtype": "uint32",
+   "byte_offset": 0,
+   "length": 85048,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": null,
+   "units": "cell id (row*720+col)",
+   "stats": null,
+   "source": "derived"
+  },
+  {
+   "name": "ts_mean_k",
+   "factor": "F1",
+   "dtype": "uint16",
+   "byte_offset": 340192,
+   "length": 85048,
+   "scale": 0.01,
+   "add_offset": 150,
+   "nodata": 65535,
+   "units": "K",
+   "stats": {
+    "p005": 214.745705,
+    "p50": 272.253,
+    "p995": 303.55076499999996,
+    "min": 212.92999999999998,
+    "max": 309.212
+   },
+   "source": "NASA POWER TS climatology 2001-2020 ANN (raw boxes, bilinear) + 273.15"
+  },
+  {
+   "name": "dt_k",
+   "factor": "F2",
+   "dtype": "uint16",
+   "byte_offset": 510288,
+   "length": 85048,
+   "scale": 0.01,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "K",
+   "stats": {
+    "p005": 0.35266666666666435,
+    "p50": 6.921833333333332,
+    "p995": 26.828970833333337,
+    "min": 0.28275000000000033,
+    "max": 30.717083333333335
+   },
+   "source": "NASA POWER hourly-LST TS climatology TS_00, TS_05, TS_06, TS_13, TS_14 (community AG): mean over months of max_h - min_h"
+  },
+  {
+   "name": "ati",
+   "factor": "F3",
+   "dtype": "uint16",
+   "byte_offset": 680384,
+   "length": 85048,
+   "scale": 1e-05,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "1/K (apparent thermal inertia, Price 1977)",
+   "stats": {
+    "p005": 0.024409202714449664,
+    "p50": 0.07673654847307701,
+    "p995": 0.41999999999999993,
+    "min": 0.021298436906939028,
+    "max": 1.29372197309417
+   },
+   "source": "derived"
+  },
+  {
+   "name": "ti_class",
+   "factor": "F3",
+   "dtype": "uint8",
+   "byte_offset": 850480,
+   "length": 85048,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "class 1-5",
+   "stats": {
+    "p005": 1.0,
+    "p50": 4.0,
+    "p995": 5.0,
+    "min": 1.0,
+    "max": 5.0
+   },
+   "source": "within-Earth area-weighted land quintiles of ATI=(1-albedo)/dT, edges [0.03827, 0.05152, 0.07338, 0.10841]"
+  },
+  {
+   "name": "slope_lt5_frac",
+   "factor": "F4",
+   "dtype": "uint8",
+   "byte_offset": 935528,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.042923500165343284,
+    "p50": 0.9980999827384949,
+    "p995": 1.0,
+    "min": 0.008899999782443047,
+    "max": 1.0
+   },
+   "source": "Copernicus DEM GLO-90 overview pass (TAE earth_slope_lt5_frac)"
+  },
+  {
+   "name": "slope_lt8_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 1020576,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.10117049895226955,
+    "p50": 1.0,
+    "p995": 1.0,
+    "min": 0.024299999698996544,
+    "max": 1.0
+   },
+   "source": "Copernicus DEM GLO-90 overview pass (TAE earth_slope_lt5_frac)"
+  },
+  {
+   "name": "slope_mean_deg",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 1105624,
+   "length": 85048,
+   "scale": 0.25,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "deg",
+   "stats": {
+    "p005": 0.04899999871850014,
+    "p50": 0.8769999742507935,
+    "p995": 20.398295106887815,
+    "min": 0.00800000037997961,
+    "max": 29.322999954223633
+   },
+   "source": "Copernicus DEM GLO-90 overview pass (TAE earth_slope_lt5_frac)"
+  },
+  {
+   "name": "relief_m",
+   "factor": "F5",
+   "dtype": "uint16",
+   "byte_offset": 1190672,
+   "length": 85048,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "m",
+   "stats": {
+    "p005": 4.664708943367004,
+    "p50": 88.3139877319336,
+    "p995": 1767.3057275390647,
+    "min": 0.5324046611785889,
+    "max": 3209.40380859375
+   },
+   "source": "ETOPO 2022 60 arc-sec, mean P95-P5 of 0.25 deg sub-blocks (TAE)"
+  },
+  {
+   "name": "lith_class",
+   "factor": "F6",
+   "dtype": "uint8",
+   "byte_offset": 1360768,
+   "length": 85048,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "lithology code",
+   "stats": {
+    "p005": 1.0,
+    "p50": 10.0,
+    "p995": 14.0,
+    "min": 1.0,
+    "max": 15.0
+   },
+   "source": "GLiM dominant class (TAE); code 0 (nd, no data) mapped to NaN"
+  },
+  {
+   "name": "aridity_index",
+   "factor": "F7",
+   "dtype": "uint16",
+   "byte_offset": 1445816,
+   "length": 85048,
+   "scale": 0.0001,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "P/PET",
+   "stats": {
+    "p005": 0.0019935630285181105,
+    "p50": 0.38517671823501587,
+    "p995": 5.031841750144951,
+    "min": 0.0,
+    "max": 6.512879848480225
+   },
+   "source": "Global-AI v3.1 land-pixel mean (P1 earth_aridity_land; ET0 == 65535 ocean pixels masked); Antarctic land (no coverage) filled with 0.03 (hyper-arid polar desert, P1 assumption)"
+  },
+  {
+   "name": "barren_frac",
+   "factor": "F8",
+   "dtype": "uint8",
+   "byte_offset": 1615912,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.03299165889620781,
+    "p995": 1.0,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "WorldCover bare/sparse + snow/ice fraction of land pixels (TAE barren_frac_of_land); Antarctica 1"
+  },
+  {
+   "name": "ice_index",
+   "factor": "F9",
+   "dtype": "uint8",
+   "byte_offset": 1700960,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "index 0-1",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.006070865551009774,
+    "p995": 1.0,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "ESA CCI Permafrost v5.0 PFR fraction (P1); where no CCI value (25N-60S band, ice sheets, gaps): 1 if POWER TS < 273.15 K else 0"
+  },
+  {
+   "name": "noon_sun_elev_deg",
+   "factor": "F10",
+   "dtype": "uint8",
+   "byte_offset": 1786008,
+   "length": 85048,
+   "scale": 0.5,
+   "add_offset": -30,
+   "nodata": 255,
+   "units": "deg",
+   "stats": {
+    "p005": -0.5150353908538818,
+    "p50": 35.01503372192383,
+    "p995": 78.0150375366211,
+    "min": -0.5150353908538818,
+    "max": 78.5150375366211
+   },
+   "source": "earth_noon_sun_elev_deg.noon_sun_elev_deg"
+  },
+  {
+   "name": "column_mass_gcm2",
+   "factor": "F11",
+   "dtype": "uint16",
+   "byte_offset": 1871056,
+   "length": 85048,
+   "scale": 0.1,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "g/cm^2",
+   "stats": {
+    "p005": 567.3642834472656,
+    "p50": 958.8640747070312,
+    "p995": 1032.36083984375,
+    "min": 500.30731201171875,
+    "max": 1033.218994140625
+   },
+   "source": "earth_column_mass_gcm2.column_mass_gcm2"
+  },
+  {
+   "name": "cutoff_rigidity_gv",
+   "factor": "F11",
+   "dtype": "uint8",
+   "byte_offset": 2041152,
+   "length": 85048,
+   "scale": 0.1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "GV",
+   "stats": {
+    "p005": 1.2265245595699526e-05,
+    "p50": 1.8312900066375732,
+    "p995": 14.896913146972656,
+    "min": 3.3366974547949235e-12,
+    "max": 14.899999618530273
+   },
+   "source": "earth_cutoff_rigidity_gv.cutoff_rigidity_gv"
+  },
+  {
+   "name": "uv_index",
+   "factor": "F12",
+   "dtype": "uint8",
+   "byte_offset": 2126200,
+   "length": 85048,
+   "scale": 0.1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "UV index",
+   "stats": {
+    "p005": 0.2875,
+    "p50": 0.77,
+    "p995": 2.490625,
+    "min": 0.1925,
+    "max": 3.15375
+   },
+   "source": "NASA POWER ALLSKY_SFC_UV_INDEX ANN"
+  },
+  {
+   "name": "geomorph_flags",
+   "factor": "F13",
+   "dtype": "uint8",
+   "byte_offset": 2211248,
+   "length": 85048,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "bitmask",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 64.0,
+    "min": 0.0,
+    "max": 84.0
+   },
+   "source": "earth_geomorph_flags.geomorph_flags"
+  },
+  {
+   "name": "elevation_m",
+   "factor": null,
+   "dtype": "uint16",
+   "byte_offset": 2296296,
+   "length": 85048,
+   "scale": 1,
+   "add_offset": -500,
+   "nodata": 65535,
+   "units": "m",
+   "stats": {
+    "p005": 7.077820653915405,
+    "p50": 627.5431518554688,
+    "p995": 4783.309052734375,
+    "min": 0.0687175989151001,
+    "max": 5723.92822265625
+   },
+   "source": "ETOPO 2022 land mean (TAE)"
+  },
+  {
+   "name": "albedo",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 2466392,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.085625,
+    "p50": 0.28937500000000005,
+    "p995": 0.7925000000000001,
+    "min": 0.045,
+    "max": 0.7950000000000002
+   },
+   "source": "NASA POWER ALLSKY_SRF_ALB ANN"
+  },
+  {
+   "name": "water_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 2551440,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 0.468,
+    "min": 0.0,
+    "max": 0.496
+   },
+   "source": "ESA WorldCover 2021 (TAE earth_barren) water + ocean nodata; fallback 1 - Natural Earth land_frac"
+  },
+  {
+   "name": "builtup_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 2636488,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 0.112,
+    "min": 0.0,
+    "max": 0.6960000000000001
+   },
+   "source": "WorldCover built-up fraction (TAE)"
+  },
+  {
+   "name": "travel_time_min",
+   "factor": null,
+   "dtype": "uint16",
+   "byte_offset": 2721536,
+   "length": 85048,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "minutes to nearest city >50k",
+   "stats": {
+    "p005": 11.1144441986084,
+    "p50": 415.5263977050781,
+    "p995": 18511.360624999998,
+    "min": 0.07899807393550873,
+    "max": 24672.328125
+   },
+   "source": "earth_travel_time.travel_time_min"
+  },
+  {
+   "name": "airport_km",
+   "factor": null,
+   "dtype": "uint16",
+   "byte_offset": 2891632,
+   "length": 85048,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 65535,
+   "units": "km to nearest airport",
+   "stats": {
+    "p005": 21.90265193939209,
+    "p50": 497.791748046875,
+    "p995": 4943.298342285156,
+    "min": 0.946723997592926,
+    "max": 5154.0068359375
+   },
+   "source": "earth_airport_km.airport_km"
+  },
+  {
+   "name": "continent",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 3061728,
+   "length": 85048,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "continent code (manifest codes; Natural Earth admin-0 CONTINENT)",
+   "stats": {
+    "p005": 1.0,
+    "p50": 3.0,
+    "p995": 7.0,
+    "min": 1.0,
+    "max": 7.0
+   },
+   "source": "Natural Earth 1:50m admin-0 CONTINENT of the cell's modal country, except Russia, which is split at 60 deg E by cell-centre longitude (west = Europe, east = Asia). 0 = no country (open water / unassigned).",
+   "codes": {
+    "1": "Africa",
+    "2": "Antarctica",
+    "3": "Asia",
+    "4": "Europe",
+    "5": "North America",
+    "6": "Oceania",
+    "7": "South America"
+   },
+   "codes_note": "Natural Earth 1:50m admin-0 CONTINENT of the cell's modal country, except Russia, which is split at 60 deg E by cell-centre longitude (west = Europe, east = Asia). 0 = no country (open water / unassigned)."
+  },
+  {
+   "name": "permafrost_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 3146776,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction (ESA CCI PFR; Mars gate clause C)",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.6493600010871887,
+    "p995": 1.0,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "ESA CCI Permafrost v5.0 PFR fraction (P1); NaN = no CCI value (gate reads 0)"
+  },
+  {
+   "name": "moss_lichen_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 3231824,
+   "length": 85048,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction of land (WorldCover moss & lichen; Mars gate clause C)",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 0.839150657057762,
+    "min": 0.0,
+    "max": 0.997842013835907
+   },
+   "source": "WorldCover 2021 moss & lichen (class 100) fraction of land pixels (P1); Antarctic fallback 0"
+  }
+ ],
+ "generated_at": "2026-10-12T17:22:24+00:00"
+}

@@ -119,6 +119,17 @@
         "run_at": {
           "type": "string"
         },
+        "git_dirty": {
+          "anyOf": [
+            {
+              "type": "boolean",
+              "description": "Uncommitted tracked changes outside web/public/data at run start"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "python": {
           "type": "string"
         }
