@@ -5,8 +5,12 @@ export const DATA_ROOT: string = import.meta.env.VITE_DATA_ROOT ?? 'data/mock/'
 export const dataUrl = (p: string) => `${import.meta.env.BASE_URL}${DATA_ROOT}${p}`
 
 export class DataError extends Error {
-  constructor(public file: string, public status: number | null, message?: string) {
+  file: string
+  status: number | null
+  constructor(file: string, status: number | null, message?: string) {
     super(message ?? `${file}: ${status === null ? 'network error' : `HTTP ${status}`}`)
+    this.file = file
+    this.status = status
   }
 }
 
