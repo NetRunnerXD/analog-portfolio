@@ -5,15 +5,17 @@ import { fmtLatLon, hasScorableFeatures, makeValueFormatter, purposeName, siteTi
 import type { UrlState } from '../lib/url'
 import { useBreakpoint } from '../lib/useMedia'
 import MapView, { type MapPin } from '../map/MapView'
-import { haversineKm } from '../scoring/area'
+import { earthRadiusKm, haversineKm } from '../scoring/area'
 import { CORE_FACTORS } from '../types/contract'
 import type { FactorId, FactorsFile, GapsFile, Portfolio, Profile, ProfilesFile, SiteRef, Target, ValidationFile, VariantId } from '../types/contract'
 import type { ScorerClient } from '../worker/client'
 import type { CellDetail, ScoredMsg } from '../worker/protocol'
 import { buildGapRows } from '../lib/gaps'
+import { makeFactorText } from '../lib/factors'
 import { FidelityGapPanel, PortfolioPanel, SiteCard, TopRegionsPanel, type Ctx } from '../components/panels'
 import { Banner, EmptyState, ErrorState, Toast } from '../components/ui'
 import WeightsSheet from '../components/WeightsSheet'
+import MapLegend from '../components/MapLegend'
 
 interface Props {
   target: Target
@@ -94,14 +96,28 @@ export default function Explore(p: Props) {
   const scoring = scorable && !!p.scorer && !cur && !scoreErr
 
   /* ---------- which portfolio drives the UI */
-  const livePortfolio = cur?.portfolio ?? null
+  // Live (worker) sites carry no place names; reuse country/region from the shipped portfolio for the same cell when present.
+  const places = useMemo(() => {
+    const m = new Map<number, Pick<SiteRef, 'country' | 'region' | 'admin1'>>()
+    const add = (s: SiteRef) => { if (s.country || s.region || s.admin1) m.set(s.cell_id, { country: s.country, region: s.region, admin1: s.admin1 }) }
+    pfData?.top_cells?.forEach(add)
+    pfData?.variants.forEach((v) => v.sites.forEach(add))
+    return m
+  }, [pfData])
+  const livePortfolio = useMemo<Portfolio | null>(() => {
+    const lp = cur?.portfolio ?? null
+    if (!lp || !places.size) return lp
+    const fill = (s: SiteRef): SiteRef => (s.country || s.region || s.admin1 || !places.has(s.cell_id) ? s : { ...s, ...places.get(s.cell_id) })
+    return { ...lp, top_cells: lp.top_cells?.map(fill), variants: lp.variants.map((v) => ({ ...v, sites: v.sites.map(fill) })) }
+  }, [cur, places])
   const portfolio: Portfolio | null = custom ? livePortfolio : (pfData ?? (pf.status === 'missing' ? livePortfolio : null))
   const fromFile = !custom && !!pfData
   const dropped = new Set<FactorId>(portfolio?.dropped_factors ?? CORE_FACTORS.filter((f) => target.features?.[f]?.value === null || target.features?.[f]?.value === undefined))
   const needs = CORE_FACTORS.filter((f) => (weights[f] ?? 0) > 0 && !dropped.has(f)) as FactorId[]
   const pName = purposeName(profile)
   const tShort = targetShort(target)
-  const ctx: Ctx = { target, purposeName: pName, targetShort: tShort, weights, custom, needs, factors: p.factors, robustnessAvailable: fromFile }
+  const ft = useMemo(() => makeFactorText(p.factors), [p.factors])
+  const ctx: Ctx = { target, purposeName: pName, targetShort: tShort, weights, custom, needs, factors: p.factors, ft, robustnessAvailable: fromFile }
   const variant = portfolio?.variants.find((v) => v.id === url.v && v.available) ?? portfolio?.variants.find((v) => v.id === 'best_match')
   const vSites = useMemo(() => variant?.sites ?? [], [variant])
 
@@ -195,13 +211,14 @@ export default function Explore(p: Props) {
     const f = filters[code - 1]
     return f ? `Filtered out: ${f.ui_tooltip ?? f.ui_short ?? f.reason}` : 'Filtered out'
   }, [filters])
+  const R = useMemo(() => earthRadiusKm(p.profiles.defaults), [p.profiles])
   const closest = useCallback(async (cid: number) => {
     const lat = 89.75 - 0.5 * Math.floor(cid / 720)
     const lon = -179.75 + 0.5 * (cid % 720)
     let best: { name: string; d: number } | null = null
-    for (const k of knownSites) { const d = haversineKm(lat, lon, k.lat, k.lon); if (!best || d < best.d) best = { name: k.name, d } }
+    for (const k of knownSites) { const d = haversineKm(lat, lon, k.lat, k.lon, R); if (!best || d < best.d) best = { name: k.name, d } }
     return best && best.d < 800 ? `Closest known analog: ${best.name} (${Math.round(best.d)} km)` : null
-  }, [knownSites])
+  }, [knownSites, R])
 
   const fmt = useMemo(() => makeValueFormatter(p.factors), [p.factors])
   const gapRows = useMemo(() => buildGapRows(p.gaps, target.body, ctx, variant, variant?.id !== 'best_match' ? () => onVariant('best_match') : null, portfolio, fmt),
@@ -238,7 +255,7 @@ export default function Explore(p: Props) {
   const resultsLabel = site ? 'Site' : url.step === 'portfolio' ? 'Sites' : 'Top regions'
 
   const banners = (
-    <div className="banners">
+    <div className="banners" data-map-obscures="top">
       {custom && <Banner tone="info" title="Custom weights." action={<button type="button" className="link-btn" onClick={() => update({ w: undefined })}>Reset to {pName} defaults</button>}>Results are recalculated live in your browser. Robustness is hidden.</Banner>}
       {!custom && pf.status === 'missing' && scorable && <Banner tone="info" title="Computed live.">There is no precomputed portfolio for this pair yet, so it was built in your browser. Robustness is not available.</Banner>}
       {(p.scorerError || scoreErr) && portfolio && <Banner tone="warning" title="Live scoring is unavailable.">The heatmap and custom weights need the in-browser scorer. {p.scorerError ?? scoreErr}</Banner>}
@@ -247,21 +264,13 @@ export default function Explore(p: Props) {
   )
 
   const legend = (
-    <div className="map-legend" id="map-legend">
-      <p className="t-label">Match to {tShort}</p>
-      <div className="legend-bar" aria-hidden="true" />
-      <div className="legend-ticks micro num" aria-hidden="true">{[0, 40, 60, 80, 100].map((v) => <span key={v} style={{ left: `${v}%` }}>{v}</span>)}</div>
-      <p className="sr-only">Colour scale from 0 (weak, dark blue) to 100 (strong, yellow). Weak below 40, partial 40 to 59, good 60 to 79, strong 80 and above.</p>
-      <ul className="legend-items t-small">
-        <li><i className="sw sw-nodata" aria-hidden="true" /> No data</li>
-        <li><i className="sw sw-filter" aria-hidden="true" /> Filtered out ({filters.map((f) => f.ui_short ?? f.id).join(' or ')})</li>
-      </ul>
+    <MapLegend title={`Match to ${tShort}`} filterText={filters.map((f) => f.ui_short ?? f.id).join(' or ')}>
       <fieldset className="layer-toggle t-small">
         <legend className="sr-only">Map layers</legend>
         <label><input type="checkbox" checked={layers.known} onChange={(e) => setLayers((l) => ({ ...l, known: e.target.checked }))} /> <i className="sw sw-known" aria-hidden="true" /> Known analogs</label>
         <label><input type="checkbox" checked={layers.candidates} onChange={(e) => setLayers((l) => ({ ...l, candidates: e.target.checked }))} /> <i className="sw sw-cand" aria-hidden="true" /> New candidates</label>
       </fieldset>
-    </div>
+    </MapLegend>
   )
 
   const map = (
@@ -302,7 +311,7 @@ export default function Explore(p: Props) {
         <>
           {map}
           {(bp !== 'tablet' || drawer) && (
-            <aside className={`panel panel-a ${bp === 'phone' ? `sheet-${sheet}` : ''}`} aria-label="Results">
+            <aside className={`panel panel-a ${bp === 'phone' ? `sheet-${sheet}` : ''}`} aria-label="Results" data-map-obscures={bp === 'phone' ? 'bottom' : bp === 'tablet' ? 'right' : undefined}>
               {bp === 'phone' && (
                 <button type="button" className="sheet-handle" aria-label={sheet === 'full' ? 'Collapse results' : 'Expand results'}
                   onClick={() => setSheet((s) => (s === 'peek' ? 'half' : s === 'half' ? 'full' : 'peek'))}><span aria-hidden="true" /></button>
@@ -314,7 +323,7 @@ export default function Explore(p: Props) {
         </>
       )}
       {weightsOpen && (
-        <WeightsSheet initial={weights} defaults={profile.weights} purposeName={pName} onClose={() => setWeightsOpen(false)}
+        <WeightsSheet ft={ft} initial={weights} defaults={profile.weights} purposeName={pName} onClose={() => setWeightsOpen(false)}
           onApply={(w) => { setWeightsOpen(false); update({ w: sameWeights(w, profile.weights) ? undefined : w, site: undefined }) }} />
       )}
       {toast && <Toast message={toast.msg} tone={toast.tone} onDone={() => setToast(null)} />}

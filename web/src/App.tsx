@@ -107,7 +107,7 @@ export default function App() {
             <label className="pill">
               <span className="sr-only">Purpose</span>
               <select value={profile.id} onChange={(e) => setPurpose(e.target.value)}>
-                {data.profiles.profiles.map((p) => <option key={p.id} value={p.id} disabled={!p.bodies.includes(target.body)}>{purposeName(p)}{!p.bodies.includes(target.body) ? ' (Mars only)' : ''}</option>)}
+                {data.profiles.profiles.map((p) => <option key={p.id} value={p.id} disabled={!p.bodies.includes(target.body)} title={p.disabled_for?.[target.body]}>{purposeName(p)}{!p.bodies.includes(target.body) ? ' (Mars only)' : ''}</option>)}
               </select>
             </label>
             <button type="button" className="pill pill-btn" onClick={() => setWeightsReq((n) => n + 1)}>{url.w ? 'Custom weights' : 'Adjust what counts'}</button>

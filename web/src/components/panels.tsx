@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { FACTOR_UI, VARIANT_UI } from '../copy'
-import { accessText, band, cellEwKm, fmtLatLon, isAtLimit, makeValueFormatter, siteTitle, summarySentence, to100 } from '../lib/format'
+import { accessText, band, cellEwKm, fmtLatLon, isAtLimit, placeName, makeValueFormatter, siteTitle, summarySentence, to100 } from '../lib/format'
 import type { GapRowData } from '../lib/gaps'
+import type { FactorText } from '../lib/factors'
 import type { FactorId, FactorsFile, Portfolio, SiteRef, Target, VariantId } from '../types/contract'
 import { ALL_FACTORS, CORE_FACTORS, VARIANT_IDS } from '../types/contract'
 import type { CellDetail } from '../worker/protocol'
@@ -15,16 +16,19 @@ export interface Ctx {
   custom: boolean
   needs: FactorId[]
   factors: FactorsFile
+  /** factor names/info/chip words from factors.json */
+  ft: FactorText
   /** precomputed robustness is only valid for the shipped default-weight portfolio */
   robustnessAvailable: boolean
 }
 
-function FactorChip({ f, atLimit }: { f: FactorId; atLimit: boolean }) {
+function FactorChip({ f, atLimit, ft }: { f: FactorId; atLimit: boolean; ft: FactorText }) {
   const ui = FACTOR_UI[f]
+  const name = ft.label(f)
   return (
     <span className={`chip ${atLimit ? 'chip-limit' : ''}`}
-      title={atLimit ? `${ui.name}: covered at Earth's limit. The target is beyond anything on Earth; the rest is listed under What Earth can't give you.` : ui.name}>
-      <i className={`dot g-${ui.group}`} aria-hidden="true" />{ui.chip}{atLimit && <><AtLimitIcon /><span className="sr-only"> (covered at Earth's limit)</span></>}
+      title={atLimit ? `${name}: covered at Earth's limit. The target is beyond anything on Earth; the rest is listed under What Earth can't give you.` : name}>
+      <i className={`dot g-${ui.group}`} aria-hidden="true" />{ft.chip(f)}{atLimit && <><AtLimitIcon /><span className="sr-only"> (covered at Earth's limit)</span></>}
     </span>
   )
 }
@@ -152,13 +156,13 @@ function SiteListCard({ site, n, ctx, selected, hovered, onOpen, onHover }: { si
         <span className="pin-glyph num"><span className="sr-only">Site </span>{n}</span>
         <span className="sc-name">
           <span className="t-title">{siteTitle(site)}</span>
-          <span className="t-small muted2">{site.known_analog ? 'Known analog · ' : site.candidate ? 'New candidate · ' : ''}{fmtLatLon(site.lat, site.lon, 2)}</span>
+          <span className="t-small muted2">{site.known_analog ? `Known analog · ${placeName(site) ? `${placeName(site)} · ` : ''}` : site.candidate ? 'New candidate · ' : ''}{fmtLatLon(site.lat, site.lon, 2)}</span>
         </span>
         <span className="sc-score"><span className="scoreLg">{score}</span><span className="micro muted2"><span className="sr-only">out of</span> / 100</span><span className="t-small">{band(score)}</span></span>
       </span>
       <span className="chips">
         <span className="t-small muted2">Covers</span>
-        {chips.map((f) => <FactorChip key={f} f={f} atLimit={isAtLimit(ctx.target, f)} />)}
+        {chips.map((f) => <FactorChip key={f} f={f} ft={ctx.ft} atLimit={isAtLimit(ctx.target, f)} />)}
       </span>
       <span className="t-small sc-meta">{robust && <><ShieldIcon /> <strong>Robust</strong> · </>}{accessText(site.logistics?.travel_time_min)}</span>
       <span className="link-text t-small">Open details →</span>
@@ -227,7 +231,7 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
     <div className="panel-body site-card-panel">
       <button type="button" className="link-btn back" onClick={onBack}>← {backLabel}</button>
       <h2 className="t-h2" tabIndex={-1} ref={headingRef}>{siteTitle(site)}</h2>
-      <p className="t-small muted2">{fmtLatLon(site.lat, site.lon, 2)} · 0.5° cell (~55 × {cellEwKm(site.lat)} km)</p>
+      <p className="t-small muted2">{site.known_analog && placeName(site) ? `${placeName(site)} · ` : ''}{fmtLatLon(site.lat, site.lon, 2)} · 0.5° cell (~55 × {cellEwKm(site.lat)} km)</p>
       <p className="status-chips">
         {n !== null && <span className="tag">Site {n} of {nTotal}</span>}
         {topPct !== null && <span className="tag">Top {topPct}% of Earth land</span>}
@@ -245,6 +249,8 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
       <ul className="factor-rows">
         {rows.map((f) => {
           const ui = FACTOR_UI[f]
+          const name = ctx.ft.label(f)
+          const tie = ctx.ft.secondary(f)
           const s = site.factor_scores[f] as number
           const w = ctx.weights[f] ?? 0
           const feat = featureOf[f]
@@ -253,11 +259,11 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
           const capped = isAtLimit(ctx.target, f)
           const det = `Site ${detail ? fmt(f, x) : '…'} · target ${fmt(f, tv)}`
           return (
-            <li key={f} className="frow" aria-label={`${ui.name}: ${to100(s)} out of 100${ui.tieBreaker ? ', tie-breaker' : `, weight ${w} percent`}. ${det}.${capped ? ` Earth can't reach this: short by ${fmt(f, ctx.target.features![f]!.gap)}.` : ''}`}>
+            <li key={f} className="frow" aria-label={`${name}: ${to100(s)} out of 100${tie ? ', tie-breaker' : `, weight ${w} percent`}. ${det}.${capped ? ` Earth can't reach this: short by ${fmt(f, ctx.target.features![f]!.gap)}.` : ''}`}>
               <span className={`ficon g-${ui.group}`} aria-hidden="true"><Icon name={`factor-${ui.group}`} size={20} /></span>
               <span className="fname">
-                <span className="t-label">{ui.name}{ui.tieBreaker && <em className="muted2"> (tie-breaker)</em>}</span>
-                <InfoPopover title={ui.name}>{ui.info}</InfoPopover>
+                <span className="t-label">{name}{tie && <em className="muted2"> (tie-breaker)</em>}</span>
+                <InfoPopover title={name}>{ctx.ft.info(f)}</InfoPopover>
               </span>
               <span className="fdet" aria-hidden="true">
                 <span className="t-small muted2">{det}</span>
@@ -265,7 +271,7 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
               </span>
               <span className="fbar" aria-hidden="true"><i className={`g-${ui.group}`} style={{ width: `${to100(s)}%` }} />{capped && <b className="capmark" />}</span>
               <span className="num fscore" aria-hidden="true">{to100(s)}</span>
-              <span className="t-small muted2 fw" aria-hidden="true">{ui.tieBreaker ? '' : `×${w}`}</span>
+              <span className="t-small muted2 fw" aria-hidden="true">{tie ? '' : `×${w}`}</span>
             </li>
           )
         })}

@@ -28,9 +28,24 @@ export const purposeShort = (p: Profile | undefined, id?: string) => p?.display_
 export const targetShort = (t: Target | undefined) => (t ? t.short_name ?? t.name.split(' (')[0] : '')
 export const targetMeta = (t: Target) => t.description ?? (t.role.split(';')[0] ?? t.role)
 
-/** Site title: known analog names come from validation.csv; unnamed candidate cells have no place name in the contract yet. */
-export function siteTitle(s: Pick<SiteRef, 'name' | 'site_id' | 'lat' | 'lon' | 'known_analog'>): string {
+type Placeable = Pick<SiteRef, 'name' | 'site_id' | 'lat' | 'lon' | 'known_analog' | 'country' | 'region' | 'admin1'>
+
+/** "Region, Country" from the site's admin-1 region and country, when the data has them (else null). */
+export function placeName(s: Partial<Placeable>): string | null {
+  const region = s.region ?? s.admin1 ?? null
+  const country = s.country ?? null
+  if (region && country) return region === country ? country : `${region}, ${country}`
+  return country ?? region ?? null
+}
+
+/**
+ * Site title: a known analog keeps its validation.csv name; other sites use "Region, Country" when present, and fall back
+ * to "Earth site at {lat lon}" for unnamed candidate cells (v1.1 mocks carry no place names).
+ */
+export function siteTitle(s: Placeable): string {
   if (s.known_analog) return s.known_analog
+  const place = placeName(s)
+  if (place) return place
   if (s.site_id.startsWith('cell_') || s.name.startsWith('Candidate cell')) return `Earth site at ${fmtLatLon(s.lat, s.lon, 1)}`
   return s.name
 }

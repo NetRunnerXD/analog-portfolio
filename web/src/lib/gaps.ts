@@ -1,4 +1,3 @@
-import { FACTOR_UI } from '../copy'
 import type { Ctx } from '../components/panels'
 import type { Gap, GapsFile, Portfolio, PortfolioVariant, TargetBody } from '../types/contract'
 import { CORE_FACTORS } from '../types/contract'
@@ -35,7 +34,7 @@ export function buildGapRows(gaps: GapsFile, body: TargetBody, ctx: Ctx, variant
     const siteIdx = variant?.sites.findIndex((s) => (s.factor_scores[f] ?? 0) >= (portfolio?.theta ?? 0.7)) ?? -1
     const lines = [`Target ${fmt(f, fv.value)} · best Earth ${fmt(f, fv.t_star)} · short ${fmt(f, fv.gap)}`]
     if (covered.has(f) && siteIdx >= 0) lines.push(`Site ${siteIdx + 1} covers it at Earth's limit · short ${fmt(f, fv.gap)}`)
-    rows.push({ key: `live-${f}`, tier: 'beyondRange', name: FACTOR_UI[f].name, lines, facilities: fac([...new Set(related.flatMap((g) => g.example_facilities))]), sources: [...new Set(related.flatMap((g) => g.citation_urls))] })
+    rows.push({ key: `live-${f}`, tier: 'beyondRange', name: ctx.ft.label(f), lines, facilities: fac([...new Set(related.flatMap((g) => g.example_facilities))]), sources: [...new Set(related.flatMap((g) => g.citation_urls))] })
   }
   // Static tier-2 rows for factors outside the scored core (e.g. Mars surface pressure on F11)
   for (const g of t2) {
@@ -50,7 +49,7 @@ export function buildGapRows(gaps: GapsFile, body: TargetBody, ctx: Ctx, variant
     const uncoverable = portfolio?.uncoverable.includes(f)
     const bmCovers = portfolio?.variants.find((v) => v.id === 'best_match')?.covers?.includes(f)
     rows.push({
-      key: `nc-${f}`, tier: 'notCovered', name: FACTOR_UI[f].name,
+      key: `nc-${f}`, tier: 'notCovered', name: ctx.ft.label(f),
       lines: [uncoverable ? 'No candidate Earth site scores 70 on this need.' : `Best site scores ${to100(best)}; a site needs 70 to count as covering it.`],
       facilities: [], sources: [],
       fix: !uncoverable && bmCovers && variant?.id !== 'best_match' && onBestMatch ? { label: 'Try "Best match" →', onClick: onBestMatch } : undefined,

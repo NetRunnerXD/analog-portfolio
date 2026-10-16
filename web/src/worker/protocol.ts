@@ -14,7 +14,7 @@ export interface ScoreMsg {
   target: { id: string; body: TargetBody; values: Partial<Record<FactorId, number | null>> }
   profileId: string
   weights: Record<string, number>
-  /** cell_id -> continent for cells whose continent is known from the shipped portfolio (contract has no continent column yet) */
+  /** cell_id -> continent known from the shipped portfolio; only used when earth_features has no `continent` column */
   continents: [number, string][]
   /** true: build the three variants too (custom weights). false: heatmap + percentiles only (default weights use the shipped portfolio) */
   withPortfolio: boolean
@@ -44,6 +44,6 @@ export interface CellDetail {
   features: Record<string, number | null>
 }
 export interface CellReplyMsg { type: 'cell'; reqId: number; detail: CellDetail }
-export interface ReadyMsg { type: 'ready'; nCells: number }
+export interface ReadyMsg { type: 'ready'; nCells: number; /** earth_features has a continent column */ gridContinent: boolean }
 export interface ErrorMsg { type: 'error'; reqId?: number; message: string }
 export type FromWorker = ScoredMsg | CellReplyMsg | ReadyMsg | ErrorMsg

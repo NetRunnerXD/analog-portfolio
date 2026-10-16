@@ -83,8 +83,23 @@ export function weightedPctRank(x: ArrayLike<number>, w: ArrayLike<number>, high
   return out
 }
 
-/** Great-circle distance (pipeline/analog_portfolio/grid haversine_km; Earth radius 6371.0 km). */
-export function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number, rKm = 6371.0): number {
+/** IUGG mean Earth radius (km), the contract's great-circle radius (profiles.json defaults.nms_distance). */
+export const EARTH_RADIUS_KM = 6371.0088
+
+/**
+ * Earth radius from profiles.json: a numeric `defaults.earth_radius_km` if the contract adds one, else the value written in
+ * `defaults.nms_distance` ("great-circle (haversine), Earth radius 6371.0088 km"), else the shared constant.
+ */
+export function earthRadiusKm(defaults: Record<string, unknown> | undefined): number {
+  const n = defaults?.earth_radius_km
+  if (typeof n === 'number' && n > 6000 && n < 6500) return n
+  const m = typeof defaults?.nms_distance === 'string' ? /radius\s+([\d.]+)\s*km/i.exec(defaults.nms_distance) : null
+  const v = m ? Number(m[1]) : NaN
+  return v > 6000 && v < 6500 ? v : EARTH_RADIUS_KM
+}
+
+/** Great-circle distance (haversine) on a sphere of radius rKm (default: IUGG mean radius). */
+export function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number, rKm = EARTH_RADIUS_KM): number {
   const rad = Math.PI / 180
   const p1 = lat1 * rad
   const p2 = lat2 * rad

@@ -15,6 +15,10 @@ import { band, fmtLatLon } from '../lib/format'
 import { makeHeatLayer, gridCanvases, type HeatState } from './heat'
 import { candidatePin, earthPin, knownPin } from './pins'
 import { T } from './tokens'
+import { measurePadding, offsetCenter } from './padding'
+
+/** Overlays can live outside the map wrapper (phone sheet, tablet drawer), so search the whole screen. */
+const overlayRoot = (e: HTMLElement): ParentNode => e.closest('main') ?? document
 
 export interface MapPin { id: string; kind: 'portfolio' | 'known' | 'candidate'; n?: number; lat: number; lon: number; label: string; tooltip: string }
 export interface HeatGrid { scores: Uint8Array; filter: Uint8Array }
@@ -62,7 +66,7 @@ export default function MapView(p: Props) {
       target: el.current,
       layers: [land, heatLayer.current, coast, pins],
       controls: defaultControls({ zoom: false, rotate: false, attribution: false }),
-      view: new View({ projection: 'EPSG:4326', center: HOME.center, zoom: HOME.zoom, minZoom: 0, maxZoom: 8, enableRotation: false, showFullExtent: true }),
+      view: new View({ projection: 'EPSG:4326', center: HOME.center, zoom: HOME.zoom, minZoom: 0, maxZoom: 8, enableRotation: false, showFullExtent: true, multiWorld: true, constrainOnlyCenter: true, extent: [-540, -150, 540, 150] }),
     })
     mapRef.current = map
     if (import.meta.env.DEV) (window as unknown as { __olmap: OlMap }).__olmap = map
@@ -149,8 +153,10 @@ export default function MapView(p: Props) {
     const pts = p.pins.filter((x) => x.kind === 'portfolio').map((x) => [x.lon, x.lat])
     if (!pts.length) return
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    const legendH = el.current?.parentElement?.querySelector('.map-legend')?.getBoundingClientRect().height ?? 0
-    map.getView().fit(boundingExtent(pts), { padding: [96, 72, 48 + legendH, 72], maxZoom: 4, duration: reduce ? 0 : 600 })
+    // padding accounts for the legend, the phone bottom sheet, the tablet drawer and banners (data-map-obscures)
+    const padding = measurePadding(el.current!, overlayRoot(el.current!), [72, 64, 48, 64])
+    if (import.meta.env.DEV) console.debug('fit padding', JSON.stringify(padding), JSON.stringify(map.getSize()))
+    map.getView().fit(boundingExtent(pts), { padding, maxZoom: 4, duration: reduce ? 0 : 600 })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [p.fitKey])
 
@@ -160,7 +166,11 @@ export default function MapView(p: Props) {
     const pin = p.pins.find((x) => x.id === p.selectedId)
     if (!map || !pin) return
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-    map.getView().animate({ center: [pin.lon, pin.lat], zoom: Math.max(map.getView().getZoom() ?? 2, 3), duration: reduce ? 0 : 600 })
+    const view = map.getView()
+    const zoom = Math.max(view.getZoom() ?? 2, 3)
+    const padding = measurePadding(el.current!, overlayRoot(el.current!))
+    const center = offsetCenter([pin.lon, pin.lat], padding, view.getResolutionForZoom(zoom))
+    view.animate({ center, zoom, duration: reduce ? 0 : 600 })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [p.selectedId])
 
