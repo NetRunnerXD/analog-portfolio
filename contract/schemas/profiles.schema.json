@@ -103,6 +103,9 @@
             },
             "seed": {
               "type": "integer"
+            },
+            "alpha_rule": {
+              "type": "string"
             }
           },
           "additionalProperties": false,
@@ -126,6 +129,32 @@
         },
         "nms_distance": {
           "type": "string"
+        },
+        "missing_data": {
+          "type": "object",
+          "properties": {
+            "earth_nan": {
+              "type": "string"
+            },
+            "min_active_weight_frac": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "below_min": {
+              "type": "string"
+            },
+            "target_null": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "min_active_weight_frac"
+          ]
+        },
+        "ties": {
+          "type": "object"
         }
       },
       "additionalProperties": false,

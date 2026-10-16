@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "nordlinger_ries_impact_crater_germany",
  "name": "Nordlinger Ries impact crater (Germany)",
@@ -7,6 +7,8 @@
  "lon": 10.5667,
  "cell_id": 59421,
  "country": null,
+ "admin1": null,
+ "continent": "Europe",
  "summary": "Complex impact crater with suevite and impact breccias; Apollo 14 crew geology training (August 1970).",
  "known_analog": "Nordlinger Ries impact crater (Germany)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 713.0,
-  "airport_km": 156.0
+  "airport_km": 156.0,
+  "continent": 4.0
  },
  "drilldown": {},
  "best_for": [],

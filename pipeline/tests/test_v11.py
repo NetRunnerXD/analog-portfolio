@@ -78,7 +78,7 @@ def test_variants_easy_filter_and_continent():
 
 def test_profiles_ui_fields():
     p = load("profiles")
-    assert p["contract_version"] == CONTRACT_VERSION == "1.1.0"
+    assert p["contract_version"] == CONTRACT_VERSION and CONTRACT_VERSION.startswith("1.1")
     assert [v["id"] for v in p["defaults"]["variants"]] == ["best_match", "easiest_to_reach", "one_continent"]
     mc = p["defaults"]["monte_carlo"]
     assert mc["robust_top_frac"] == 0.05 and mc["robust_min_freq"] == 0.8 and "top_k" not in mc
@@ -107,3 +107,34 @@ def test_mock_portfolios_three_variants():
                 assert all(s["logistics"]["travel_time_min"] <= 360 for s in v["sites"])
             for s in v["sites"]:
                 assert s["robustness"]["robust"] == (s["robustness"]["top5_freq"] >= 0.8)
+
+
+def test_v111_continent_column_radius_labels():
+    import json
+
+    from analog_portfolio.contract import WEB_DATA_DIR, load
+    from analog_portfolio.grid import BODY_RADIUS_M, haversine_km
+    from analog_portfolio.grid.binary import read_grid
+    from analog_portfolio.grid.columns import CONTINENT_CODES, EARTH_COLUMNS
+
+    assert EARTH_COLUMNS[-1][0] == "continent" and len(EARTH_COLUMNS) == 25
+    m = json.loads((WEB_DATA_DIR / "mock" / "earth_features.json").read_text())
+    arr = {a["name"]: a for a in m["arrays"]}
+    assert arr["continent"]["codes"] == {str(k): v for k, v in CONTINENT_CODES.items()}
+    g = read_grid(WEB_DATA_DIR / "mock" / "earth_features.json")
+    assert set(np.unique(g["continent"]).astype(int)) <= set(CONTINENT_CODES)
+    assert BODY_RADIUS_M["earth"] == 6_371_008.8
+    assert haversine_km(0, 0, 0, 1) == pytest.approx(great_circle_km(0, 0, 0, 1), rel=1e-12)
+    labels = {f["id"]: f["ui_label"] for f in load("factors")["factors"]}
+    assert labels["F1"] == "Average ground temperature" and labels["F13"] == "Landforms (tie-breaker)"
+
+
+def test_v111_mock_sites_have_names_fields():
+    import json
+
+    from analog_portfolio.contract import WEB_DATA_DIR
+
+    p = next((WEB_DATA_DIR / "mock" / "portfolios").glob("*.json"))
+    port = json.loads(p.read_text())
+    st = port["top_cells"][0]
+    assert "country" in st and "admin1" in st and st["logistics"]["continent"]

@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "rio_tinto_headwaters_pena_de_hierro_huelva_spain",
  "name": "Rio Tinto headwaters, Pena de Hierro (Huelva, Spain)",
@@ -7,6 +7,8 @@
  "lon": -6.5558,
  "cell_id": 75226,
  "country": null,
+ "admin1": null,
+ "continent": "Europe",
  "summary": "Acidic (pH ~2.3) iron-sulfate river with jarosite, goethite and hematite comparable to Meridiani Planum; NASA/CAB MARTE subsurface drilling site.",
  "known_analog": "Rio Tinto headwaters, Pena de Hierro (Huelva, Spain)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 466.0,
-  "airport_km": 287.0
+  "airport_km": 287.0,
+  "continent": 4.0
  },
  "drilldown": {},
  "best_for": [],
