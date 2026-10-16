@@ -129,7 +129,7 @@ export default function App() {
       ) : (
         <Suspense fallback={<main id="main" className="stub" aria-busy="true"><p className="t-body muted2">Loading…</p></main>}>
           {url.view === 'explore' ? (
-            <Explore target={target} profile={profile} profiles={data.profiles} factors={data.factors} gaps={data.gaps} validation={data.validation}
+            <Explore target={target} profile={profile} profiles={data.profiles} factors={data.factors} gaps={data.gaps} validation={data.validation} earthRef={data.targets.earth_reference}
               mock={!!data.targets.mock} scorer={scorer} scorerError={scorerError} nCells={nCells} url={url} update={update}
               onRetryScorer={() => { setScorerError(null); setScorerNonce((n) => n + 1) }} onChangeTarget={() => update({ view: 'picker' })}
               weightsReq={weightsReq} weightsSeen={weightsSeen} onWeightsSeen={setWeightsSeen} />

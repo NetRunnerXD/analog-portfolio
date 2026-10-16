@@ -7,7 +7,7 @@ import { useBreakpoint } from '../lib/useMedia'
 import MapView, { type MapPin } from '../map/MapView'
 import { earthRadiusKm, haversineKm } from '../scoring/area'
 import { CORE_FACTORS } from '../types/contract'
-import type { FactorId, FactorsFile, GapsFile, Portfolio, Profile, ProfilesFile, SiteRef, Target, ValidationFile, VariantId } from '../types/contract'
+import type { FactorId, FactorsFile, GapsFile, Portfolio, Profile, ProfilesFile, SiteRef, Target, ValidationFile, VariantId, EarthReference } from '../types/contract'
 import type { ScorerClient } from '../worker/client'
 import type { CellDetail, ScoredMsg } from '../worker/protocol'
 import { buildGapRows } from '../lib/gaps'
@@ -24,6 +24,7 @@ interface Props {
   factors: FactorsFile
   gaps: GapsFile
   validation: ValidationFile
+  earthRef?: EarthReference | null
   mock: boolean
   scorer: ScorerClient | null
   scorerError: string | null
@@ -117,7 +118,8 @@ export default function Explore(p: Props) {
   const pName = purposeName(profile)
   const tShort = targetShort(target)
   const ft = useMemo(() => makeFactorText(p.factors), [p.factors])
-  const ctx: Ctx = { target, purposeName: pName, targetShort: tShort, weights, custom, needs, factors: p.factors, ft, robustnessAvailable: fromFile }
+  const ctx: Ctx = { target, purposeName: pName, targetShort: tShort, weights, custom, needs, factors: p.factors, ft, robustnessAvailable: fromFile,
+    earthRef: p.earthRef ?? undefined, mc: pfData?.monte_carlo ?? p.profiles.defaults.monte_carlo }
   const variant = portfolio?.variants.find((v) => v.id === url.v && v.available) ?? portfolio?.variants.find((v) => v.id === 'best_match')
   const vSites = useMemo(() => variant?.sites ?? [], [variant])
 
@@ -256,7 +258,7 @@ export default function Explore(p: Props) {
 
   const banners = (
     <div className="banners" data-map-obscures="top">
-      {custom && <Banner tone="info" title="Custom weights." action={<button type="button" className="link-btn" onClick={() => update({ w: undefined })}>Reset to {pName} defaults</button>}>Results are recalculated live in your browser. Robustness is hidden.</Banner>}
+      {custom && <Banner tone="info" title="Custom weights." action={<button type="button" className="link-btn" onClick={() => update({ w: undefined })}>Back to default weights</button>}>Scores, the portfolio and validation are recalculated for your weights. The pre-registered results use the default weights. Robustness is shown for default weights.</Banner>}
       {!custom && pf.status === 'missing' && scorable && <Banner tone="info" title="Computed live.">There is no precomputed portfolio for this pair yet, so it was built in your browser. Robustness is not available.</Banner>}
       {(p.scorerError || scoreErr) && portfolio && <Banner tone="warning" title="Live scoring is unavailable.">The heatmap and custom weights need the in-browser scorer. {p.scorerError ?? scoreErr}</Banner>}
       {cur && cur.stats.unknownFilters.length > 0 && <Banner tone="warning" title="Unknown filter.">{cur.stats.unknownFilters.join(', ')} was not applied.</Banner>}
@@ -264,7 +266,7 @@ export default function Explore(p: Props) {
   )
 
   const legend = (
-    <MapLegend title={`Match to ${tShort}`} filterText={filters.map((f) => f.ui_short ?? f.id).join(' or ')}>
+    <MapLegend title={`How ${target.body === 'moon' ? 'Moon' : 'Mars'}-like for this mission`} filterText={filters.map((f) => f.ui_short ?? f.id).join(' or ')}>
       <fieldset className="layer-toggle t-small">
         <legend className="sr-only">Map layers</legend>
         <label><input type="checkbox" checked={layers.known} onChange={(e) => setLayers((l) => ({ ...l, known: e.target.checked }))} /> <i className="sw sw-known" aria-hidden="true" /> Known analogs</label>

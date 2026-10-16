@@ -79,6 +79,20 @@ export function makeValueFormatter(factors: FactorsFile) {
   }
 }
 
+/** A difference in a factor's units ("short by …"). */
+export function makeDeltaFormatter(factors: FactorsFile) {
+  const fmt = makeValueFormatter(factors)
+  return (f: FactorId, d: number): string => {
+    if (!Number.isFinite(d)) return 'no data'
+    switch (f) {
+      case 'F4': case 'F8': return `${Math.round(d * 100)} percentage points`
+      case 'F10': return `${d.toFixed(1)}° of sun height`
+      case 'F7': case 'F9': return d.toFixed(2)
+      default: return fmt(f, d)
+    }
+  }
+}
+
 /** Unit words for screen readers. */
 export const factorUnitWord = (f: FactorId) => (f === 'F1' || f === 'F2' ? 'kelvin' : '')
 
@@ -102,4 +116,9 @@ export const hasScorableFeatures = (t: Target) => {
   return CORE_FACTORS.some((k) => f[k]?.value !== null && f[k]?.value !== undefined) && !CORE_FACTORS.some((k) => f[k]?.source === 'pending')
 }
 /** "Covered at Earth's limit": the target value is beyond Earth's P0.5–P99.5 range for this factor (targets.json gap > 0). */
-export const isAtLimit = (t: Target, f: FactorId) => (t.features?.[f]?.gap ?? 0) > 0
+export const isAtLimit = (t: Target, f: FactorId) => {
+  const fv = t.features?.[f]
+  if (!fv) return false
+  if (fv.value !== null && fv.value !== undefined && fv.t_star !== null && fv.t_star !== undefined) return Math.abs(fv.value - fv.t_star) > 1e-9
+  return (fv.gap ?? 0) !== 0 // sign-agnostic: a gap is a shortfall either way
+}

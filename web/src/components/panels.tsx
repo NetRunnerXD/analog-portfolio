@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
 import { FACTOR_UI, VARIANT_UI } from '../copy'
-import { accessText, band, cellEwKm, fmtLatLon, isAtLimit, placeName, makeValueFormatter, siteTitle, summarySentence, to100 } from '../lib/format'
+import { accessText, band, cellEwKm, fmtLatLon, isAtLimit, placeName, makeDeltaFormatter, makeValueFormatter, siteTitle, summarySentence, to100 } from '../lib/format'
 import type { GapRowData } from '../lib/gaps'
 import type { FactorText } from '../lib/factors'
-import type { FactorId, FactorsFile, Portfolio, SiteRef, Target, VariantId } from '../types/contract'
+import { earthLimit, type EarthLimit } from '../lib/limits'
+import type { EarthReference, FactorId, FactorsFile, Portfolio, SiteRef, Target, VariantId } from '../types/contract'
 import { ALL_FACTORS, CORE_FACTORS, VARIANT_IDS } from '../types/contract'
 import type { CellDetail } from '../worker/protocol'
 import { AtLimitIcon, Banner, EmptyState, FlaskIcon, GapIcon, Icon, InfoPopover, SegmentedControl, ShieldIcon } from './ui'
@@ -18,6 +19,10 @@ export interface Ctx {
   factors: FactorsFile
   /** factor names/info/chip words from factors.json */
   ft: FactorText
+  /** targets.json earth_reference (engine-exported Earth extremes) */
+  earthRef?: EarthReference
+  /** Monte Carlo settings of the shown portfolio (draws, top fraction, min frequency) */
+  mc: { draws: number; robust_top_frac: number; robust_min_freq: number }
   /** precomputed robustness is only valid for the shipped default-weight portfolio */
   robustnessAvailable: boolean
 }
@@ -40,11 +45,14 @@ export function RobustnessLine({ site, ctx }: { site: SiteRef; ctx: Ctx }) {
   const r = site.robustness
   if (!r) return null
   const pct = Math.round(r.top5_freq * 100)
+  const top = +(ctx.mc.robust_top_frac * 100).toFixed(1)
+  const n = ctx.mc.draws.toLocaleString('en')
+  const line = `the top ${top}% of land in ${pct}% of ${n} weight tests`
   return (
     <p className="robust t-small">
-      {r.robust ? <><ShieldIcon /> <strong className="t-label">Robust</strong> <span className="muted2">· in the top 5% of land in {pct}% of 1,000 weight tests</span></>
-        : <span className="muted2">In the top 5% of land in {pct}% of 1,000 weight tests</span>}
-      <InfoPopover title="Robustness">A site is Robust when its cell stays in the top 5% of land cells in at least 80% of 1,000 Monte Carlo weight draws.</InfoPopover>
+      {r.robust ? <><ShieldIcon /> <strong className="t-label">Robust</strong> <span className="muted2">· in {line}</span></>
+        : <span className="muted2">In {line}</span>}
+      <InfoPopover title="Robustness">A site is Robust when its cell stays in the top {top}% of Earth's land, area-weighted (each cell counts by its true area, which shrinks toward the poles), in at least {Math.round(ctx.mc.robust_min_freq * 100)}% of {n} Monte Carlo weight draws. Tested with the default weights only.</InfoPopover>
     </p>
   )
 }
@@ -186,7 +194,7 @@ export function FidelityGapPanel({ rows }: { rows: GapRowData[] }) {
             <ul className="gap-list">
               {rs.map((r) => (
                 <li key={r.key} className={`gap-row ${r.tier}`}>
-                  <p className="t-title">{r.name}</p>
+                  <p className="t-title">{r.name}{r.info && <> <InfoPopover title={r.info.title}>{r.info.text}</InfoPopover></>}</p>
                   {r.lines.map((l, i) => <p key={i} className="t-small num-inline">{l}</p>)}
                   {r.facilities.length > 0 && (
                     <p className="facilities">{r.facilities.slice(0, 3).map((f) => <span key={f} className="facility"><FlaskIcon /> {f}</span>)}</p>
@@ -226,7 +234,9 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
     .sort((a, b) => (ctx.weights[b] ?? 0) - (ctx.weights[a] ?? 0) || Number(a.slice(1)) - Number(b.slice(1)))
   const needsRows = sorted.filter((f) => (ctx.weights[f] ?? 0) > 0)
   const rows = expanded ? sorted : needsRows
-  const gapsT: Partial<Record<FactorId, number>> = Object.fromEntries(CORE_FACTORS.filter((f) => isAtLimit(ctx.target, f)).map((f) => [f, ctx.target.features![f]!.gap!]))
+  const dfmt = useMemo(() => makeDeltaFormatter(ctx.factors), [ctx.factors])
+  const limits = Object.fromEntries(CORE_FACTORS.map((f) => [f, isAtLimit(ctx.target, f) ? earthLimit(ctx.target, f, ctx.factors, ctx.earthRef) : null])) as Partial<Record<FactorId, EarthLimit | null>>
+  const gapsT: Partial<Record<FactorId, number>> = Object.fromEntries(Object.entries(limits).filter(([, l]) => l).map(([f, l]) => [f, l!.short]))
   return (
     <div className="panel-body site-card-panel">
       <button type="button" className="link-btn back" onClick={onBack}>← {backLabel}</button>
@@ -256,10 +266,11 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
           const feat = featureOf[f]
           const x = detail?.features[feat]
           const tv = ctx.target.features?.[f]?.value
-          const capped = isAtLimit(ctx.target, f)
+          const lim = limits[f] ?? null
+          const capped = !!lim
           const det = `Site ${detail ? fmt(f, x) : '…'} · target ${fmt(f, tv)}`
           return (
-            <li key={f} className="frow" aria-label={`${name}: ${to100(s)} out of 100${tie ? ', tie-breaker' : `, weight ${w} percent`}. ${det}.${capped ? ` Earth can't reach this: short by ${fmt(f, ctx.target.features![f]!.gap)}.` : ''}`}>
+            <li key={f} className="frow" aria-label={`${name}: ${to100(s)} out of 100${tie ? ', tie-breaker' : `, weight ${w} percent`}. ${det}.${lim ? ` Earth can't reach this: short by ${dfmt(f, lim.short)}.` : ''}`}>
               <span className={`ficon g-${ui.group}`} aria-hidden="true"><Icon name={`factor-${ui.group}`} size={20} /></span>
               <span className="fname">
                 <span className="t-label">{name}{tie && <em className="muted2"> (tie-breaker)</em>}</span>
@@ -267,7 +278,7 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
               </span>
               <span className="fdet" aria-hidden="true">
                 <span className="t-small muted2">{det}</span>
-                {capped && <span className="t-small capped">⤒ Earth can't reach this: short by {fmt(f, ctx.target.features![f]!.gap)}</span>}
+                {lim && <span className="t-small capped" title={lim.note ?? undefined}>⤒ Earth can't reach this: short by {dfmt(f, lim.short)}</span>}
               </span>
               <span className="fbar" aria-hidden="true"><i className={`g-${ui.group}`} style={{ width: `${to100(s)}%` }} />{capped && <b className="capmark" />}</span>
               <span className="num fscore" aria-hidden="true">{to100(s)}</span>

@@ -1,5 +1,5 @@
 // Continent per Earth cell. Preferred source: the `continent` column of earth_features (Natural Earth admin-0 CONTINENT,
-// announced by Project 1). Until it ships, fall back to the continents known from the shipped portfolio's sites.
+// contract v1.1.1: uint8 codes, labels in the manifest's `codes` map). If a grid has no such column, fall back to the continents known from the shipped portfolio's sites.
 import type { GridManifest } from '../types/contract'
 
 export type ContinentOf = (cellId: number) => string | null
@@ -9,7 +9,7 @@ export function gridContinentLookup(manifest: GridManifest, columns: Record<stri
   const col = columns.continent
   const ids = columns.cell_id
   if (!arr || !col || !ids) return null
-  const cats = arr.categories
+  const cats = arr.codes ?? arr.categories
   const label = (code: number): string | null => {
     if (!Number.isFinite(code)) return null
     const c = Math.round(code)
