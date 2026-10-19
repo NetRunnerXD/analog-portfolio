@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.0",
+ "contract_version": "1.1.1",
  "mock": true,
  "site_id": "ladakh_tso_kar_basin_india",
  "name": "Ladakh, Tso Kar basin (India)",
@@ -7,6 +7,8 @@
  "lon": 77.9833,
  "cell_id": 81875,
  "country": null,
+ "admin1": null,
+ "continent": "Asia",
  "summary": "Cold, arid, high-UV plateau at ~4.5 km with evaporites and hydrothermal springs (Puga nearby); used for Mars-analog and HABIT instrument studies.",
  "known_analog": "Ladakh, Tso Kar basin (India)",
  "earth_features": {
@@ -32,7 +34,8 @@
   "water_frac": 0.0,
   "builtup_frac": 0.0,
   "travel_time_min": 318.0,
-  "airport_km": 320.0
+  "airport_km": 320.0,
+  "continent": 3.0
  },
  "drilldown": {},
  "best_for": [],

@@ -336,6 +336,28 @@
               "airport_km"
             ]
           },
+          "country": {
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "Natural Earth admin-0 NAME"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "admin1": {
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "Natural Earth admin-1 (state/province) name"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "known_analog": {
             "anyOf": [
               {

@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.1.0",
+  "contract_version": "1.1.1",
   "status": "pre-registered (provisional until the Oct 28 statement diff; weights frozen before first scoring run)",
   "defaults": {
     "theta": 0.7,
@@ -13,8 +13,9 @@
       "robust_top_frac": 0.05,
       "robust_min_freq": 0.8,
       "area_weighting": "cos_lat",
-      "rule": "A site is robust when its cell is in the top 5% of land cells (cos(lat) area-weighted threshold, recomputed per draw) in >= 80% of the draws",
-      "seed": 20261114
+      "rule": "A site is robust when its cell is in the top 5% of scorable land cells (cos(lat) area-weighted threshold, recomputed per draw; insufficient_data cells excluded) in >= 80% of the draws",
+      "seed": 20261114,
+      "alpha_rule": "alpha_i = dirichlet_alpha_scale * w_i / sum(w) over active (w > 0, not dropped) core factors; zero weights stay 0"
     },
     "secondary_factors": [
       "F11",
@@ -46,7 +47,26 @@
       }
     ],
     "percentiles": "All Earth percentiles, the median used for the candidate pool, the P0.5/P99.5 clip and top-x% thresholds are cos(lat) area-weighted over land cells",
-    "nms_distance": "great-circle (haversine), Earth radius 6371.0088 km"
+    "nms_distance": "great-circle (haversine), Earth radius 6371.0088 km",
+    "missing_data": {
+      "earth_nan": "factor dropped for that cell, active weights renormalised",
+      "min_active_weight_frac": 0.7,
+      "below_min": "insufficient_data (excluded from ranking, thresholds, pools and robustness)",
+      "target_null": "sampled in the pipeline; if still missing, dropped for that target with weights renormalised and listed in dropped_factors"
+    },
+    "ties": {
+      "percentile": "midrank / (n_finite - 1)",
+      "candidate_sort": [
+        "s_f desc",
+        "S desc",
+        "cell_id asc"
+      ],
+      "pool_order": [
+        "S desc",
+        "cell_id asc"
+      ],
+      "greedy": "earliest in pool order"
+    }
   },
   "global_hard_filters": [
     {

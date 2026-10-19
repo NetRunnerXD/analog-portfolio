@@ -161,6 +161,13 @@
           },
           "source": {
             "type": "string"
+          },
+          "codes": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            },
+            "description": "Categorical code table (raw value -> label), e.g. continent"
           }
         },
         "additionalProperties": false,

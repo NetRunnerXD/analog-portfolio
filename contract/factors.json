@@ -1,5 +1,5 @@
 {
-  "contract_version": "1.1.0",
+  "contract_version": "1.1.1",
   "grid": {
     "resolution_deg": 0.5,
     "ncols": 720,
@@ -20,7 +20,7 @@
     "cell_id": "row * 720 + col, where col = floor((lon + 180) / 0.5), row = floor((90 - lat) / 0.5)",
     "cell_size": "0.5 deg is ~55.6 km north-south but ~55.6*cos(lat) km east-west (about 56 x 12 km at 77.5 S); cells are not squares away from the equator",
     "area_weighting": "cos(lat) of the cell centre; used for every land fraction, Earth percentile/median, P0.5/P99.5 clip, top-x% threshold and validation percentile",
-    "distance": "great-circle (haversine) with body radius (Earth 6371.0088 km, Moon 1737.4 km, Mars 3396.19 km)"
+    "distance": "great-circle (haversine) with body radius (Earth 6371.0088 km = IUGG mean radius, canonical; Moon 1737.4 km, Mars 3396.19 km)"
   },
   "factors": [
     {
@@ -37,7 +37,7 @@
         "moon": "Diviner GCP 0.5 deg Tbol mean over local time; polar targets from GCP 90S-80S band",
         "mars": "Mars Climate Database v6.2 tsurf, mean over Ls x local time"
       },
-      "ui_label": "How cold is it?",
+      "ui_label": "Average ground temperature",
       "ui_copy": "The average temperature of the ground over a full day and year. Cold limits how batteries, rovers and people work, and it controls whether water stays frozen. The Moon's shadowed polar craters are far colder than anywhere on Earth, so we match as closely as Earth allows and show what's left over."
     },
     {
@@ -54,7 +54,7 @@
         "moon": "Diviner GCP max - min over local time",
         "mars": "MCD tsurf max - min over local time"
       },
-      "ui_label": "Daily temperature swing",
+      "ui_label": "Day–night temperature swing",
       "ui_copy": "How much the ground heats up and cools down between day and night. Big swings stress materials, seals and electronics. The Moon's equator swings by roughly 300 °C, which no place on Earth comes close to. Mars swings less, and some Earth deserts get closer to it."
     },
     {
@@ -81,7 +81,7 @@
         "mars": "TES thermal inertia 2007 (Putzig & Mellon), within-Mars percentile classes"
       },
       "note": "Never pool raw units across bodies; only within-body classes are compared.",
-      "ui_label": "Dusty, sandy or rocky ground",
+      "ui_label": "Ground type (heat retention)",
       "ui_copy": "How quickly the surface heats and cools, which tells us whether the ground is fine dust, sand, gravel or solid rock. That matters for safe landing, for driving rovers and for digging. Earth uses a different measurement method, so we compare each site's *rank* within its own world, not raw numbers."
     },
     {
@@ -99,7 +99,7 @@
         "mars": "MOLA MEGDR (463 m strided)"
       },
       "note": "Slope baseline is recorded per body in provenance.json.",
-      "ui_label": "Flat enough to land",
+      "ui_label": "Flat, landable ground",
       "ui_copy": "The share of the area flat enough for a lander to set down safely. NASA's lunar lander requirement is a tilt of 8° or less, with 5° as the goal. Steep, broken ground is risky for landers, rovers and walking astronauts."
     },
     {
@@ -116,7 +116,7 @@
         "moon": "LOLA LDEM_16; targets from polar DEM, P95-P5 within a 15 km radius",
         "mars": "MOLA MEGDR meg016; targets P95-P5 within a 15 km radius"
       },
-      "ui_label": "Hills and hollows",
+      "ui_label": "Hills and relief",
       "ui_copy": "How much the ground rises and falls nearby, such as ridges, crater rims and valleys. Relief shapes shadows, line of sight for radios, and how hard a site is to traverse. We compare relief rather than altitude, because \"sea level\" means nothing on the Moon or Mars."
     },
     {
@@ -150,7 +150,7 @@
         "moon": "constant target: hyper-arid (AI = 0)",
         "mars": "constant target: hyper-arid (AI = 0)"
       },
-      "ui_label": "How dry is it?",
+      "ui_label": "Dryness",
       "ui_copy": "How little water the land receives compared with how much the air could evaporate. The Moon and Mars are bone-dry at the surface, so the driest deserts on Earth, such as the Atacama, are the best stand-ins. Dryness matters for testing life-detection instruments and for how soil behaves."
     },
     {
@@ -167,7 +167,7 @@
         "moon": "constant target 1.0 (lifeless)",
         "mars": "constant target 1.0 (lifeless)"
       },
-      "ui_label": "Bare ground",
+      "ui_label": "Bare ground (no plants)",
       "ui_copy": "How much of the land is bare rock, sand, snow or ice instead of plants, crops or buildings. A lifeless-looking surface is closer to the Moon and Mars, and it keeps vegetation from confusing tests of cameras, spectrometers and robots."
     },
     {
@@ -184,7 +184,7 @@
         "moon": "min(1, PSR area fraction in target window / 0.10), raised to >= Ice Favorability Index (0-1 rescaled)",
         "mars": "SWIM v4 depth band: 0-1 m -> 1.0, 1-5 m -> 0.67, >5 m -> 0.33, none -> 0; fallback Odyssey GRS WEH"
       },
-      "ui_label": "Frozen water nearby",
+      "ui_label": "Frozen ground / ice",
       "ui_copy": "Whether water ice is likely just below the surface, as in permanently frozen ground on Earth or shadowed \"cold traps\" on the Moon. Ice is the key resource for drinking water, oxygen and rocket fuel. Arctic and Antarctic permafrost lets teams practise finding and extracting it."
     },
     {
@@ -204,7 +204,7 @@
         "moon": "Analytic (obliquity 1.54 deg); target card shows PGDA AVGVISIB illumination %",
         "mars": "Analytic (obliquity 25.19 deg); MCD fluxsurf_dn_sw as cross-check"
       },
-      "ui_label": "Sunlight and shadows",
+      "ui_label": "Sun angle & daylight pattern",
       "ui_copy": "How high the Sun climbs and how daylight changes through the year. At the Moon's south pole the Sun skims the horizon, casting very long shadows that challenge solar power and camera vision. High-latitude Earth sites get a similar low Sun in summer, though never the airless, black-sky contrast."
     },
     {
@@ -229,7 +229,7 @@
         "moon": "constant 0 (no atmosphere, no global field); 1369 uSv/d [R20] on the gap panel",
         "mars": "MCD surface pressure / g_mars; checked against MSL RAD 0.64 mSv/d at Gale [R31]"
       },
-      "ui_label": "Radiation and thin air (tie-breaker)",
+      "ui_label": "Air & radiation shielding (tie-breaker)",
       "ui_copy": "How much air and magnetic field sit overhead to block cosmic radiation. The Moon has neither, and Mars has very thin air. Their surfaces receive roughly 100–200 times the natural radiation dose on Earth, so no Earth site truly matches. This factor only breaks ties between places that already score well, and the real gap appears in the Fidelity Gap panel."
     },
     {
@@ -253,7 +253,7 @@
         "moon": "unshielded (not scored on target side)",
         "mars": "~10^3 x present Earth DNA-weighted (inferred) [R46]"
       },
-      "ui_label": "Ultraviolet light (tie-breaker)",
+      "ui_label": "UV exposure (tie-breaker)",
       "ui_copy": "How strong the Sun's ultraviolet light is at the ground. The Moon gets it unfiltered and Mars gets far more than Earth because its thin air has almost no ozone. High, dry Earth sites get closer but never match, so this factor only breaks ties."
     },
     {
@@ -270,7 +270,7 @@
         "moon": "craters, PSRs, massifs from target context",
         "mars": "craters, MGC3 caves, debris-covered glaciers, periglacial terrain"
       },
-      "ui_label": "Special landforms",
+      "ui_label": "Landforms (tie-breaker)",
       "ui_copy": "Whether the site has telltale landforms shared with the target: impact craters, lava tubes and caves, or frozen-ground patterns. These features let crews rehearse specific tasks, such as exploring a cave or sampling crater rocks, and the challenge names caves explicitly."
     }
   ],
@@ -524,5 +524,6 @@
     "final": "S = S_core * (0.9 + 0.1 * S_sec)",
     "earth_clip": "t* = clip(t, Earth P0.5, Earth P99.5) over land cells (cos(lat) area-weighted quantiles); gap = |t - t*|",
     "percentiles": "directional percentiles (F7, F11, F12) are cos(lat) area-weighted ranks among land cells"
-  }
+  },
+  "ui_label_source": "design/spec.md §7 'UI name' column; factors.json ui_label is the single label source for the UI"
 }

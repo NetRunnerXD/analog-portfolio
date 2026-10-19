@@ -1,6 +1,11 @@
 """Column specs (quantization) for shipped grid binaries. Mirrors DATA_CONTRACT.md section 5.1."""
 from __future__ import annotations
 
+# Natural Earth admin-0 CONTINENT -> uint8 code (0 = none; manifest array "codes" carries this table)
+CONTINENT_CODES: dict[int, str] = {1: "Africa", 2: "Antarctica", 3: "Asia", 4: "Europe", 5: "North America", 6: "Oceania",
+                                   7: "South America"}
+COLUMN_CODES = {"continent": CONTINENT_CODES}
+
 # name, factor, dtype, scale, add_offset, units
 EARTH_COLUMNS: list[tuple[str, str | None, str, float, float, str]] = [
     ("cell_id", None, "uint32", 1, 0, "cell id (row*720+col)"),
@@ -27,6 +32,7 @@ EARTH_COLUMNS: list[tuple[str, str | None, str, float, float, str]] = [
     ("builtup_frac", None, "uint8", 0.004, 0, "fraction"),
     ("travel_time_min", None, "uint16", 1, 0, "minutes to nearest city >50k"),
     ("airport_km", None, "uint16", 1, 0, "km to nearest airport"),
+    ("continent", None, "uint8", 1, 0, "continent code (manifest codes; Natural Earth admin-0 CONTINENT)"),
 ]
 
 PLANET_COLUMNS: list[tuple[str, str | None, str, float, float, str]] = [
