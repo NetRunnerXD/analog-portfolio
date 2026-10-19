@@ -298,9 +298,10 @@ main { flex: 1; min-height: 0; }
 .legend-body { display: flex; flex-direction: column; gap: var(--space-1); }
 .legend-body[hidden] { display: none; }
 .legend-toggle { display: inline-flex; align-items: center; gap: var(--space-2); min-height: 32px; padding: 0; border: 0; background: none; color: var(--color-text-primary); align-self: flex-start; }
-.map-legend.collapsed { width: auto; padding: var(--space-1) var(--space-3); }
-.map-legend.collapsed .legend-toggle { min-height: 36px; }
-.ramp-chip { display: inline-block; width: 44px; height: 10px; border-radius: 2px; background: var(--heat-gradient); }
+.map-legend.collapsed { width: auto; right: auto; padding: var(--space-1) var(--space-3); }
+.map-legend.collapsed .legend-toggle { min-height: var(--layout-hitTarget); }
+.ramp-chip-wrap { display: inline-flex; align-items: center; gap: var(--space-1); }
+.ramp-chip { display: inline-block; width: 64px; height: 8px; border-radius: 2px; background: var(--heat-gradient); }
 .chev { display: inline-block; width: 7px; height: 7px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(-135deg); margin-top: 3px; color: var(--color-text-secondary); }
 .chev.up { transform: rotate(45deg); margin-top: -3px; }
 /* warnings: neutral text + warning icon; magenta is reserved for Fidelity Gap content */

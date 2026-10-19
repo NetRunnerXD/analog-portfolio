@@ -1,11 +1,12 @@
 import type { Ctx } from '../components/panels'
 import type { Gap, GapsFile, Portfolio, PortfolioVariant, TargetBody } from '../types/contract'
 import { CORE_FACTORS } from '../types/contract'
-import { isAtLimit, makeValueFormatter, to100 } from './format'
+import { isAtLimit, makeDeltaFormatter, makeValueFormatter, to100 } from './format'
+import { earthLimit } from './limits'
 
 // Fidelity Gap rows (spec §8.4 FidelityGapPanel). Tier 1 and the facility/source lists come from gaps.json;
 // tier-2 numbers come from targets.json features (value, t_star, gap); tier 3 from the active portfolio variant.
-export interface GapRowData { key: string; tier: 'impossible' | 'beyondRange' | 'notCovered'; name: string; lines: string[]; facilities: string[]; sources: string[]; fix?: { label: string; onClick: () => void } }
+export interface GapRowData { key: string; tier: 'impossible' | 'beyondRange' | 'notCovered'; name: string; lines: string[]; facilities: string[]; sources: string[]; fix?: { label: string; onClick: () => void }; info?: { title: string; text: string } }
 
 const litStr = (v: unknown, unit?: string) => {
   if (v === null || v === undefined) return ''
@@ -29,12 +30,29 @@ export function buildGapRows(gaps: GapsFile, body: TargetBody, ctx: Ctx, variant
   const covered = new Set(variant?.covers ?? [])
   const liveFactors = CORE_FACTORS.filter((f) => isAtLimit(ctx.target, f))
   for (const f of liveFactors) {
-    const fv = ctx.target.features![f]!
+    const lim = earthLimit(ctx.target, f, ctx.factors, ctx.earthRef)
+    if (!lim) continue
     const related = t2.filter((g) => g.factors.includes(f) && g.values[body] !== undefined)
     const siteIdx = variant?.sites.findIndex((s) => (s.factor_scores[f] ?? 0) >= (portfolio?.theta ?? 0.7)) ?? -1
-    const lines = [`Target ${fmt(f, fv.value)} · best Earth ${fmt(f, fv.t_star)} · short ${fmt(f, fv.gap)}`]
-    if (covered.has(f) && siteIdx >= 0) lines.push(`Site ${siteIdx + 1} covers it at Earth's limit · short ${fmt(f, fv.gap)}`)
-    rows.push({ key: `live-${f}`, tier: 'beyondRange', name: ctx.ft.label(f), lines, facilities: fac([...new Set(related.flatMap((g) => g.example_facilities))]), sources: [...new Set(related.flatMap((g) => g.citation_urls))] })
+    const dfmt = makeDeltaFormatter(ctx.factors)
+    // shortfall is always positive: Earth's coldest cell minus the target for coldest shadows (spec v0.3.1 §11.4)
+    const lines = [`Target ${fmt(f, lim.target)} · best Earth ${fmt(f, lim.best)} · short ${dfmt(f, lim.short)}`]
+    if (covered.has(f) && siteIdx >= 0) lines.push(`Site ${siteIdx + 1} covers it at Earth's limit · short ${dfmt(f, lim.short)}`)
+    rows.push({ key: `live-${f}`, tier: 'beyondRange', name: ctx.ft.label(f), lines, info: lim.note ? { title: 'Best Earth', text: lim.note } : undefined, facilities: fac([...new Set(related.flatMap((g) => g.example_facilities))]), sources: [...new Set(related.flatMap((g) => g.citation_urls))] })
+  }
+  // Coldest shadows (spec v0.3.1 §11.4, Moon): permanently shadowed cold traps, ~40 K (Diviner; ~38 K at the LCROSS site).
+  // best Earth t* = Earth's coldest 0.5° land-cell annual mean surface temperature exported by the engine
+  // (targets.json earth_reference.stats.ts_mean_k.min); residual = t* − target (positive). Static MODIS fallback until then.
+  const psr = t2.find((g) => g.id === 'psr_cryogenic_cold' && g.values[body] !== undefined && g.values[body] !== null)
+  if (psr) {
+    const PSR_TARGET_K = 40
+    const tStar = ctx.earthRef?.stats?.ts_mean_k?.min?.value
+    const line = tStar !== undefined && Number.isFinite(tStar)
+      ? `Target ~${PSR_TARGET_K} K · best Earth ${Math.round(tStar)} K · short ${Math.round(tStar - PSR_TARGET_K)} K`
+      : `Target ~${PSR_TARGET_K} K · Earth's coldest surface ~175 K · short ~135 K`
+    rows.push({ key: psr.id, tier: 'beyondRange', name: 'Coldest shadows', lines: [line],
+      info: tStar !== undefined ? { title: 'Best Earth', text: 'Coldest 0.5° land cell in our data (annual mean surface temperature)' } : { title: 'Best Earth', text: "Earth's coldest measured surface, ~175 K (MODIS, Scambos et al. 2018)" },
+      facilities: fac(psr.example_facilities), sources: psr.citation_urls })
   }
   // Static tier-2 rows for factors outside the scored core (e.g. Mars surface pressure on F11)
   for (const g of t2) {

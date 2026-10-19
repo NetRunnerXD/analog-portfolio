@@ -23,7 +23,9 @@ export interface GridArray {
   units: string
   stats?: { p005: number; p50: number; p995: number; min: number; max: number } | null
   source?: string
-  /** categorical columns (e.g. `continent`): code -> label, as an array indexed by code or a {code: label} map */
+  /** categorical columns (contract v1.1.1 `continent`): {code: label}; 0/nodata = none */
+  codes?: Record<string, string>
+  /** alias accepted for older manifests: labels indexed by code */
   categories?: string[] | Record<string, string>
 }
 

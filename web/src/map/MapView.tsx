@@ -155,7 +155,6 @@ export default function MapView(p: Props) {
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
     // padding accounts for the legend, the phone bottom sheet, the tablet drawer and banners (data-map-obscures)
     const padding = measurePadding(el.current!, overlayRoot(el.current!), [72, 64, 48, 64])
-    if (import.meta.env.DEV) console.debug('fit padding', JSON.stringify(padding), JSON.stringify(map.getSize()))
     map.getView().fit(boundingExtent(pts), { padding, maxZoom: 4, duration: reduce ? 0 : 600 })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [p.fitKey])

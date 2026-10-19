@@ -4,14 +4,18 @@ import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { decodeGrid } from '../data'
-import type { FactorId, FactorsFile, GridManifest, Portfolio, ProfilesFile, TargetsFile, ValidationFile } from '../types/contract'
-import { clipTargets, factorScores, prepareEarth, run, type TargetValues } from './engine'
+import type { FactorId, FactorsFile, GridManifest, Portfolio, ProfilesFile, SiteRef, TargetsFile, ValidationFile } from '../types/contract'
+import { buildVariants, clipTargets, factorScores, prepareEarth, run, type TargetValues } from './engine'
+import { gridContinentLookup } from './continent'
 
 const MOCK = resolve(__dirname, '../../public/data/mock')
 const json = <T,>(p: string): T => JSON.parse(readFileSync(resolve(MOCK, p), 'utf8')) as T
 const manifest = json<GridManifest>('earth_features.json')
 const bin = readFileSync(resolve(MOCK, manifest.binary))
-const earth = prepareEarth(decodeGrid(manifest, bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength)))
+const columns = decodeGrid(manifest, bin.buffer.slice(bin.byteOffset, bin.byteOffset + bin.byteLength))
+const earth = prepareEarth(columns)
+// contract v1.1.1: the grid carries a `continent` column (manifest codes); the worker uses it the same way
+const gridContinent = gridContinentLookup(manifest, columns)
 const factors = json<FactorsFile>('factors.json')
 const profiles = json<ProfilesFile>('profiles.json')
 const targets = json<TargetsFile>('targets.json')
@@ -20,7 +24,7 @@ const known = new Map<number, string>()
 const seen = new Set<number>()
 for (const v of validation.sites) { if (seen.has(v.cell_id)) continue; seen.add(v.cell_id); if (v.kind === 'positive') known.set(v.cell_id, v.name) }
 
-// export/mock.py mock_continent(): MOCK-only continent boxes, used here so the one_continent variant can be compared.
+// Pre-v1.1.1 export/mock.py mock_continent() boxes: only used if the grid has no continent column.
 function mockContinent(lat: number, lon: number): string {
   if (lat < -60) return 'Antarctica'
   if (lon < -30) return lat < 12 ? 'South America' : 'North America'
@@ -58,7 +62,7 @@ describe('engine parity with the Python reference (mock grid, default weights)',
       const tv = tvOf(target.id)
       const s = factorScores(earth, tv, target.body, factors)
       const out = run({ earth, s, clips: clipTargets(earth, tv, factors), targetId: target.id, profile, profiles, weights: profile.weights,
-        knownCells: known, continentOf: (_c, la, lo) => mockContinent(la, lo) })
+        knownCells: known, continentOf: (c, la, lo) => (gridContinent ? gridContinent(c) : mockContinent(la, lo)) })
       // per-site factor scores, S and percentile at every cell the reference exported
       const idx = new Map<number, number>()
       earth.cellId.forEach((c, i) => idx.set(c, i))
@@ -82,32 +86,67 @@ describe('engine parity with the Python reference (mock grid, default weights)',
           const i = idx.get(site.cell_id)!
           close(site.score, out.total[i], 5.1e-5, 'site score')
         }
-        if (v.id === 'easiest_to_reach') v.sites.forEach((x) => expect(x.logistics!.travel_time_min!).toBeLessThanOrEqual(360))
+        if (v.id === 'easiest_to_reach') {
+          v.sites.forEach((x) => expect(x.logistics!.travel_time_min!).toBeLessThanOrEqual(360))
+        }
         if (v.id === 'one_continent' && v.available) v.sites.forEach((x) => expect(x.logistics!.continent).toBe(v.continent))
         expect(new Set(v.sites.map((x) => x.site_id)).size).toBe(v.sites.length)
       }
     })
   }
 
-  // SKIPPED UNTIL THE PIPELINE MATCHES THE CANONICAL TIE-BREAK. Project 1 confirmed (Oct 8) that the JS tie-break is canonical
-  // (contract v1.1.1 errata): candidates by s_F desc, then S desc, then cell_id asc; set-cover pool by S desc, then cell_id
-  // asc. The mock export still uses numpy's default (unstable) argsort, and ties are common at the top-50 cut (F3 classes,
-  // F6 categories, F8 = 1.0), so its exact pool and site ids are implementation-defined today. Every score, percentile and
-  // threshold already matches (tests above). Remove `.skip` once pipeline/export uses the same tie-break and the mocks are
-  // regenerated. Mid-rank percentiles and the 70% missing-data rule land in a separate PR and are not ported here.
-  it.skip('candidate pool and variant site ids match Python exactly (enable once the pipeline uses the canonical tie-break)', () => {
+  // Exact pool / site-id parity. SKIPPED until the pipeline matches the canonical stable tie-break the JS engine uses
+  // (candidates by s_F desc, S desc, cell index asc; set-cover pool by S desc, cell index asc). The JS tie-break is canonical
+  // (Project 1 ruling); enable this test once the pipeline's real exporter matches it. (Against the contract v1.1.1 mocks
+  // it already passes when un-skipped.) Mid-rank percentiles and the 70% missing-data rule land in a separate PR and are
+  // not ported here.
+  it.skip('candidate pool and variant site ids match Python exactly (canonical tie-break)', () => {
     for (const file of files) {
       const p = json<Portfolio>(`portfolios/${file}`)
       const target = targets.targets.find((t) => t.id === p.target_id)!
       const profile = profiles.profiles.find((x) => x.id === p.profile_id)!
       const tv = tvOf(target.id)
       const out = run({ earth, s: factorScores(earth, tv, target.body, factors), clips: clipTargets(earth, tv, factors), targetId: target.id, profile, profiles,
-        weights: profile.weights, knownCells: known, continentOf: (_c, la, lo) => mockContinent(la, lo) })
+        weights: profile.weights, knownCells: known, continentOf: (c, la, lo) => (gridContinent ? gridContinent(c) : mockContinent(la, lo)) })
       expect(out.portfolio.top_cells!.map((x) => x.cell_id), `${file} top_cells`).toEqual(p.top_cells!.map((x) => x.cell_id))
       for (const v of p.variants) {
         const mine = out.portfolio.variants.find((x) => x.id === v.id)!
         expect(mine.sites.map((x) => x.cell_id), `${file} ${v.id}`).toEqual(v.sites.map((x) => x.cell_id))
       }
     }
+  })
+})
+
+// Spec v0.3.1: "Easiest to reach" is a hard filter (travel_time_min <= 360) applied BEFORE set cover, also for custom weights.
+describe('easiest_to_reach: <= 6 h hard filter before set cover', () => {
+  const mk = (id: string, tt: number | null, fs: Partial<Record<FactorId, number>>, score: number): SiteRef => ({
+    site_id: id, name: id, lat: 0, lon: 0, cell_id: 0, score, score_core: score, earth_percentile: 99, factor_scores: fs, covers: [], gaps: {},
+    robustness: null, logistics: { travel_time_min: tt, within_6h: tt === null ? null : tt <= 360, continent: 'Asia', airport_km: null }, known_analog: null, candidate: true,
+  })
+  it('a far site that would win the set cover is removed first, and pool_size counts only <= 6 h sites', () => {
+    const w = { F1: 50, F2: 50 }
+    const far = mk('far', 900, { F1: 0.95, F2: 0.95 }, 0.95) // covers both alone; best_match picks it
+    const nearA = mk('nearA', 120, { F1: 0.9, F2: 0.2 }, 0.6)
+    const nearB = mk('nearB', 360, { F1: 0.1, F2: 0.8 }, 0.5) // exactly 6 h is in
+    const edge = mk('edge', 360.1, { F1: 0.99, F2: 0.99 }, 0.99)
+    const unknown = mk('unk', null, { F1: 0.99, F2: 0.99 }, 0.99)
+    const v = buildVariants([edge, far, unknown, nearA, nearB], w, 0.7, 5)
+    expect(v[0].sites.map((s) => s.site_id)).toEqual(['edge'])
+    const ez = v.find((x) => x.id === 'easiest_to_reach')!
+    expect(ez.pool_size).toBe(2)
+    expect(ez.sites.map((s) => s.site_id)).toEqual(['nearA', 'nearB'])
+    expect(ez.covers).toEqual(['F1', 'F2'])
+  })
+  it('custom weights (worker re-scoring path): easiest sites are all <= 6 h and its pool is the filtered candidate pool', () => {
+    const t = targets.targets.find((x) => x.body === 'moon' && x.features?.F1?.value)!
+    const profile = profiles.profiles[0]
+    const weights = { F1: 10, F2: 10, F3: 30, F4: 0, F5: 20, F6: 10, F7: 10, F8: 0, F9: 10, F10: 0 } as Record<string, number>
+    const tv = tvOf(t.id)
+    const out = run({ earth, s: factorScores(earth, tv, t.body, factors), clips: clipTargets(earth, tv, factors), targetId: t.id, profile, profiles, weights,
+      knownCells: known, continentOf: (c, la, lo) => (gridContinent ? gridContinent(c) : mockContinent(la, lo)) })
+    const bm = out.portfolio.variants.find((v) => v.id === 'best_match')!
+    const ez = out.portfolio.variants.find((v) => v.id === 'easiest_to_reach')!
+    expect(ez.pool_size).toBeLessThanOrEqual(bm.pool_size)
+    ez.sites.forEach((x) => expect(x.logistics!.travel_time_min!).toBeLessThanOrEqual(360))
   })
 })

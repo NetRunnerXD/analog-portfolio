@@ -45,7 +45,7 @@ describe('Earth radius', () => {
 })
 
 describe('continent column and place names (optional data)', () => {
-  const manifest = { arrays: [{ name: 'cell_id' }, { name: 'continent', categories: ['Africa', 'Antarctica', 'Seven seas (open ocean)'] }] } as unknown as GridManifest
+  const manifest = { arrays: [{ name: 'cell_id' }, { name: 'continent', codes: { '0': 'Africa', '1': 'Antarctica', '2': 'Seven seas (open ocean)' } }] } as unknown as GridManifest
   it('uses the grid continent when present', () => {
     const look = gridContinentLookup(manifest, { cell_id: [10, 20, 30, 40], continent: [0, 1, 2, NaN] })!
     expect(look(10)).toBe('Africa')
