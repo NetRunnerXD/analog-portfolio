@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { FACTOR_UI, VARIANT_UI } from '../copy'
-import { accessText, band, cellEwKm, fmtLatLon, isAtLimit, placeName, makeDeltaFormatter, makeValueFormatter, siteTitle, summarySentence, to100 } from '../lib/format'
+import { accessText, band, cellEwKm, dataCoverage, fmtLatLon, isAtLimit, placeName, makeDeltaFormatter, makeValueFormatter, summarySentence, to100 } from '../lib/format'
 import type { GapRowData } from '../lib/gaps'
 import type { FactorText } from '../lib/factors'
 import { earthLimit, type EarthLimit } from '../lib/limits'
@@ -25,6 +25,15 @@ export interface Ctx {
   mc: { draws: number; robust_top_frac: number; robust_min_freq: number }
   /** precomputed robustness is only valid for the shipped default-weight portfolio */
   robustnessAvailable: boolean
+  /** site titles kept distinct across the shown portfolio (makeTitler) */
+  title: (s: SiteRef) => string
+}
+
+/** Hostname for a source link; a malformed URL renders as plain text instead of crashing the panel. */
+function SourceLink({ url, sep }: { url: string; sep: boolean }) {
+  let host: string | null = null
+  try { const u = new URL(url); if (u.protocol === 'https:' || u.protocol === 'http:') host = u.hostname.replace(/^www\./, '') } catch { host = null }
+  return <>{sep ? ' · ' : ''}{host ? <a href={url} target="_blank" rel="noreferrer">{host}</a> : <span>{url}</span>}</>
 }
 
 function FactorChip({ f, atLimit, ft }: { f: FactorId; atLimit: boolean; ft: FactorText }) {
@@ -89,7 +98,7 @@ export function TopRegionsPanel({ ctx, portfolio, stats, nLand, onOpen, onPortfo
               onMouseEnter={() => onHover(s.site_id)} onMouseLeave={() => onHover(null)} onFocus={() => onHover(s.site_id)} onBlur={() => onHover(null)}
 >
               <span className="rank num">{i + 1}</span>
-              <span className="rname">{siteTitle(s)}</span>
+              <span className="rname">{ctx.title(s)}</span>
               <span className="minibar" aria-hidden="true"><i style={{ width: `${to100(s.score)}%` }} /></span>
               <span className="num">{to100(s.score)}<span className="sr-only"> out of 100, {band(to100(s.score))} match</span></span>
             </button>
@@ -163,7 +172,7 @@ function SiteListCard({ site, n, ctx, selected, hovered, onOpen, onHover }: { si
       <span className="sc-head">
         <span className="pin-glyph num"><span className="sr-only">Site </span>{n}</span>
         <span className="sc-name">
-          <span className="t-title">{siteTitle(site)}</span>
+          <span className="t-title">{ctx.title(site)}</span>
           <span className="t-small muted2">{site.known_analog ? `Known analog · ${placeName(site) ? `${placeName(site)} · ` : ''}` : site.candidate ? 'New candidate · ' : ''}{fmtLatLon(site.lat, site.lon, 2)}</span>
         </span>
         <span className="sc-score"><span className="scoreLg">{score}</span><span className="micro muted2"><span className="sr-only">out of</span> / 100</span><span className="t-small">{band(score)}</span></span>
@@ -199,7 +208,7 @@ export function FidelityGapPanel({ rows }: { rows: GapRowData[] }) {
                   {r.facilities.length > 0 && (
                     <p className="facilities">{r.facilities.slice(0, 3).map((f) => <span key={f} className="facility"><FlaskIcon /> {f}</span>)}</p>
                   )}
-                  {r.sources.length > 0 && <p className="micro muted2">Sources: {r.sources.slice(0, 3).map((u, i) => <a key={u} href={u} target="_blank" rel="noreferrer">{i ? ' · ' : ''}{new URL(u).hostname.replace(/^www\./, '')}</a>)}</p>}
+                  {r.sources.length > 0 && <p className="micro muted2">Sources: {r.sources.slice(0, 3).map((u, i) => <SourceLink key={u} url={u} sep={i > 0} />)}</p>}
                   {r.fix && <button type="button" className="link-btn" onClick={r.fix.onClick}>{r.fix.label}</button>}
                 </li>
               ))}
@@ -240,13 +249,14 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
   return (
     <div className="panel-body site-card-panel">
       <button type="button" className="link-btn back" onClick={onBack}>← {backLabel}</button>
-      <h2 className="t-h2" tabIndex={-1} ref={headingRef}>{siteTitle(site)}</h2>
+      <h2 className="t-h2" tabIndex={-1} ref={headingRef}>{ctx.title(site)}</h2>
       <p className="t-small muted2">{site.known_analog && placeName(site) ? `${placeName(site)} · ` : ''}{fmtLatLon(site.lat, site.lon, 2)} · 0.5° cell (~55 × {cellEwKm(site.lat)} km)</p>
       <p className="status-chips">
         {n !== null && <span className="tag">Site {n} of {nTotal}</span>}
         {topPct !== null && <span className="tag">Top {topPct}% of Earth land</span>}
         {site.known_analog && <span className="tag">□ Known analog</span>}
         {!site.known_analog && site.candidate && <span className="tag">☆ New candidate</span>}
+        <span className="tag">Data for {Math.round(100 * (detail?.coverage ?? dataCoverage(site.factor_scores, ctx.weights, ctx.needs)))}% of what counts</span>
       </p>
       {!site.known_analog && site.candidate && <Banner tone="info" title="New candidate.">This area scores high but isn't a known analog site. Needs field confirmation.</Banner>}
       <div className="score-block">
@@ -254,6 +264,10 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
         <span className="t-title">{band(score)} match for {ctx.purposeName}</span>
       </div>
       <RobustnessLine site={site} ctx={ctx} />
+      {(() => {
+        const missing = ctx.needs.filter((f) => { const v = site.factor_scores[f]; return v === null || v === undefined || Number.isNaN(v) })
+        return missing.length > 0 && <p className="t-small muted2">No Earth data in this cell for {missing.map((f) => ctx.ft.label(f).toLowerCase()).join(', ')}. Scored on the other factors, with their weights rescaled.</p>
+      })()}
       <p className="summary t-body">{summarySentence(ctx.targetShort, ctx.weights, site.factor_scores, gapsT)}</p>
       <div className="frow-head"><span className="overline">Each factor, 0–100 · sorted by weight</span><span className="overline">Weight</span></div>
       <ul className="factor-rows">
