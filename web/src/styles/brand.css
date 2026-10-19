@@ -17,7 +17,7 @@
   --ap-moon: #E2DAF7; /* Moon target */
   --ap-mars: #E8670F; /* Mars target */
   --ap-earth: #2EE8BE; /* Earth analog site */
-  --ap-gap: #F171E8; /* Fidelity gap / warning */
+  --ap-gap: #F171E8; /* Fidelity gap content only (designer ruling 2026-10-08: not for warnings) */
 
   /* UI additions v0.2 */
   --ap-accent-text: #9B7CFB; /* Accent text */
@@ -85,7 +85,7 @@
   --ap-color-target-mars: var(--ap-mars);
   --ap-color-site-earth: var(--ap-earth);
   --ap-color-gap: var(--ap-gap);
-  --ap-color-warning: var(--ap-gap);
+  --ap-color-warning: var(--ap-text-100); /* web copy: warnings are neutral text + warning icon (designer ruling 2026-10-08); brand source still maps this to --ap-gap */
 
   /* Typography */
   --ap-font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;

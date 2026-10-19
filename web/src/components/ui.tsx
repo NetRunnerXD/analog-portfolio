@@ -27,6 +27,10 @@ export function InfoIcon() {
 export function ErrorIcon({ size = 16 }: { size?: number }) {
   return <svg width={size} height={size} viewBox="0 0 16 16" aria-hidden="true" focusable="false" className="err-icon"><circle cx="8" cy="8" r="7" fill="currentColor" /><path d="M8 4.2v4.6M8 11.2v.2" stroke="var(--color-bg-canvas)" strokeWidth="1.8" strokeLinecap="round" /></svg>
 }
+/** Warning triangle: warnings use neutral text plus this icon (never the Fidelity Gap magenta). */
+export function WarningIcon() {
+  return <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 1.8 15 14H1z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" /><path d="M8 6.2v3.6M8 11.6v.2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+}
 export function ShieldIcon() {
   return <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M8 1.5 13 3.5v4c0 3.2-2.2 5.6-5 7-2.8-1.4-5-3.8-5-7v-4z" fill="none" stroke="currentColor" strokeWidth="1.4" /><path d="m5.6 8 1.7 1.7L10.6 6.4" fill="none" stroke="currentColor" strokeWidth="1.4" /></svg>
 }
@@ -80,7 +84,7 @@ export function SegmentedControl<V extends string>({ label, options, value, onCh
 export function Banner({ tone, title, children, action }: { tone: 'info' | 'warning' | 'error'; title: string; children?: ReactNode; action?: ReactNode }) {
   return (
     <div className={`banner banner-${tone}`} role={tone === 'error' ? 'alert' : 'status'}>
-      <span className="banner-icon">{tone === 'error' ? <ErrorIcon /> : <InfoIcon />}</span>
+      <span className="banner-icon">{tone === 'error' ? <ErrorIcon /> : tone === 'warning' ? <WarningIcon /> : <InfoIcon />}<span className="sr-only">{tone === 'error' ? 'Error: ' : tone === 'warning' ? 'Warning: ' : ''}</span></span>
       <div><strong className="banner-title">{title}</strong> {children}{action && <div className="banner-action">{action}</div>}</div>
     </div>
   )

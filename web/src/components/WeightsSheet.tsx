@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { FACTOR_UI } from '../copy'
 import { CORE_FACTORS } from '../types/contract'
 import { Icon } from './ui'
+import type { FactorText } from '../lib/factors'
 
 /** Custom weights (spec §8.5): 10 sliders 0–40 step 5 that must total 100. Modal dialog with focus trap; Esc closes. */
-export default function WeightsSheet({ initial, defaults, purposeName, onApply, onClose }: {
+export default function WeightsSheet({ initial, defaults, purposeName, ft, onApply, onClose }: {
   initial: Record<string, number>
   defaults: Record<string, number>
   purposeName: string
+  ft: FactorText
   onApply: (w: Record<string, number>) => void
   onClose: () => void
 }) {
@@ -45,7 +47,7 @@ export default function WeightsSheet({ initial, defaults, purposeName, onApply, 
             return (
               <li key={f} className="wrow">
                 <span className={`ficon g-${ui.group}`} aria-hidden="true"><Icon name={`factor-${ui.group}`} size={20} /></span>
-                <label htmlFor={`w-${f}`} className="t-label">{ui.name}</label>
+                <label htmlFor={`w-${f}`} className="t-label">{ft.label(f)}</label>
                 <input id={`w-${f}`} type="range" min={0} max={max} step={5} value={w[f]} aria-valuetext={`${w[f]} percent`}
                   onChange={(e) => setW((o) => ({ ...o, [f]: Number(e.target.value) }))} />
                 <output htmlFor={`w-${f}`} className="num">{w[f]}</output>

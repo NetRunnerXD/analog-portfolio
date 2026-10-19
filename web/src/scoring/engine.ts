@@ -3,7 +3,7 @@
 // Every number it produces is computed from the shipped Earth grid + targets.json + profiles.json/factors.json.
 import { ALL_FACTORS, CORE_FACTORS, SECONDARY_FACTORS } from '../types/contract'
 import type { FactorId, FactorsFile, HardFilter, Portfolio, PortfolioVariant, Profile, ProfilesFile, SiteRef, TargetBody, VariantId } from '../types/contract'
-import { haversineKm, pyRound, weightedPctRank, weightedQuantile } from './area'
+import { earthRadiusKm, haversineKm, pyRound, weightedPctRank, weightedQuantile } from './area'
 import { FLOOR, flagMatch, greedyPortfolio } from './normalize'
 
 export const EASY_MAX_MIN = 360 // easiest_to_reach: travel_time_min <= 360 (contract v1.1 §4.1)
@@ -220,8 +220,9 @@ export function run(inp: RunInput): RunOutput {
   }
   const pool = [...cand].sort((a, b) => totalF[b] - totalF[a] || a - b)
   const kept: number[] = []
+  const R = earthRadiusKm(inp.profiles.defaults)
   for (const i of pool) {
-    if (kept.every((j) => haversineKm(e.lat[i], e.lon[i], e.lat[j], e.lon[j]) > profile.nms_radius_km)) kept.push(i)
+    if (kept.every((j) => haversineKm(e.lat[i], e.lon[i], e.lat[j], e.lon[j], R) > profile.nms_radius_km)) kept.push(i)
   }
   const known = [...inp.knownCells.keys()].map((cid) => [89.75 - 0.5 * Math.floor(cid / 720), -179.75 + 0.5 * (cid % 720)])
   const gaps: Partial<Record<FactorId, number>> = {}
@@ -233,7 +234,7 @@ export function run(inp: RunInput): RunOutput {
     const kn = inp.knownCells.get(cid)
     const fs: Partial<Record<FactorId, number>> = {}
     for (const f of scored) fs[f] = pyRound(s[f]![i], 4)
-    const nearKnown = known.length ? Math.min(...known.map(([la, lo]) => haversineKm(e.lat[i], e.lon[i], la, lo))) : 1e9
+    const nearKnown = known.length ? Math.min(...known.map(([la, lo]) => haversineKm(e.lat[i], e.lon[i], la, lo, R))) : 1e9
     const tt = e.cols.travel_time_min?.[i]
     const ap = e.cols.airport_km?.[i]
     return {

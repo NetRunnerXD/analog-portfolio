@@ -4,35 +4,28 @@ import type { FactorId, PurposeId, Target, VariantId } from './types/contract'
 
 export type FactorGroup = 'thermal' | 'terrain' | 'ground' | 'dryness' | 'ice' | 'sunlight' | 'shielding'
 
-export interface FactorUi { name: string; short: string; chip: string; group: FactorGroup; info: string; good: string; weak: string; tieBreaker?: boolean }
+/**
+ * Per-factor presentation that is NOT a label: colour group, the everyday chip word (spec §7 "Chips … Cold, Swing, …")
+ * and the summary-sentence phrases. Factor names, short names, tier and info text are read from factors.json
+ * (`ui_label`, `ui_short`, `tier`, `ui_copy`) via lib/factors.ts; nothing here names a factor.
+ * `chip` is only a fallback until factors.json carries a per-factor chip word (`ui_chip`).
+ */
+export interface FactorUi { chip: string; group: FactorGroup; good: string; weak: string }
 
 export const FACTOR_UI: Record<FactorId, FactorUi> = {
-  F1: { name: 'Average ground temperature', short: 'Tmp', chip: 'Cold', group: 'thermal', good: 'is about as cold', weak: 'is much warmer',
-    info: "How warm the ground is on average over a year, in kelvin. Compared as a ratio, so being 10 K off matters more when it's cold. If the target is colder than anywhere on Earth, we compare against Earth's coldest real value and list the shortfall." },
-  F2: { name: 'Day–night temperature swing', short: 'Swg', chip: 'Swing', group: 'thermal', good: 'has a similar daily temperature swing', weak: 'has a far smaller day–night swing',
-    info: "How much the ground heats up and cools down each day. When the target swings more than anywhere on Earth (the Moon's equator swings about 300 K), the site is scored against Earth's largest swing and the shortfall is listed under What Earth can't give you." },
-  F3: { name: 'Ground type (heat retention)', short: 'Gnd', chip: 'Ground', group: 'ground', good: 'has similar ground texture', weak: 'has different ground texture',
-    info: 'How the ground holds heat, sorted into five types from dusty to rocky. Each world is ranked on its own scale and the types are compared, so this describes texture, not an exact physical match.' },
-  F4: { name: 'Flat, landable ground', short: 'Flt', chip: 'Flat', group: 'terrain', good: 'has as much flat ground', weak: 'has less flat ground',
-    info: 'Share of the area with gentle slopes under 5°, the goal for lunar landers (8° is the limit).' },
-  F5: { name: 'Hills and relief', short: 'Rlf', chip: 'Relief', group: 'terrain', good: 'has similar hills and ridges', weak: 'is flatter or more rugged',
-    info: 'How much the height changes within the area. We compare height differences, not altitude above sea level.' },
-  F6: { name: 'Rock type', short: 'Rck', chip: 'Rock', group: 'ground', good: 'has similar rocks', weak: 'has different rocks',
-    info: 'The main rock family (for example basalt, anorthosite or sandstone), matched with our documented similarity table: same family scores 100, related families 50.' },
-  F7: { name: 'Dryness', short: 'Dry', chip: 'Dry', group: 'dryness', good: 'is just as dry', weak: 'is wetter',
-    info: 'How dry the climate is. The target is treated as completely dry, so the driest places on Earth score highest.' },
-  F8: { name: 'Bare ground (no plants)', short: 'Bar', chip: 'Bare', group: 'dryness', good: 'is bare and lifeless', weak: 'has plants',
-    info: 'Share of bare rock, sand, snow or ice instead of plants. The target is lifeless, so 100% bare is a perfect match.' },
-  F9: { name: 'Frozen ground / ice', short: 'Ice', chip: 'Ice', group: 'ice', good: 'has frozen ground', weak: 'has no permanent ice',
-    info: "Whether the ground stays frozen all year, compared with ice in the target's cold traps or just below its surface." },
-  F10: { name: 'Sun angle & daylight pattern', short: 'Sun', chip: 'Sun', group: 'sunlight', good: 'has the same low sun', weak: 'has a higher sun',
-    info: "How high the Sun climbs at noon and how long days and nights last. Polar places with a low Sun match the Moon's south pole best." },
-  F11: { name: 'Air & radiation shielding', short: 'Shd', chip: 'Shield', group: 'shielding', good: '', weak: '', tieBreaker: true,
-    info: 'How thin the air is and how much space radiation reaches the ground. Earth is always far better protected, so this can only break ties between otherwise equal places.' },
-  F12: { name: 'UV exposure', short: 'UV', chip: 'UV', group: 'shielding', good: '', weak: '', tieBreaker: true,
-    info: "Strength of the Sun's ultraviolet light. The Moon and Mars get far more; this only breaks ties." },
-  F13: { name: 'Landforms', short: 'Lnd', chip: 'Landforms', group: 'shielding', good: '', weak: '', tieBreaker: true,
-    info: 'Whether the area has matching landforms such as impact craters, lava tubes or ice-shaped ground.' },
+  F1: { chip: 'Cold', group: 'thermal', good: 'is about as cold', weak: 'is much warmer' },
+  F2: { chip: 'Swing', group: 'thermal', good: 'has a similar daily temperature swing', weak: 'has a far smaller day–night swing' },
+  F3: { chip: 'Ground', group: 'ground', good: 'has similar ground texture', weak: 'has different ground texture' },
+  F4: { chip: 'Flat', group: 'terrain', good: 'has as much flat ground', weak: 'has less flat ground' },
+  F5: { chip: 'Relief', group: 'terrain', good: 'has similar hills and ridges', weak: 'is flatter or more rugged' },
+  F6: { chip: 'Rock', group: 'ground', good: 'has similar rocks', weak: 'has different rocks' },
+  F7: { chip: 'Dry', group: 'dryness', good: 'is just as dry', weak: 'is wetter' },
+  F8: { chip: 'Bare', group: 'dryness', good: 'is bare and lifeless', weak: 'has plants' },
+  F9: { chip: 'Ice', group: 'ice', good: 'has frozen ground', weak: 'has no permanent ice' },
+  F10: { chip: 'Sun', group: 'sunlight', good: 'has the same low sun', weak: 'has a higher sun' },
+  F11: { chip: 'Shield', group: 'shielding', good: '', weak: '' },
+  F12: { chip: 'UV', group: 'shielding', good: '', weak: '' },
+  F13: { chip: 'Landforms', group: 'shielding', good: '', weak: '' },
 }
 
 export const PURPOSE_ICON: Record<PurposeId, string> = {

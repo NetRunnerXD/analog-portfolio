@@ -89,13 +89,25 @@ describe('engine parity with the Python reference (mock grid, default weights)',
     })
   }
 
-  // Blocked on the pipeline: the candidate pool takes the top 50 cells per factor with numpy's default (unstable)
-  // argsort, and ties are common (F3 classes, F6 categories, F8 = 1.0), so the Python pool is implementation-defined.
-  // The JS port breaks ties by S then cell order. Re-enable once export/mock.py uses the same deterministic tie-break.
-  it.skip('candidate pool and variant site ids match Python exactly (needs deterministic tie-break in the pipeline)', () => {
+  // SKIPPED UNTIL THE PIPELINE MATCHES THE CANONICAL TIE-BREAK. Project 1 confirmed (Oct 8) that the JS tie-break is canonical
+  // (contract v1.1.1 errata): candidates by s_F desc, then S desc, then cell_id asc; set-cover pool by S desc, then cell_id
+  // asc. The mock export still uses numpy's default (unstable) argsort, and ties are common at the top-50 cut (F3 classes,
+  // F6 categories, F8 = 1.0), so its exact pool and site ids are implementation-defined today. Every score, percentile and
+  // threshold already matches (tests above). Remove `.skip` once pipeline/export uses the same tie-break and the mocks are
+  // regenerated. Mid-rank percentiles and the 70% missing-data rule land in a separate PR and are not ported here.
+  it.skip('candidate pool and variant site ids match Python exactly (enable once the pipeline uses the canonical tie-break)', () => {
     for (const file of files) {
       const p = json<Portfolio>(`portfolios/${file}`)
-      expect(p.top_cells!.length).toBeGreaterThan(0)
+      const target = targets.targets.find((t) => t.id === p.target_id)!
+      const profile = profiles.profiles.find((x) => x.id === p.profile_id)!
+      const tv = tvOf(target.id)
+      const out = run({ earth, s: factorScores(earth, tv, target.body, factors), clips: clipTargets(earth, tv, factors), targetId: target.id, profile, profiles,
+        weights: profile.weights, knownCells: known, continentOf: (_c, la, lo) => mockContinent(la, lo) })
+      expect(out.portfolio.top_cells!.map((x) => x.cell_id), `${file} top_cells`).toEqual(p.top_cells!.map((x) => x.cell_id))
+      for (const v of p.variants) {
+        const mine = out.portfolio.variants.find((x) => x.id === v.id)!
+        expect(mine.sites.map((x) => x.cell_id), `${file} ${v.id}`).toEqual(v.sites.map((x) => x.cell_id))
+      }
     }
   })
 })

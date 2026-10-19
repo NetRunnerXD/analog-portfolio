@@ -50,13 +50,13 @@ export default function Picker({ targets, profiles, targetId, purposeId, onTarge
             <Locator body={body} targets={list} value={targetId} onSelect={onTarget} />
             <div className="target-list-wrap">
               <label className="sr-only" htmlFor="target-select">Target</label>
-              <select id="target-select" className="target-select" value={targetId} onChange={(e) => onTarget(e.target.value)}>
+              <span className="select-wrap"><select id="target-select" className="target-select" value={targetId} onChange={(e) => onTarget(e.target.value)}>
                 {(['moon', 'mars'] as const).map((b) => (
                   <optgroup key={b} label={b === 'moon' ? 'Moon' : 'Mars'}>
                     {targets.filter((t) => t.body === b).map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
                   </optgroup>
                 ))}
-              </select>
+              </select></span>
               <p className="micro muted2 count">{list.length} targets</p>
               <ul ref={listRef} className="target-list" role="listbox" aria-label={`${body === 'moon' ? 'Moon' : 'Mars'} targets`} tabIndex={0}
                 aria-activedescendant={`opt-${targetId}`} onKeyDown={onListKey}>
@@ -85,10 +85,12 @@ export default function Picker({ targets, profiles, targetId, purposeId, onTarge
             {profiles.profiles.map((p) => {
               const dis = profileDisabled(p)
               const ui = PURPOSE_UI[p.id as PurposeId]
-              const reason = p.disabled_for?.[body] ? 'Mars only. Not available for Moon targets.' : undefined
+              // short spec line on the card; the longer profiles.json rationale (disabled_for) as tooltip + aria-describedby
+              const reason = dis ? (body === 'moon' ? 'Mars only. Not available for Moon targets.' : 'Moon only. Not available for Mars targets.') : undefined
+              const why = dis ? p.disabled_for?.[body] : undefined
               return (
                 <button key={p.id} type="button" role="radio" aria-checked={p.id === purposeId} aria-disabled={dis || undefined}
-                  aria-describedby={dis ? `why-${p.id}` : undefined}
+                  aria-describedby={dis ? `why-${p.id}${why ? ` whylong-${p.id}` : ''}` : undefined} title={why}
                   className={`purpose-card ${p.id === purposeId ? 'sel' : ''} ${dis ? 'dis' : ''}`}
                   onClick={() => !dis && onPurpose(p.id)}>
                   <Icon name={PURPOSE_ICON[p.id as PurposeId]} size={24} />
@@ -96,6 +98,7 @@ export default function Picker({ targets, profiles, targetId, purposeId, onTarge
                     <span className="t-title">{purposeName(p)}</span>
                     <span className="t-small">{ui?.description}</span>
                     {dis ? <span id={`why-${p.id}`} className="t-small muted2">{reason}</span> : <span className="t-small muted2"><em>{ui?.campaign}</em></span>}
+                    {why && <span id={`whylong-${p.id}`} className="sr-only">{why}</span>}
                   </span>
                 </button>
               )

@@ -23,6 +23,8 @@ export interface GridArray {
   units: string
   stats?: { p005: number; p50: number; p995: number; min: number; max: number } | null
   source?: string
+  /** categorical columns (e.g. `continent`): code -> label, as an array indexed by code or a {code: label} map */
+  categories?: string[] | Record<string, string>
 }
 
 export interface GridManifest {
@@ -130,6 +132,10 @@ export interface Factor {
   layers: Partial<Record<Body, string>>
   ui_label?: string
   ui_copy?: string
+  /** spec §7 matrix short name (not yet in the data) */
+  ui_short?: string
+  /** everyday chip word, e.g. "Cold" (proposed, not yet in the data) */
+  ui_chip?: string
 }
 export interface LithologyClass { code: number; id: string; name: string }
 export interface FactorsFile {
@@ -160,6 +166,11 @@ export interface SiteRef {
   logistics?: Logistics
   known_analog?: string | null
   candidate?: boolean
+  /** Natural Earth admin-0 country (announced by Project 1; absent in v1.1 mocks) */
+  country?: string | null
+  /** admin-1 region (state/province); `admin1` accepted as an alias */
+  region?: string | null
+  admin1?: string | null
 }
 
 export interface PortfolioVariant {

@@ -4,6 +4,7 @@
 import { decodeGrid } from '../data'
 import { clipTargets, factorScores, NCELLS, prepareEarth, run, type EarthGrid, type RunOutput } from '../scoring/engine'
 import type { FactorId, FactorsFile, ProfilesFile } from '../types/contract'
+import { continentResolver, gridContinentLookup, type ContinentOf } from '../scoring/continent'
 import type { CellDetail, FromWorker, ToWorker } from './protocol'
 
 let earth: EarthGrid | null = null
@@ -11,6 +12,7 @@ let factors: FactorsFile | null = null
 let profiles: ProfilesFile | null = null
 let knownCells = new Map<number, string>()
 let idxOf = new Map<number, number>()
+let gridContinent: ContinentOf | null = null
 const sCache = new Map<string, ReturnType<typeof factorScores>>()
 let last: { out: RunOutput; s: ReturnType<typeof factorScores> } | null = null
 
@@ -20,14 +22,16 @@ self.onmessage = (ev: MessageEvent<ToWorker>) => {
   const m = ev.data
   try {
     if (m.type === 'init') {
-      earth = prepareEarth(decodeGrid(m.manifest, m.buffer))
+      const columns = decodeGrid(m.manifest, m.buffer)
+      earth = prepareEarth(columns)
+      gridContinent = gridContinentLookup(m.manifest, columns)
       factors = m.factors
       profiles = m.profiles
       knownCells = new Map(m.knownCells)
       idxOf = new Map()
       earth.cellId.forEach((c, i) => idxOf.set(c, i))
       sCache.clear()
-      post({ type: 'ready', nCells: earth.n })
+      post({ type: 'ready', nCells: earth.n, gridContinent: !!gridContinent })
       return
     }
     if (!earth || !factors || !profiles) throw new Error('worker not initialised')
@@ -38,10 +42,10 @@ self.onmessage = (ev: MessageEvent<ToWorker>) => {
       const key = `${m.target.id}|${JSON.stringify(m.target.values)}`
       let s = sCache.get(key)
       if (!s) { s = factorScores(earth, m.target.values, m.target.body, factors); sCache.set(key, s) }
-      const cont = new Map(m.continents)
+      const continentOf = continentResolver(gridContinent, new Map(m.continents))
       const out = run({
         earth, s, clips: clipTargets(earth, m.target.values, factors), targetId: m.target.id, profile, profiles, weights: m.weights,
-        knownCells, continentOf: (cid) => cont.get(cid) ?? null,
+        knownCells, continentOf: (cid) => continentOf(cid),
       })
       last = { out, s }
       const heat = new Uint8Array(NCELLS).fill(255)
