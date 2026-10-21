@@ -62,3 +62,10 @@ def test_cell_id(c):
 def test_set_cover(c):
     chosen, _, _ = greedy_portfolio(c["sites"], c["weights"], c["theta"], c["lam"])
     assert [s["site_id"] for s in chosen] == c["expected_ids"]
+
+
+@pytest.mark.parametrize("c", TV["range_sim"])
+def test_range_sim(c):
+    from analog_portfolio.score.normalize import range_sim
+
+    assert range_sim(c["x"], c["t_star"], c["p01"], c["p99"]) == pytest.approx(c["expected"], abs=TOL)

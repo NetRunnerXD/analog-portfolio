@@ -1,0 +1,240 @@
+{
+ "contract_version": "1.2.0",
+ "body": "moon",
+ "mock": false,
+ "grid": {
+  "resolution_deg": 0.5,
+  "ncols": 720,
+  "nrows": 360,
+  "lon_centre_first": -179.75,
+  "lat_centre_first": 89.75,
+  "row_order": "north-to-south"
+ },
+ "layout": "sparse",
+ "n_cells": 86400,
+ "binary": "moon_grid.bin",
+ "byte_order": "little",
+ "arrays": [
+  {
+   "name": "cell_id",
+   "factor": null,
+   "dtype": "uint32",
+   "byte_offset": 0,
+   "length": 86400,
+   "scale": 1,
+   "add_offset": 0,
+   "nodata": null,
+   "units": "cell id (row*720+col)",
+   "stats": null,
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "ts_mean_k",
+   "factor": "F1",
+   "dtype": "uint8",
+   "byte_offset": 345600,
+   "length": 86400,
+   "scale": 0.628,
+   "add_offset": 40.0,
+   "nodata": 255,
+   "units": "K",
+   "stats": {
+    "p005": 55.10023567199707,
+    "p50": 153.27195739746094,
+    "p995": 186.00870018005372,
+    "min": 40.176475524902344,
+    "max": 197.1953887939453
+   },
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "dt_k",
+   "factor": "F2",
+   "dtype": "uint8",
+   "byte_offset": 432000,
+   "length": 86400,
+   "scale": 1.12,
+   "add_offset": 22.0,
+   "nodata": 255,
+   "units": "K",
+   "stats": {
+    "p005": 62.12704387664795,
+    "p50": 207.03404998779297,
+    "p995": 253.03524955749523,
+    "min": 22.112699508666992,
+    "max": 305.04290771484375
+   },
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "ti_class",
+   "factor": "F3",
+   "dtype": "uint8",
+   "byte_offset": 518400,
+   "length": 86400,
+   "scale": 1.0,
+   "add_offset": 0.0,
+   "nodata": 255,
+   "units": "class 1-5",
+   "stats": null,
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "slope_lt5_frac",
+   "factor": "F4",
+   "dtype": "uint8",
+   "byte_offset": 604800,
+   "length": 86400,
+   "scale": 0.004,
+   "add_offset": 0.0,
+   "nodata": 255,
+   "units": "fraction",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.1607142835855484,
+    "p995": 0.921875,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "relief_m",
+   "factor": "F5",
+   "dtype": "uint8",
+   "byte_offset": 691200,
+   "length": 86400,
+   "scale": 9.65,
+   "add_offset": 5.0,
+   "nodata": 255,
+   "units": "m",
+   "stats": {
+    "p005": 23.68734375,
+    "p50": 355.15625,
+    "p995": 1546.004375000004,
+    "min": 5.5625,
+    "max": 2455.84375
+   },
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "lith_class",
+   "factor": "F6",
+   "dtype": "uint8",
+   "byte_offset": 777600,
+   "length": 86400,
+   "scale": 1.0,
+   "add_offset": 0.0,
+   "nodata": 255,
+   "units": "lithology code",
+   "stats": {
+    "p005": 1.0,
+    "p50": 17.0,
+    "p995": 17.0,
+    "min": 1.0,
+    "max": 17.0
+   },
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "ice_index",
+   "factor": "F9",
+   "dtype": "uint8",
+   "byte_offset": 864000,
+   "length": 86400,
+   "scale": 0.004,
+   "add_offset": 0.0,
+   "nodata": 255,
+   "units": "index 0-1",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.00584511854685843,
+    "p995": 1.0,
+    "min": 0.0,
+    "max": 1.0
+   },
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "noon_sun_elev_deg",
+   "factor": "F10",
+   "dtype": "uint8",
+   "byte_offset": 950400,
+   "length": 86400,
+   "scale": 0.119,
+   "add_offset": 0.0,
+   "nodata": 255,
+   "units": "deg",
+   "stats": {
+    "p005": 0.25,
+    "p50": 15.0,
+    "p995": 29.75,
+    "min": 0.25,
+    "max": 29.75
+   },
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "column_mass_gcm2",
+   "factor": "F11",
+   "dtype": "uint8",
+   "byte_offset": 1036800,
+   "length": 86400,
+   "scale": 1e-06,
+   "add_offset": 0.0,
+   "nodata": 255,
+   "units": "g/cm^2",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 0.0,
+    "min": 0.0,
+    "max": 0.0
+   },
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "geomorph_flags",
+   "factor": "F13",
+   "dtype": "uint8",
+   "byte_offset": 1123200,
+   "length": 86400,
+   "scale": 1.0,
+   "add_offset": 0.0,
+   "nodata": 255,
+   "units": "bitmask",
+   "stats": {
+    "p005": 0.0,
+    "p50": 1.0,
+    "p995": 49.0,
+    "min": 0.0,
+    "max": 49.0
+   },
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  },
+  {
+   "name": "elevation_m",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 1209600,
+   "length": 86400,
+   "scale": 59.1,
+   "add_offset": -8270.0,
+   "nodata": 255,
+   "units": "m",
+   "stats": {
+    "p005": -6409.689296875,
+    "p50": -932.0625,
+    "p995": 3935.5241015625006,
+    "min": -8269.59375,
+    "max": 6595.15625
+   },
+   "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
+  }
+ ],
+ "generated_at": "2026-10-12T17:11:10+00:00",
+ "subset": "polar |lat| >= 60 deg at 0.5 deg (rows 0-59 and 300-359)",
+ "companions": [
+  "moon_grid_1deg.json"
+ ]
+}

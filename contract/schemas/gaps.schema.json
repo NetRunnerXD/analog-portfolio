@@ -541,6 +541,35 @@
         "coverable"
       ]
     },
+    "caveats": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9_]+$"
+          },
+          "factors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^F([1-9]|1[0-3])$"
+            }
+          },
+          "text": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "factors",
+          "text"
+        ]
+      },
+      "description": "Pipeline caveats shown with the Fidelity Gap panel (known limitations)"
+    },
     "facilities": {
       "type": "object",
       "propertyNames": {

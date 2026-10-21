@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.1",
+ "contract_version": "1.2.0",
  "mock": true,
  "site_id": "sudbury_impact_structure_ontario_canada",
  "name": "Sudbury impact structure (Ontario, Canada)",
@@ -35,7 +35,9 @@
   "builtup_frac": 0.0,
   "travel_time_min": 642.0,
   "airport_km": 193.0,
-  "continent": 5.0
+  "continent": 5.0,
+  "permafrost_frac": 0.34,
+  "moss_lichen_frac": 0.0
  },
  "drilldown": {},
  "best_for": [],
