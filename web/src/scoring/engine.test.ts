@@ -8,7 +8,9 @@ import type { FactorId, FactorsFile, GridManifest, Portfolio, ProfilesFile, Site
 import { buildVariants, clipTargets, factorScores, prepareEarth, run, type TargetValues } from './engine'
 import { gridContinentLookup } from './continent'
 
-const MOCK = resolve(__dirname, '../../public/data/mock')
+// CI runs against the shipped mocks. Set PARITY_DATA to another data root (e.g. a read-only export of PR #11's
+// web/public/data) to check parity against a real pipeline run locally.
+const MOCK = process.env.PARITY_DATA ? resolve(process.env.PARITY_DATA) : resolve(__dirname, '../../public/data/mock')
 const json = <T,>(p: string): T => JSON.parse(readFileSync(resolve(MOCK, p), 'utf8')) as T
 const manifest = json<GridManifest>('earth_features.json')
 const bin = readFileSync(resolve(MOCK, manifest.binary))
@@ -40,7 +42,9 @@ const tvOf = (id: string): TargetValues => {
   return Object.fromEntries(Object.entries(t.features ?? {}).map(([f, v]) => [f, v?.value ?? null])) as TargetValues
 }
 const files = readdirSync(resolve(MOCK, 'portfolios')).filter((f) => f.endsWith('.json')).sort()
-const close = (a: number, b: number, tol: number, what: string) => expect(Math.abs(a - b), `${what}: ${a} vs ${b}`).toBeLessThanOrEqual(tol)
+// PARITY_TOL_SCALE widens every tolerance for a local check against an export that is not yet computed on the quantised grid.
+const TOL_SCALE = Number(process.env.PARITY_TOL_SCALE ?? 1)
+const close = (a: number, b: number, tol: number, what: string) => expect(Math.abs(a - b), `${what}: ${a} vs ${b}`).toBeLessThanOrEqual(tol * TOL_SCALE)
 
 describe('engine parity with the Python reference (mock grid, default weights)', () => {
   it('targets.json t_star / gap match clipTargets', () => {
@@ -48,7 +52,7 @@ describe('engine parity with the Python reference (mock grid, default weights)',
       if (!t.features?.F1?.value) continue
       const clips = clipTargets(earth, tvOf(t.id), factors)
       for (const [f, [ts, gap]] of Object.entries(clips) as [FactorId, [number, number]][]) {
-        close(ts, t.features[f]!.t_star!, 1e-9, `${t.id} ${f} t_star`)
+        close(ts, t.features[f]!.t_star!, 5.1e-5, `${t.id} ${f} t_star`) // exports round to 4 dp
         close(gap, t.features[f]!.gap!, 6e-4, `${t.id} ${f} gap`)
       }
     }
@@ -69,11 +73,15 @@ describe('engine parity with the Python reference (mock grid, default weights)',
       const refSites = [...(p.top_cells ?? []), ...p.variants.flatMap((v) => v.sites)]
       for (const r of refSites) {
         const i = idx.get(r.cell_id)!
-        for (const [f, v] of Object.entries(r.factor_scores)) close(s[f as FactorId]![i], v as number, 5.1e-5, `${r.site_id} ${f}`)
+        for (const [f, v] of Object.entries(r.factor_scores)) {
+          // the real exporter writes 0.0 for a factor dropped for the target (no target value); the engine leaves it out
+          if (!s[f as FactorId]) { expect(v, `${r.site_id} ${f} dropped`).toBe(0); continue }
+          close(s[f as FactorId]![i], v as number, 5.1e-5, `${r.site_id} ${f}`)
+        }
         close(out.total[i], r.score, 5.1e-5, `${r.site_id} S`)
         close(out.pct[i], r.earth_percentile!, 5.1e-3, `${r.site_id} pct`)
       }
-      for (const k of ['median', 'top5', 'top1'] as const) close(out.portfolio.earth_thresholds![k], p.earth_thresholds![k], 1e-9, k)
+      for (const k of ['median', 'top5', 'top1'] as const) close(out.portfolio.earth_thresholds![k], p.earth_thresholds![k], 5.1e-5, k) // exports round to 4 dp
       expect(out.portfolio.universe).toEqual(p.universe)
       expect(out.portfolio.uncoverable).toEqual(p.uncoverable)
       // Variant invariants (contract v1.1 §4.1) on the JS output
@@ -95,12 +103,10 @@ describe('engine parity with the Python reference (mock grid, default weights)',
     })
   }
 
-  // Exact pool / site-id parity. SKIPPED until the pipeline matches the canonical stable tie-break the JS engine uses
-  // (candidates by s_F desc, S desc, cell index asc; set-cover pool by S desc, cell index asc). The JS tie-break is canonical
-  // (Project 1 ruling); enable this test once the pipeline's real exporter matches it. (Against the contract v1.1.1 mocks
-  // it already passes when un-skipped.) Mid-rank percentiles and the 70% missing-data rule land in a separate PR and are
-  // not ported here.
-  it.skip('candidate pool and variant site ids match Python exactly (canonical tie-break)', () => {
+  // Exact pool / site-id parity under the canonical stable tie-break (candidates by s_F desc, S desc, cell index asc;
+  // set-cover pool by S desc, cell index asc). CI runs it on the contract v1.1.1 mocks; PARITY_DATA points it at another
+  // export (e.g. PR #11's real run) for a local check.
+  it('candidate pool and variant site ids match Python exactly (canonical tie-break)', () => {
     for (const file of files) {
       const p = json<Portfolio>(`portfolios/${file}`)
       const target = targets.targets.find((t) => t.id === p.target_id)!

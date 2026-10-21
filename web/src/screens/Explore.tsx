@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { VARIANT_UI } from '../copy'
 import { DataError, loadPortfolio } from '../data'
-import { fmtLatLon, hasScorableFeatures, makeValueFormatter, purposeName, siteTitle, targetShort, to100 } from '../lib/format'
+import { fmtLatLon, hasScorableFeatures, makeTitler, makeValueFormatter, purposeName, targetShort, to100 } from '../lib/format'
 import type { UrlState } from '../lib/url'
 import { useBreakpoint } from '../lib/useMedia'
 import MapView, { type MapPin } from '../map/MapView'
 import { earthRadiusKm, haversineKm } from '../scoring/area'
+import { INSUFFICIENT_CODE, minActiveFrac, targetDropped } from '../scoring/engine'
 import { CORE_FACTORS } from '../types/contract'
 import type { FactorId, FactorsFile, GapsFile, Portfolio, Profile, ProfilesFile, SiteRef, Target, ValidationFile, VariantId, EarthReference } from '../types/contract'
 import type { ScorerClient } from '../worker/client'
@@ -86,7 +87,8 @@ export default function Explore(p: Props) {
     let live = true
     setScoreErr(null)
     const values = Object.fromEntries(Object.entries(target.features ?? {}).map(([f, v]) => [f, v?.value ?? null])) as Partial<Record<FactorId, number | null>>
-    p.scorer.score({ target: { id: target.id, body: target.body, values }, profileId: profile.id, weights, continents, withPortfolio: true })
+    // the default-weight portfolio comes from the shipped file; only build one live for custom weights or a missing file
+    p.scorer.score({ target: { id: target.id, body: target.body, values }, profileId: profile.id, weights, continents, withPortfolio: custom || pf.status === 'missing' })
       .then((msg) => live && setScored({ key: scoreKey, msg }))
       .catch((e: unknown) => live && setScoreErr(String(e instanceof Error ? e.message : e)))
     return () => { live = false }
@@ -113,12 +115,13 @@ export default function Explore(p: Props) {
   }, [cur, places])
   const portfolio: Portfolio | null = custom ? livePortfolio : (pfData ?? (pf.status === 'missing' ? livePortfolio : null))
   const fromFile = !custom && !!pfData
-  const dropped = new Set<FactorId>(portfolio?.dropped_factors ?? CORE_FACTORS.filter((f) => target.features?.[f]?.value === null || target.features?.[f]?.value === undefined))
+  const dropped = new Set<FactorId>(portfolio?.dropped_factors ?? targetDropped(Object.fromEntries(CORE_FACTORS.map((f) => [f, target.features?.[f]?.value ?? null])), weights))
   const needs = CORE_FACTORS.filter((f) => (weights[f] ?? 0) > 0 && !dropped.has(f)) as FactorId[]
   const pName = purposeName(profile)
   const tShort = targetShort(target)
   const ft = useMemo(() => makeFactorText(p.factors), [p.factors])
-  const ctx: Ctx = { target, purposeName: pName, targetShort: tShort, weights, custom, needs, factors: p.factors, ft, robustnessAvailable: fromFile,
+  const titleOf = useMemo(() => makeTitler([...(portfolio?.top_cells ?? []), ...(portfolio?.variants.flatMap((v) => v.sites) ?? [])]), [portfolio])
+  const ctx: Ctx = { title: titleOf, target, purposeName: pName, targetShort: tShort, weights, custom, needs, factors: p.factors, ft, robustnessAvailable: fromFile,
     earthRef: p.earthRef ?? undefined, mc: pfData?.monte_carlo ?? p.profiles.defaults.monte_carlo }
   const variant = portfolio?.variants.find((v) => v.id === url.v && v.available) ?? portfolio?.variants.find((v) => v.id === 'best_match')
   const vSites = useMemo(() => variant?.sites ?? [], [variant])
@@ -190,8 +193,8 @@ export default function Explore(p: Props) {
     const out: MapPin[] = []
     const main = showPortfolio ? vSites : (portfolio?.top_cells ?? []).slice(0, 5)
     const mainIds = new Set(main.map((s) => s.site_id))
-    main.forEach((s, i) => out.push({ id: s.site_id, kind: 'portfolio', n: i + 1, lat: s.lat, lon: s.lon, label: `${i + 1} · ${siteTitle(s)}`, tooltip: `${showPortfolio ? 'Site' : 'Region'} ${i + 1}: ${siteTitle(s)} · ${to100(s.score)} / 100` }))
-    if (site && !mainIds.has(site.site_id)) out.push({ id: site.site_id, kind: site.known_analog ? 'known' : 'candidate', lat: site.lat, lon: site.lon, label: siteTitle(site), tooltip: siteTitle(site) })
+    main.forEach((s, i) => out.push({ id: s.site_id, kind: 'portfolio', n: i + 1, lat: s.lat, lon: s.lon, label: `${i + 1} · ${ctx.title(s)}`, tooltip: `${showPortfolio ? 'Site' : 'Region'} ${i + 1}: ${ctx.title(s)} · ${to100(s.score)} / 100` }))
+    if (site && !mainIds.has(site.site_id)) out.push({ id: site.site_id, kind: site.known_analog ? 'known' : 'candidate', lat: site.lat, lon: site.lon, label: ctx.title(site), tooltip: ctx.title(site) })
     if (layers.known) {
       for (const k of knownSites) {
         const r = k.results.find((x) => x.target_id === target.id && x.profile_id === profile.id)
@@ -202,17 +205,19 @@ export default function Explore(p: Props) {
     if (layers.candidates) {
       for (const s of portfolio?.top_cells ?? []) {
         if (!s.candidate || s.known_analog || mainIds.has(s.site_id)) continue
-        out.push({ id: s.site_id, kind: 'candidate', lat: s.lat, lon: s.lon, label: siteTitle(s), tooltip: `New candidate · ${to100(s.score)} / 100 · ${fmtLatLon(s.lat, s.lon, 1)}` })
+        out.push({ id: s.site_id, kind: 'candidate', lat: s.lat, lon: s.lon, label: ctx.title(s), tooltip: `New candidate · ${to100(s.score)} / 100 · ${fmtLatLon(s.lat, s.lon, 1)}` })
       }
     }
     return out
   }, [showPortfolio, vSites, portfolio, site, layers, knownSites, target.id, profile.id, custom])
 
   const filters = useMemo(() => [...p.profiles.global_hard_filters, ...profile.hard_filters], [p.profiles, profile])
+  const minPct = Math.round(minActiveFrac(p.profiles) * 100)
   const filterText = useCallback((code: number) => {
+    if (code === INSUFFICIENT_CODE) return `Not enough data to score (under ${minPct}% of what counts has Earth data here)`
     const f = filters[code - 1]
     return f ? `Filtered out: ${f.ui_tooltip ?? f.ui_short ?? f.reason}` : 'Filtered out'
-  }, [filters])
+  }, [filters, minPct])
   const R = useMemo(() => earthRadiusKm(p.profiles.defaults), [p.profiles])
   const closest = useCallback(async (cid: number) => {
     const lat = 89.75 - 0.5 * Math.floor(cid / 720)
@@ -250,7 +255,7 @@ export default function Explore(p: Props) {
   } else if (url.step === 'portfolio') {
     results = <PortfolioPanel ctx={ctx} portfolio={portfolio} variantId={variant?.id ?? 'best_match'} onVariant={onVariant} onOpen={openSite} selected={url.site ?? null} hovered={hovered} onHover={setHovered} />
   } else {
-    results = <TopRegionsPanel ctx={ctx} portfolio={portfolio} stats={stats} nLand={cur?.stats.nCells ?? p.nCells} onOpen={openSite}
+    results = <TopRegionsPanel ctx={ctx} portfolio={portfolio} stats={stats} nLand={cur?.stats.nScorable ?? p.nCells} onOpen={openSite}
       onPortfolio={() => update({ step: 'portfolio', site: undefined })} onWeights={() => setWeightsOpen(true)} hovered={hovered} onHover={setHovered} />
   }
   const gapPanel = <FidelityGapPanel rows={gapRows} />
@@ -266,7 +271,8 @@ export default function Explore(p: Props) {
   )
 
   const legend = (
-    <MapLegend title={`How ${target.body === 'moon' ? 'Moon' : 'Mars'}-like for this mission`} filterText={filters.map((f) => f.ui_short ?? f.id).join(' or ')}>
+    <MapLegend title={`How ${target.body === 'moon' ? 'Moon' : 'Mars'}-like for this mission`} filterText={filters.map((f) => f.ui_short ?? f.id).join(' or ')}
+      insufficientText={cur && cur.stats.nInsufficient > 0 ? `Not enough data (under ${minPct}% of what counts)` : undefined}>
       <fieldset className="layer-toggle t-small">
         <legend className="sr-only">Map layers</legend>
         <label><input type="checkbox" checked={layers.known} onChange={(e) => setLayers((l) => ({ ...l, known: e.target.checked }))} /> <i className="sw sw-known" aria-hidden="true" /> Known analogs</label>

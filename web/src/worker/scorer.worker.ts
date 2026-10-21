@@ -2,7 +2,7 @@
 // Live scoring worker: decodes the Earth grid once, then re-scores every land cell for the active target, purpose and
 // weights with the TS port of the reference engine (src/scoring/engine.ts). Nothing here is hard-coded data.
 import { decodeGrid } from '../data'
-import { clipTargets, factorScores, NCELLS, prepareEarth, run, type EarthGrid, type RunOutput } from '../scoring/engine'
+import { clipTargets, factorScores, INSUFFICIENT_CODE, NCELLS, prepareEarth, run, type EarthGrid, type RunOutput } from '../scoring/engine'
 import type { FactorId, FactorsFile, ProfilesFile } from '../types/contract'
 import { continentResolver, gridContinentLookup, type ContinentOf } from '../scoring/continent'
 import type { CellDetail, FromWorker, ToWorker } from './protocol'
@@ -13,8 +13,21 @@ let profiles: ProfilesFile | null = null
 let knownCells = new Map<number, string>()
 let idxOf = new Map<number, number>()
 let gridContinent: ContinentOf | null = null
-const sCache = new Map<string, ReturnType<typeof factorScores>>()
-let last: { out: RunOutput; s: ReturnType<typeof factorScores> } | null = null
+type Scores = ReturnType<typeof factorScores>
+type Clips = ReturnType<typeof clipTargets>
+/** Per-target factor arrays and Earth-range clips (13 × n Float64 each, ~9 MB on the real grid), kept for the
+ *  CACHE_TARGETS most recently used targets (LRU) so switching purpose or weights never recomputes them. */
+const CACHE_TARGETS = 3
+const sCache = new Map<string, { s: Scores; clips: Clips }>()
+function targetCache(key: string, make: () => { s: Scores; clips: Clips }) {
+  let hit = sCache.get(key)
+  if (hit) sCache.delete(key) // re-insert as most recent
+  else hit = make()
+  sCache.set(key, hit)
+  while (sCache.size > CACHE_TARGETS) sCache.delete(sCache.keys().next().value!)
+  return hit
+}
+let last: { out: RunOutput; s: Scores } | null = null
 
 const post = (m: FromWorker, transfer: Transferable[] = []) => (self as unknown as DedicatedWorkerGlobalScope).postMessage(m, transfer)
 
@@ -40,12 +53,12 @@ self.onmessage = (ev: MessageEvent<ToWorker>) => {
       const profile = profiles.profiles.find((p) => p.id === m.profileId)
       if (!profile) throw new Error(`unknown profile ${m.profileId}`)
       const key = `${m.target.id}|${JSON.stringify(m.target.values)}`
-      let s = sCache.get(key)
-      if (!s) { s = factorScores(earth, m.target.values, m.target.body, factors); sCache.set(key, s) }
+      const e = earth, f = factors, tv = m.target.values
+      const { s, clips } = targetCache(key, () => ({ s: factorScores(e, tv, m.target.body, f), clips: clipTargets(e, tv, f) }))
       const continentOf = continentResolver(gridContinent, new Map(m.continents))
       const out = run({
-        earth, s, clips: clipTargets(earth, m.target.values, factors), targetId: m.target.id, profile, profiles, weights: m.weights,
-        knownCells, continentOf: (cid) => continentOf(cid),
+        earth, s, clips, targetId: m.target.id, profile, profiles, weights: m.weights,
+        knownCells, continentOf: (cid) => continentOf(cid), withPortfolio: m.withPortfolio,
       })
       last = { out, s }
       const heat = new Uint8Array(NCELLS).fill(255)
@@ -53,14 +66,15 @@ self.onmessage = (ev: MessageEvent<ToWorker>) => {
       let best = 0
       for (let i = 0; i < earth.n; i++) {
         const c = earth.cellId[i]
+        if (!out.valid[i]) { filter[c] = INSUFFICIENT_CODE; continue } // heat stays 255: drawn as "not enough data"
         heat[c] = Math.round(out.total[i] * 100)
         filter[c] = out.code[i]
         if (out.total[i] > best) best = out.total[i]
       }
-      const th = out.portfolio.earth_thresholds!
+      const th = out.thresholds
       post({
-        type: 'scored', reqId: m.reqId, heat, filter, portfolio: m.withPortfolio ? out.portfolio : null,
-        stats: { nCells: earth.n, nPass: out.nPass, best, median: th.median, top5: th.top5, top1: th.top1, unknownFilters: out.unknownFilters, ms: performance.now() - t0 },
+        type: 'scored', reqId: m.reqId, heat, filter, portfolio: out.portfolio,
+        stats: { nCells: earth.n, nScorable: earth.n - out.nInsufficient, nInsufficient: out.nInsufficient, nPass: out.nPass, best, median: th.median, top5: th.top5, top1: th.top1, unknownFilters: out.unknownFilters, ms: performance.now() - t0 },
       }, [heat.buffer, filter.buffer])
       return
     }
@@ -74,10 +88,12 @@ self.onmessage = (ev: MessageEvent<ToWorker>) => {
       if (i !== undefined) {
         for (const [k, v] of Object.entries(earth.cols)) detail.features[k] = Number.isNaN(v[i]) ? null : v[i]
         if (last) {
-          detail.score = last.out.total[i]
-          detail.percentile = last.out.pct[i]
-          detail.filterCode = last.out.code[i]
-          for (const [f, arr] of Object.entries(last.s)) if (arr) detail.factorScores[f as FactorId] = arr[i]
+          const ok = !!last.out.valid[i]
+          detail.score = ok ? last.out.total[i] : null
+          detail.percentile = ok ? last.out.pct[i] : null
+          detail.filterCode = ok ? last.out.code[i] : INSUFFICIENT_CODE
+          detail.coverage = last.out.coverage[i]
+          for (const [f, arr] of Object.entries(last.s)) if (arr) detail.factorScores[f as FactorId] = Number.isNaN(arr[i]) ? null : arr[i]
         }
       }
       post({ type: 'cell', reqId: m.reqId, detail })

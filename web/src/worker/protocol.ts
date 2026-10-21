@@ -30,7 +30,7 @@ export interface ScoredMsg {
   /** 720×360: 0 = passes, i > 0 = 1-based index of the first failing hard filter */
   filter: Uint8Array
   portfolio: Portfolio | null
-  stats: { nCells: number; nPass: number; best: number; median: number; top5: number; top1: number; unknownFilters: string[]; ms: number }
+  stats: { nCells: number; nScorable: number; nInsufficient: number; nPass: number; best: number; median: number; top5: number; top1: number; unknownFilters: string[]; ms: number }
 }
 export interface CellDetail {
   cellId: number
@@ -39,8 +39,11 @@ export interface CellDetail {
   lon: number
   score: number | null
   percentile: number | null
+  /** 0 passes, 1..n = failing hard filter, INSUFFICIENT_CODE = not enough data to score */
   filterCode: number
-  factorScores: Partial<Record<FactorId, number>>
+  /** present share of the active weight (contract §3.2.6) */
+  coverage?: number
+  factorScores: Partial<Record<FactorId, number | null>>
   features: Record<string, number | null>
 }
 export interface CellReplyMsg { type: 'cell'; reqId: number; detail: CellDetail }

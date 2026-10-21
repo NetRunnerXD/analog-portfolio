@@ -189,6 +189,7 @@ main { flex: 1; min-height: 0; }
 .sw { display: inline-block; width: 14px; height: 10px; vertical-align: middle; flex: none; }
 .sw-nodata { background: var(--color-map-landNoData); border: 1px solid var(--color-map-coastline); }
 .sw-filter { background: repeating-linear-gradient(45deg, var(--color-map-filteredHatch) 0 1.5px, var(--color-map-filteredDim) 1.5px 4px); }
+.sw-insuf { background: radial-gradient(circle, var(--color-map-filteredHatch) 0 0.9px, transparent 1.2px) 0 0 / 4px 4px, var(--color-map-landNoData); border: 1px solid var(--color-map-coastline); }
 .sw-known { width: 10px; border: 1.5px solid var(--color-map-markerStroke); background: var(--color-map-markerFill); }
 .sw-cand { width: 10px; background: var(--color-map-markerStroke); clip-path: polygon(50% 0, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
 .illustrative { position: absolute; top: var(--space-3); right: var(--space-3); z-index: var(--z-overlay); }
