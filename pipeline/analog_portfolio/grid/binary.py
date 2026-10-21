@@ -31,7 +31,14 @@ def quantize(values: np.ndarray, dtype: str, scale: float, add_offset: float) ->
     return raw.astype(dtype)
 
 
-def write_grid(path_stem: Path, body: str, layout: str, columns: list[dict], mock: bool = False) -> dict:
+GRID_05 = {"resolution_deg": 0.5, "ncols": 720, "nrows": 360, "lon_centre_first": -179.75, "lat_centre_first": 89.75,
+           "row_order": "north-to-south"}
+GRID_1 = {"resolution_deg": 1.0, "ncols": 360, "nrows": 180, "lon_centre_first": -179.5, "lat_centre_first": 89.5,
+          "row_order": "north-to-south"}
+
+
+def write_grid(path_stem: Path, body: str, layout: str, columns: list[dict], mock: bool = False,
+               grid: dict | None = None, extra: dict | None = None) -> dict:
     """columns: [{name, factor, dtype, scale, add_offset, units, values, source?}] -> writes .bin + .json."""
     buf = bytearray()
     arrays = []
@@ -60,13 +67,16 @@ def write_grid(path_stem: Path, body: str, layout: str, columns: list[dict], moc
         })
         if c.get("codes"):
             arrays[-1]["codes"] = {str(k): v for k, v in c["codes"].items()}
+        if c.get("codes_note"):
+            arrays[-1]["codes_note"] = c["codes_note"]
     manifest = {
         "contract_version": CONTRACT_VERSION, "body": body, "mock": mock,
-        "grid": {"resolution_deg": 0.5, "ncols": 720, "nrows": 360, "lon_centre_first": -179.75,
-                 "lat_centre_first": 89.75, "row_order": "north-to-south"},
+        "grid": dict(grid or GRID_05),
         "layout": layout, "n_cells": int(n), "binary": path_stem.name + ".bin", "byte_order": "little",
         "arrays": arrays, "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     }
+    if extra:
+        manifest.update(extra)
     path_stem.parent.mkdir(parents=True, exist_ok=True)
     path_stem.with_suffix(".bin").write_bytes(bytes(buf))
     path_stem.with_suffix(".json").write_text(json.dumps(manifest, indent=1) + "\n")

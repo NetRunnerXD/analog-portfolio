@@ -21,8 +21,9 @@ def draw_weights(weights: dict[str, float], active: list[str], draws: int, alpha
     return np.random.default_rng(seed).dirichlet(alpha_scale * w / w.sum(), size=draws)
 
 
-def _wq_rows(S: np.ndarray, aw: np.ndarray, q: float) -> np.ndarray:
-    """Area-weighted quantile per row of S (c x n), same Hazen-type definition as grid.area.weighted_quantile."""
+def _wq_rows_full(S: np.ndarray, aw: np.ndarray, q: float) -> np.ndarray:
+    """Area-weighted quantile per row of S (c x n), same Hazen-type definition as grid.area.weighted_quantile.
+    Reference version: full stable sort of every row. _wq_rows gives the same result from the top of each row."""
     o = np.argsort(S, axis=1, kind="stable")
     Ss = np.take_along_axis(S, o, axis=1).astype("float64")
     wo = aw[o]
@@ -35,6 +36,45 @@ def _wq_rows(S: np.ndarray, aw: np.ndarray, q: float) -> np.ndarray:
     c0, c1 = cdf[r, lo], cdf[r, hi]
     t = np.where(c1 > c0, (q - c0) / np.where(c1 > c0, c1 - c0, 1), 0.0)
     return Ss[r, lo] + np.clip(t, 0, 1) * (Ss[r, hi] - Ss[r, lo])
+
+
+def _wq_rows(S: np.ndarray, aw: np.ndarray, q: float) -> np.ndarray:
+    """Same result as _wq_rows_full for an upper quantile (q close to 1), without sorting whole rows (review-01).
+
+    The quantile only depends on the cells around it, so per row we take the cells >= the m-th largest value (a
+    suffix of the stable ascending order, ties included), m ~ 1.3 x (1 - q) x n, and rebuild the weighted CDF of that
+    suffix from the total area. If the first suffix cell is not below q, the suffix is widened 4x. One batched
+    partition per chunk + a small sort per row: ~1/15 of the full stable sort at 85k cells."""
+    S = np.asarray(S)
+    c, n = S.shape
+    aw = np.asarray(aw, "float64")
+    m0 = int(min(n, max(64, np.ceil(1.3 * (1.0 - q) * n))))
+    if m0 >= n or n < 256:
+        return _wq_rows_full(S, aw, q)
+    W = aw.sum()
+    kth = np.partition(S, n - m0, axis=1)[:, n - m0]
+    out = np.empty(c)
+    for r in range(c):
+        row, m, kv = S[r], m0, kth[r]
+        while True:
+            sel = np.flatnonzero(row >= kv)  # ascending cell index
+            sel = sel[np.argsort(row[sel], kind="stable")]  # ascending value, ties by index (as the full sort)
+            v = row[sel].astype("float64")
+            ws = aw[sel]
+            cum = (W - ws.sum()) + np.cumsum(ws)
+            cdf = (cum - 0.5 * ws) / W
+            full = sel.size == n
+            if full or cdf[0] < q:
+                kk = int((cdf < q).sum())
+                hi = min(kk, sel.size - 1)
+                lo = max(kk - 1, 0)
+                c0, c1 = cdf[lo], cdf[hi]
+                t = (q - c0) / (c1 - c0) if c1 > c0 else 0.0
+                out[r] = v[lo] + min(max(t, 0.0), 1.0) * (v[hi] - v[lo])
+                break
+            m = min(n, 4 * m)
+            kv = np.partition(row, n - m)[n - m]
+    return out
 
 
 def top_frac_freq(
@@ -58,6 +98,8 @@ def top_frac_freq(
     n = len(mask)
     valid = np.ones(n, bool) if valid is None else np.asarray(valid, bool)
     active = [f for f in CORE if weights.get(f, 0) > 0 and f in s]
+    if not active or not valid.any():  # nothing scorable: no hits, never a crash (review-01)
+        return np.zeros(n)
     W = draw_weights(weights, active, draws, alpha_scale, seed).astype("float32")  # D x K
     raw = np.stack([np.asarray(s[f], "float64")[valid] for f in active])           # K x m
     P = np.isfinite(raw).astype("float32")
@@ -80,3 +122,10 @@ def top_frac_freq(
     out = np.zeros(n)
     out[valid] = hits / draws
     return out
+
+
+def robust_flags(freq: np.ndarray, min_freq: float = 0.8) -> np.ndarray:
+    """robust = top5_freq >= min_freq (contract 4.1); NaN -> False. 800/1000 draws counts as robust."""
+    f = np.asarray(freq, dtype="float64")
+    with np.errstate(invalid="ignore"):
+        return np.isfinite(f) & (f >= min_freq - 1e-12)

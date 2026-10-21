@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.1",
+ "contract_version": "1.2.0",
  "mock": true,
  "frozen_commit": null,
  "source": "docs/validation.csv",
@@ -7,9 +7,9 @@
   "n_known": 21,
   "n_negative": 11,
   "n_evaluations": 147,
-  "pct_top5": 0.0748,
-  "pct_top1": 0.0272,
-  "rank_auc": 0.7588
+  "pct_top5": 0.034,
+  "pct_top1": 0.0068,
+  "rank_auc": 0.8307
  },
  "sites": [
   {
@@ -30,128 +30,146 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 86.09,
+     "percentile": 86.22,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 95.13,
-     "in_top5": true,
-     "in_top1": false
+     "percentile": 93.88,
+     "in_top5": false,
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 52.7,
+     "percentile": 54.82,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 85.15,
+     "percentile": 85.54,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 94.99,
+     "percentile": 93.72,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 51.84,
+     "percentile": 53.99,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 86.13,
+     "percentile": 86.27,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 95.07,
-     "in_top5": true,
-     "in_top1": false
+     "percentile": 93.83,
+     "in_top5": false,
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 53.29,
+     "percentile": 55.28,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 69.81,
+     "percentile": 42.8,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 24.41,
+     "percentile": 3.25,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 65.72,
+     "percentile": 65.51,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 67.12,
+     "percentile": 38.43,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 24.63,
+     "percentile": 3.25,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 55.65,
+     "percentile": 45.77,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 80.45,
+     "percentile": 65.44,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 63.37,
+     "percentile": 43.37,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 77.78,
+     "percentile": 78.09,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -172,44 +190,50 @@
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 98.53,
+     "percentile": 95.8,
      "in_top5": true,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 99.36,
-     "in_top5": true,
-     "in_top1": true
-    },
-    {
-     "target_id": "mars_gale",
-     "profile_id": "P1_landing_mobility",
-     "percentile": 99.65,
-     "in_top5": true,
-     "in_top1": true
-    },
-    {
-     "target_id": "mars_gale",
-     "profile_id": "P5_astrobiology",
-     "percentile": 99.65,
-     "in_top5": true,
-     "in_top1": true
-    },
-    {
-     "target_id": "mars_arcadia_ap1",
-     "profile_id": "P1_landing_mobility",
-     "percentile": 85.81,
+     "percentile": 94.22,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 98.47,
+     "in_top5": true,
+     "in_top1": false,
+     "status": "scored"
+    },
+    {
+     "target_id": "mars_gale",
+     "profile_id": "P5_astrobiology",
+     "percentile": 96.64,
+     "in_top5": true,
+     "in_top1": false,
+     "status": "scored"
+    },
+    {
+     "target_id": "mars_arcadia_ap1",
+     "profile_id": "P1_landing_mobility",
+     "percentile": 63.71,
+     "in_top5": false,
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 95.88,
-     "in_top5": true,
-     "in_top1": false
+     "percentile": 87.47,
+     "in_top5": false,
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -230,44 +254,50 @@
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 62.77,
+     "percentile": 49.74,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 79.55,
+     "percentile": 9.45,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 68.07,
+     "percentile": 58.89,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 81.39,
+     "percentile": 14.95,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 84.24,
+     "percentile": 64.18,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 90.02,
+     "percentile": 62.92,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -288,44 +318,50 @@
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 88.73,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 87.95,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 49.22,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -346,44 +382,50 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
-     "percentile": 75.16,
+     "percentile": 71.92,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 54.79,
+     "percentile": 54.35,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
-     "percentile": 92.35,
+     "percentile": 86.95,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 62.71,
+     "percentile": 61.84,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
-     "percentile": 62.83,
+     "percentile": 60.24,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 57.96,
+     "percentile": 57.56,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -403,23 +445,26 @@
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 84.88,
+     "percentile": 83.08,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 87.25,
+     "percentile": 88.22,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 26.23,
+     "percentile": 19.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -440,44 +485,50 @@
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 55.46,
+     "percentile": 40.87,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 77.04,
+     "percentile": 3.22,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 62.75,
+     "percentile": 50.32,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 77.4,
+     "percentile": 4.43,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 51.29,
+     "percentile": 27.55,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 82.77,
+     "percentile": 48.59,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -498,86 +549,98 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 32.81,
+     "percentile": 34.97,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 85.85,
+     "percentile": 86.26,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 30.77,
+     "percentile": 33.08,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 85.77,
+     "percentile": 86.21,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 31.88,
+     "percentile": 34.02,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 85.74,
+     "percentile": 86.23,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 13.26,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 20.83,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 10.01,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 17.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 16.68,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 23.21,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -599,65 +662,74 @@
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 21.09,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 9.44,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 19.35,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 6.45,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 62.85,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 23.73,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -678,44 +750,50 @@
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 78.9,
+     "percentile": 63.6,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 98.26,
+     "percentile": 95.49,
      "in_top5": true,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 66.48,
+     "percentile": 37.46,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 98.08,
-     "in_top5": true,
-     "in_top1": false
+     "percentile": 94.54,
+     "in_top5": false,
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 99.49,
+     "percentile": 99.03,
      "in_top5": true,
-     "in_top1": true
+     "in_top1": true,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 95.97,
-     "in_top5": true,
-     "in_top1": false
+     "percentile": 89.48,
+     "in_top5": false,
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -736,86 +814,98 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 76.88,
+     "percentile": 66.36,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 47.37,
+     "percentile": 41.41,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 78.8,
+     "percentile": 69.18,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 48.54,
+     "percentile": 41.92,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 77.52,
+     "percentile": 67.45,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 47.72,
+     "percentile": 41.58,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 68.95,
+     "percentile": 18.41,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 50.36,
+     "percentile": 6.76,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 66.13,
+     "percentile": 16.22,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 48.5,
+     "percentile": 10.21,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 61.35,
+     "percentile": 18.92,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 48.54,
+     "percentile": 7.1,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -835,23 +925,26 @@
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -872,44 +965,50 @@
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 8.67,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 41.33,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 3.93,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 15.63,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 21.26,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 41.48,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -929,44 +1028,50 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 23.58,
+     "percentile": 23.36,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 23.89,
+     "percentile": 23.58,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 23.57,
+     "percentile": 23.46,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 18.44,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 18.58,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 13.49,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -987,44 +1092,50 @@
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 49.86,
+     "percentile": 46.67,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 88.24,
+     "percentile": 56.85,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 64.47,
+     "percentile": 66.12,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 90.57,
+     "percentile": 67.38,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 94.9,
+     "percentile": 91.37,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 83.81,
+     "percentile": 53.98,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -1044,23 +1155,26 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 87.07,
+     "percentile": 86.82,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 86.84,
+     "percentile": 86.65,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 87.08,
+     "percentile": 86.87,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -1082,21 +1196,24 @@
      "profile_id": "P4_geology_regolith",
      "percentile": 87.49,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 87.35,
+     "percentile": 87.43,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 87.59,
+     "percentile": 87.62,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -1117,44 +1234,50 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 36.89,
+     "percentile": 37.96,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 39.39,
+     "percentile": 44.65,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 37.4,
+     "percentile": 38.61,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 41.69,
+     "percentile": 47.35,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 37.05,
+     "percentile": 38.18,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 38.01,
+     "percentile": 45.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -1175,44 +1298,50 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 35.05,
+     "percentile": 35.35,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 85.54,
+     "percentile": 85.71,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 34.49,
+     "percentile": 34.92,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 85.65,
+     "percentile": 85.74,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 34.66,
+     "percentile": 35.08,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 85.58,
+     "percentile": 85.71,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -1234,107 +1363,122 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 22.66,
+     "percentile": 32.15,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 8.08,
+     "percentile": 12.08,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 13.59,
+     "percentile": 27.31,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 7.66,
+     "percentile": 11.73,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 27.83,
+     "percentile": 34.82,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 7.67,
+     "percentile": 11.8,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 15.86,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 71.51,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 14.37,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 70.49,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 90.67,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 15.42,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -1354,23 +1498,26 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 3.97,
+     "percentile": 6.4,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 3.96,
+     "percentile": 6.31,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 3.89,
+     "percentile": 6.28,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     }
    ]
   },
@@ -1388,191 +1535,218 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 39.05,
+     "percentile": 31.05,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 34.65,
+     "percentile": 4.12,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 33.96,
+     "percentile": 29.2,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 38.82,
+     "percentile": 31.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 38.72,
+     "percentile": 4.57,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 34.13,
+     "percentile": 29.26,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 38.89,
+     "percentile": 31.13,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 26.2,
+     "percentile": 4.06,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 34.06,
+     "percentile": 29.18,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 48.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 76.23,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 76.3,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 46.26,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 81.26,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 75.65,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 41.36,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 12.04,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 87.71,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -1590,191 +1764,218 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 41.26,
+     "percentile": 38.33,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 35.77,
+     "percentile": 13.84,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 34.85,
+     "percentile": 33.56,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 41.32,
+     "percentile": 38.25,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 39.75,
+     "percentile": 15.06,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 35.02,
+     "percentile": 33.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 41.31,
+     "percentile": 38.21,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 27.52,
+     "percentile": 13.13,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 34.89,
+     "percentile": 33.54,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 41.1,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 76.96,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 27.12,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 41.18,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 81.15,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 26.44,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 19.58,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 11.49,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 26.96,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -1794,189 +1995,216 @@
      "profile_id": "P1_landing_mobility",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     }
    ]
   },
@@ -1996,189 +2224,216 @@
      "profile_id": "P1_landing_mobility",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     }
    ]
   },
@@ -2196,191 +2451,218 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 41.43,
+     "percentile": 40.82,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 29.76,
+     "percentile": 26.09,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 34.58,
+     "percentile": 34.56,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 41.83,
+     "percentile": 41.19,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 35.01,
+     "percentile": 29.7,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 34.82,
+     "percentile": 34.77,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 41.44,
+     "percentile": 40.84,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 22.26,
+     "percentile": 23.86,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 34.63,
+     "percentile": 34.59,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 37.27,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 69.63,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 25.34,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 37.29,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 66.25,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 25.96,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 12.56,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 6.92,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 20.68,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -2398,191 +2680,218 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 35.6,
+     "percentile": 34.8,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 24.02,
+     "percentile": 21.11,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 33.09,
+     "percentile": 32.71,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 35.35,
+     "percentile": 34.55,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 30.31,
+     "percentile": 23.32,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 32.96,
+     "percentile": 32.55,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 35.35,
+     "percentile": 34.65,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 18.12,
+     "percentile": 19.59,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 33.0,
+     "percentile": 32.59,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 35.75,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 61.45,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 24.53,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 24.12,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 47.7,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 21.15,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 23.21,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "hard_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 9.94,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 27.5,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -2600,191 +2909,218 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 25.44,
+     "percentile": 25.58,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
-     "percentile": 57.57,
+     "percentile": 55.43,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 21.39,
+     "percentile": 23.86,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 31.89,
+     "percentile": 31.33,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 22.7,
+     "percentile": 23.3,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
-     "percentile": 68.72,
+     "percentile": 66.51,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 26.26,
+     "percentile": 25.74,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 31.24,
+     "percentile": 30.76,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 24.13,
+     "percentile": 24.49,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
-     "percentile": 50.09,
+     "percentile": 50.14,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 15.66,
+     "percentile": 21.63,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 31.63,
+     "percentile": 30.99,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 34.58,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 94.8,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 33.6,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 76.53,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 25.0,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 93.86,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 25.83,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 73.97,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 57.02,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 49.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 76.2,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 35.38,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -2802,191 +3138,218 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 60.27,
+     "percentile": 61.02,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
-     "percentile": 69.02,
+     "percentile": 69.04,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 45.51,
+     "percentile": 52.97,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 45.0,
+     "percentile": 46.15,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 68.01,
+     "percentile": 68.08,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
-     "percentile": 83.92,
+     "percentile": 82.35,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 50.67,
+     "percentile": 56.75,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 47.16,
+     "percentile": 48.35,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 64.61,
+     "percentile": 64.72,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
-     "percentile": 53.62,
+     "percentile": 54.45,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 42.33,
+     "percentile": 49.38,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 45.98,
+     "percentile": 47.01,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 19.43,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 90.99,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 45.6,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 26.88,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 42.86,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 92.71,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 45.9,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 31.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 11.92,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 49.15,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 46.53,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 21.56,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -3004,191 +3367,218 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 49.97,
+     "percentile": 51.65,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
-     "percentile": 65.38,
+     "percentile": 66.78,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 41.78,
+     "percentile": 50.25,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 38.37,
+     "percentile": 40.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 53.16,
+     "percentile": 54.41,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
-     "percentile": 79.06,
+     "percentile": 78.43,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 44.58,
+     "percentile": 53.53,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 39.21,
+     "percentile": 41.05,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 51.13,
+     "percentile": 52.66,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
-     "percentile": 51.72,
+     "percentile": 53.11,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 34.78,
+     "percentile": 44.85,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 38.58,
+     "percentile": 40.41,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 7.76,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 88.2,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 30.94,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 21.4,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 37.15,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 91.04,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 43.68,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 28.65,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 9.02,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 49.12,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 47.87,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 12.46,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -3206,191 +3596,218 @@
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P1_landing_mobility",
-     "percentile": 11.63,
+     "percentile": 14.12,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
-     "percentile": 52.0,
+     "percentile": 51.98,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 13.5,
+     "percentile": 22.85,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
-     "percentile": 24.51,
+     "percentile": 24.61,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
-     "percentile": 10.89,
+     "percentile": 13.36,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
-     "percentile": 63.71,
+     "percentile": 62.77,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 17.66,
+     "percentile": 24.73,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
-     "percentile": 23.87,
+     "percentile": 24.09,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
-     "percentile": 11.22,
+     "percentile": 13.8,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
-     "percentile": 49.4,
+     "percentile": 49.58,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 10.03,
+     "percentile": 20.76,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
-     "percentile": 24.03,
+     "percentile": 24.23,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "scored"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 21.67,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 92.42,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 22.98,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 76.99,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 13.48,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 91.5,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 19.15,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 74.45,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 55.07,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 49.43,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 50.94,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 85.24,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "gate_excluded"
     }
    ]
   },
@@ -3410,189 +3827,216 @@
      "profile_id": "P1_landing_mobility",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P3_habitat_eva_power",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_shackleton_connecting_ridge",
      "profile_id": "P4_geology_regolith",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P1_landing_mobility",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P3_habitat_eva_power",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_malapert_massif",
      "profile_id": "P4_geology_regolith",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P1_landing_mobility",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P2_isru_ice",
      "percentile": 24.52,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P3_habitat_eva_power",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "moon_haworth",
      "profile_id": "P4_geology_regolith",
      "percentile": 0.03,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P1_landing_mobility",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P4_geology_regolith",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_jezero",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P1_landing_mobility",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P4_geology_regolith",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_gale",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P1_landing_mobility",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P2_isru_ice",
-     "percentile": 24.52,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P3_habitat_eva_power",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P4_geology_regolith",
-     "percentile": 0.03,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     },
     {
      "target_id": "mars_arcadia_ap1",
      "profile_id": "P5_astrobiology",
-     "percentile": 38.39,
+     "percentile": 0.0,
      "in_top5": false,
-     "in_top1": false
+     "in_top1": false,
+     "status": "land_filter_excluded"
     }
    ]
   }
