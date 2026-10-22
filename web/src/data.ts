@@ -1,7 +1,8 @@
 import type { FactorsFile, GapsFile, GridManifest, Portfolio, ProfilesFile, TargetsFile, ValidationFile } from './types/contract'
 
-// Real assets live in data/; mock assets (contract-shaped, synthetic) in data/mock/.
-export const DATA_ROOT: string = import.meta.env.VITE_DATA_ROOT ?? 'data/mock/'
+// Real assets live in data/ (the default, from the pipeline); mock assets (contract-shaped, synthetic) in data/mock/
+// (VITE_DATA_ROOT=data/mock/). Everything is fetched at runtime, never bundled.
+export const DATA_ROOT: string = import.meta.env.VITE_DATA_ROOT ?? 'data/'
 export const dataUrl = (p: string) => `${import.meta.env.BASE_URL}${DATA_ROOT}${p}`
 
 export class DataError extends Error {

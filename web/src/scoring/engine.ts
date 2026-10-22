@@ -2,7 +2,7 @@
 // Runs in the scoring Web Worker (src/worker/scorer.worker.ts) for live re-weighting, and in vitest for parity.
 // Every number it produces is computed from the shipped Earth grid + targets.json + profiles.json/factors.json.
 import { ALL_FACTORS, CORE_FACTORS, SECONDARY_FACTORS } from '../types/contract'
-import type { FactorId, FactorsFile, HardFilter, Portfolio, PortfolioVariant, Profile, ProfilesFile, SiteRef, TargetBody, VariantId } from '../types/contract'
+import type { ValidationFile, FactorId, FactorsFile, HardFilter, Portfolio, PortfolioVariant, Profile, ProfilesFile, SiteRef, TargetBody, VariantId } from '../types/contract'
 import { earthRadiusKm, haversineKm, pyRound, weightedPctRank, weightedQuantile } from './area'
 import { FLOOR, flagMatch, greedyPortfolio } from './normalize'
 
@@ -36,7 +36,7 @@ export function prepareEarth(columns: Record<string, ArrayLike<number>>): EarthG
     const row = Math.floor(c / 720)
     lat[i] = 89.75 - 0.5 * row
     lon[i] = -179.75 + 0.5 * (c % 720)
-    areaW[i] = Math.cos((lat[i] * Math.PI) / 180)
+    areaW[i] = Math.cos(lat[i] * (Math.PI / 180)) // np.radians: x · (π/180)
   }
   const cols: Record<string, Float64Array> = {}
   for (const [k, v] of Object.entries(columns)) if (k !== 'cell_id') cols[k] = v instanceof Float64Array ? v : Float64Array.from(v)
@@ -44,7 +44,6 @@ export function prepareEarth(columns: Record<string, ArrayLike<number>>): EarthG
 }
 
 const nan0 = (v: number) => (Number.isNaN(v) ? 0 : v)
-const clip01 = (v: number) => (Number.isNaN(v) ? 0 : v < 0 ? 0 : v > 1 ? 1 : v)
 /** Like clip01 but keeps NaN: a core factor whose Earth input is missing in a cell is dropped for that cell (contract §3.2.6). */
 const clipKeepNaN = (v: number) => (Number.isNaN(v) ? NaN : v < 0 ? 0 : v > 1 ? 1 : v)
 
@@ -60,12 +59,6 @@ export const TARGET_FREE_FACTORS: readonly FactorId[] = ['F7']
 export const targetDropped = (tv: TargetValues, weights: Record<string, number>): FactorId[] =>
   CORE_FACTORS.filter((f) => (weights[f] ?? 0) > 0 && !TARGET_FREE_FACTORS.includes(f) && (tv[f] === null || tv[f] === undefined))
 
-function pct(e: EarthGrid, col: string, higherIsBetter: boolean): Float64Array {
-  const key = `${col}:${higherIsBetter}`
-  if (!e._pct[key]) e._pct[key] = weightedPctRank(e.cols[col], e.areaW, higherIsBetter)
-  return e._pct[key]
-}
-
 export function lithMatrix(f: FactorsFile): number[][] {
   const codes = Object.fromEntries(f.lithology_classes.map((c) => [c.id, c.code]))
   const n = Math.max(...f.lithology_classes.map((c) => c.code)) + 1
@@ -77,95 +70,148 @@ export function lithMatrix(f: FactorsFile): number[][] {
 
 export type TargetValues = Partial<Record<FactorId, number | null>>
 
+/** targets.json → scoring_constants (contract v1.2): Earth clip and F1/F2 range bounds at full precision, computed by the
+ *  pipeline from the shipped (decoded) grid. When absent (mocks), the engine computes the same quantiles itself. */
+export interface ScoringConstants {
+  earth_clip?: Partial<Record<FactorId, { feature: string; p0_5: number; p99_5: number }>>
+  range_norm?: { factors?: Partial<Record<FactorId, { feature: string; p01: number; p99: number; span: number }>> }
+}
+
+const finiteTv = (tv: TargetValues, id: FactorId): number | null => {
+  const v = tv[id]
+  return typeof v === 'number' && Number.isFinite(v) ? v : null
+}
+
 /** {factor: [t_star, gap]} for factors with earth_clip (P0.5 / P99.5 area-weighted land quantiles). */
-export function clipTargets(e: EarthGrid, tv: TargetValues, f: FactorsFile): Partial<Record<FactorId, [number, number]>> {
+export function clipTargets(e: EarthGrid, tv: TargetValues, f: FactorsFile, sc?: ScoringConstants): Partial<Record<FactorId, [number, number]>> {
   const out: Partial<Record<FactorId, [number, number]>> = {}
   for (const fac of f.factors) {
-    const t = tv[fac.id]
-    if (t === null || t === undefined || !fac.earth_clip) continue
-    const [lo, hi] = weightedQuantile(e.cols[fac.feature], e.areaW, [0.005, 0.995])
+    const t = finiteTv(tv, fac.id)
+    if (t === null || !fac.earth_clip) continue
+    const k = sc?.earth_clip?.[fac.id]
+    const [lo, hi] = k ? [k.p0_5, k.p99_5] : weightedQuantile(e.cols[fac.feature], e.areaW, [0.005, 0.995])
+    if (!Number.isFinite(lo) || !Number.isFinite(hi)) { out[fac.id] = [t, 0]; continue }
     const ts = Math.min(Math.max(t, lo), hi)
     out[fac.id] = [ts, Math.abs(t - ts)]
   }
   return out
 }
 
-/** Per-factor similarity arrays s_F in [0, 1] (engine.factor_scores). A core factor with no target value is dropped. */
-export function factorScores(e: EarthGrid, tv: TargetValues, body: TargetBody, f: FactorsFile): Partial<Record<FactorId, Float64Array>> {
-  const fac = Object.fromEntries(f.factors.map((x) => [x.id, x]))
-  const clips = clipTargets(e, tv, f)
-  const has = (id: FactorId) => tv[id] !== null && tv[id] !== undefined
-  const tstar = (id: FactorId) => (clips[id] ? clips[id]![0] : (tv[id] as number))
-  const n = e.n
-  const s: Partial<Record<FactorId, Float64Array>> = {}
-  // core factors keep NaN where the Earth input is missing (dropped per cell in aggregate); secondaries treat it as 0
-  const map = (fn: (i: number) => number) => { const a = new Float64Array(n); for (let i = 0; i < n; i++) a[i] = clipKeepNaN(fn(i)); return a }
-  const mapSec = (fn: (i: number) => number) => { const a = new Float64Array(n); for (let i = 0; i < n; i++) a[i] = clip01(fn(i)); return a }
-  const ratio = (x: number, t: number) => (x + t === 0 ? 1 : 1 - Math.abs(x - t) / (x + t))
-  const c = e.cols
-  if (has('F1')) { const t = tstar('F1'); s.F1 = map((i) => ratio(c.ts_mean_k[i], t)) }
-  if (has('F2')) { const t = tstar('F2'); s.F2 = map((i) => ratio(c.dt_k[i], t)) }
-  if (has('F3')) { const t = tv.F3 as number; s.F3 = map((i) => 1 - Math.abs(c.ti_class[i] - t) / 4) }
-  if (has('F4')) { const t = tv.F4 as number; s.F4 = map((i) => 1 - Math.abs(c.slope_lt5_frac[i] - t)) }
-  if (has('F5')) { const t = tstar('F5'); s.F5 = map((i) => ratio(c.relief_m[i], t)) }
-  if (has('F6')) {
-    const lm = lithMatrix(f)
-    const t = Math.trunc(tv.F6 as number)
-    s.F6 = map((i) => (Number.isNaN(c.lith_class[i]) ? NaN : lm[Math.trunc(c.lith_class[i])]?.[t] ?? 0))
+/** Area-weighted Earth P1 / P99 span of a column (F1/F2 range similarity, contract v1.2). */
+function rangeSpan(e: EarthGrid, col: string, id: FactorId, sc?: ScoringConstants): number {
+  const k = sc?.range_norm?.factors?.[id]
+  if (k) return k.span
+  const key = `range:${col}`
+  if (!e._pct[key]) {
+    const [lo, hi] = weightedQuantile(e.cols[col], e.areaW, [0.01, 0.99])
+    e._pct[key] = Float64Array.of(Number.isFinite(lo) && hi > lo ? hi - lo : 1)
   }
-  // F7 is directional (contract §3.2: s = 1 − P_earth(aridity), drier = better) and needs no target value: every target
-  // is hyper-arid (AI = 0), so it is always scored, even when targets.json leaves F7.value null.
-  { const p = pct(e, 'aridity_index', false); const ai = c.aridity_index; s.F7 = map((i) => (Number.isNaN(ai[i]) ? NaN : p[i])) }
-  if (has('F8')) { const t = tv.F8 as number; s.F8 = map((i) => 1 - Math.abs(c.barren_frac[i] - t)) }
-  if (has('F9')) { const t = tv.F9 as number; s.F9 = map((i) => 1 - Math.abs(c.ice_index[i] - t)) }
-  if (has('F10')) {
+  return e._pct[key][0]
+}
+
+/** Area-weighted percentile in [0, 1]; a missing Earth value stays NaN (engine._pct_rank). */
+function pctNaN(e: EarthGrid, col: string, higherIsBetter: boolean): Float64Array {
+  const key = `nan:${col}:${higherIsBetter}`
+  if (!e._pct[key]) {
+    const x = e.cols[col]
+    const p = weightedPctRank(x, e.areaW, higherIsBetter)
+    const out = new Float64Array(e.n)
+    for (let i = 0; i < e.n; i++) out[i] = x && Number.isFinite(x[i]) ? p[i] : NaN
+    e._pct[key] = out
+  }
+  return e._pct[key]
+}
+
+/**
+ * Per-factor similarity arrays s_F in [0, 1] (pipeline score/engine.py factor_scores, contract v1.2). NaN = missing Earth
+ * input (dropped per cell in aggregate). A target-dependent factor with no target value is left out (dropped for the
+ * target); F7, F11 and F12 use Earth values only and are always scored.
+ */
+export function factorScores(e: EarthGrid, tv: TargetValues, body: TargetBody, f: FactorsFile, sc?: ScoringConstants): Partial<Record<FactorId, Float64Array>> {
+  const fac = Object.fromEntries(f.factors.map((x) => [x.id, x]))
+  const clips = clipTargets(e, tv, f, sc)
+  const t = (id: FactorId) => finiteTv(tv, id)
+  const tstar = (id: FactorId) => (clips[id] ? clips[id]![0] : (t(id) as number))
+  const n = e.n
+  const nanCol = new Float64Array(n).fill(NaN)
+  const col = (k: string) => e.cols[k] ?? nanCol
+  const s: Partial<Record<FactorId, Float64Array>> = {}
+  // np.clip(v, 0, 1) keeps NaN
+  const map = (fn: (i: number) => number) => { const a = new Float64Array(n); for (let i = 0; i < n; i++) a[i] = clipKeepNaN(fn(i)); return a }
+  const ratio = (x: number, tt: number) => (x + tt === 0 ? 1 : 1 - Math.abs(x - tt) / (x + tt))
+  for (const [id, k] of [['F1', 'ts_mean_k'], ['F2', 'dt_k']] as const) {
+    if (t(id) === null) continue
+    const x = col(k), ts = tstar(id), span = rangeSpan(e, k, id, sc)
+    s[id] = map((i) => Math.max(0, 1 - Math.abs(x[i] - ts) / span))
+  }
+  if (t('F5') !== null) { const x = col('relief_m'), ts = tstar('F5'); s.F5 = map((i) => ratio(x[i], ts)) }
+  if (t('F3') !== null) { const x = col('ti_class'), tt = t('F3')!; s.F3 = map((i) => 1 - Math.abs(x[i] - tt) / 4) }
+  if (t('F4') !== null) { const x = col('slope_lt5_frac'), tt = t('F4')!; s.F4 = map((i) => 1 - Math.abs(x[i] - tt)) }
+  const t6 = t('F6')
+  const lm = lithMatrix(f)
+  if (t6 !== null && Number.isInteger(t6) && t6 >= 0 && t6 < lm.length) {
+    const x = col('lith_class')
+    s.F6 = map((i) => (Number.isFinite(x[i]) && x[i] >= 0 && x[i] < lm.length ? lm[Math.trunc(x[i])][t6] : NaN))
+  }
+  // F7 is directional (s = 1 − P_earth(aridity), drier = better) and needs no target value
+  { const p = pctNaN(e, 'aridity_index', false); s.F7 = map((i) => p[i]) }
+  if (t('F8') !== null) { const x = col('barren_frac'), tt = t('F8')!; s.F8 = map((i) => 1 - Math.abs(x[i] - tt)) }
+  if (t('F9') !== null) { const x = col('ice_index'), tt = t('F9')!; s.F9 = map((i) => 1 - Math.abs(x[i] - tt)) }
+  if (t('F10') !== null) {
     const tau = Number(fac.F10.params?.tau)
-    const t = tstar('F10')
-    s.F10 = map((i) => Math.exp(-0.5 * ((c.noon_sun_elev_deg[i] - t) / tau) ** 2))
+    const x = col('noon_sun_elev_deg'), ts = tstar('F10')
+    s.F10 = map((i) => Math.exp(-0.5 * ((x[i] - ts) / tau) ** 2))
   }
   const cap11 = Number(fac.F11.params?.cap?.[body] ?? 0)
-  const pm = pct(e, 'column_mass_gcm2', false)
-  const pr = pct(e, 'cutoff_rigidity_gv', false)
-  s.F11 = mapSec((i) => cap11 * (0.5 * (pm[i] + pr[i])))
+  const pm = pctNaN(e, 'column_mass_gcm2', false)
+  const pr = pctNaN(e, 'cutoff_rigidity_gv', false)
+  s.F11 = map((i) => cap11 * (0.5 * (pm[i] + pr[i])))
   const cap12 = Number(fac.F12.params?.cap?.[body] ?? 0)
-  const pu = pct(e, 'uv_index', true)
-  s.F12 = mapSec((i) => cap12 * pu[i])
-  const tf = has('F13') ? Math.trunc(tv.F13 as number) : 0
-  s.F13 = mapSec((i) => flagMatch(Math.trunc(nan0(c.geomorph_flags[i])), tf))
+  const pu = pctNaN(e, 'uv_index', true)
+  s.F12 = map((i) => cap12 * pu[i])
+  const t13 = t('F13')
+  if (t13 !== null) {
+    const tf = Math.trunc(t13) & 0xff
+    const g = col('geomorph_flags')
+    s.F13 = map((i) => (Number.isFinite(g[i]) ? flagMatch(Math.trunc(g[i]) & 0xff, tf) : NaN))
+  }
   return s
 }
 
 /**
- * (S_core, S) per cell (engine.aggregate). Factors dropped for the target are left out and the weights renormalised.
- * Missing Earth data (contract §3.2.6): a core factor that is NaN in a cell is dropped for that cell and the weights are
- * renormalised over the factors present; if those carry less than `minFrac` of the active weight the cell is
- * `insufficient_data` and gets NaN (no score; excluded from ranking, thresholds and the candidate pool by `run`).
- * `coverage` is the present share of the active weight per cell (1 when nothing is missing).
+ * Per cell (pipeline score_cells): S_core = exp(Σ w·ln max(s, FLOOR) / Σ w) over the active factors present in the cell,
+ * S = S_core × (0.9 + 0.1 × mean of the secondary factors present). Factors dropped for the target are left out; a NaN
+ * factor is dropped for that cell. Cells whose present factors carry less than `minFrac` of the active weight are
+ * insufficient_data (NaN). `coverage` is the present share of the active weight.
  */
 export function aggregate(s: Partial<Record<FactorId, Float64Array>>, weights: Record<string, number>, n: number, minFrac = MIN_ACTIVE_WEIGHT_FRAC):
   { core: Float64Array; total: Float64Array; coverage: Float64Array } {
-  const active = Object.entries(weights).filter(([f, w]) => w > 0 && s[f as FactorId]) as [FactorId, number][]
-  let wsum = 0
-  for (const [, w] of active) wsum += w
   const core = new Float64Array(n)
   const total = new Float64Array(n)
-  const coverage = new Float64Array(n)
+  const coverage = new Float64Array(n).fill(1)
+  let anyW = 0
+  for (const w of Object.values(weights)) if (w > 0) anyW += w
+  if (anyW <= 0) return { core, total, coverage }
+  const active = Object.entries(weights).filter(([f, w]) => w > 0 && s[f as FactorId]).map(([f, w]) => [s[f as FactorId]!, w] as const)
+  let tot = 0
+  for (const [, w] of active) tot += w
+  const sec = SECONDARY_FACTORS.map((f) => s[f]).filter((a): a is Float64Array => !!a)
   for (let i = 0; i < n; i++) {
-    let log = 0
-    let wp = 0
-    for (const [f, w] of active) {
-      const v = s[f]![i]
+    let num = 0
+    let den = 0
+    for (const [a, w] of active) {
+      const v = a[i]
       if (Number.isNaN(v)) continue
-      wp += w
-      log += (w / wsum) * Math.log(Math.max(v, FLOOR))
+      num += w * Math.log(Math.max(v, FLOOR))
+      den += w
     }
-    coverage[i] = wsum > 0 ? wp / wsum : 0
-    if (wsum > 0 && wp < wsum && wp < minFrac * wsum - 1e-12) { core[i] = NaN; total[i] = NaN; continue }
-    // all present: exactly the reference arithmetic; some missing: renormalise over the present weight
-    core[i] = wsum > 0 ? Math.exp(wp === wsum ? log : (log * wsum) / wp) : 0
-    let sec = 0
-    for (const f of SECONDARY_FACTORS) sec += s[f]![i]
-    total[i] = core[i] * (0.9 + 0.1 * (sec / 3))
+    coverage[i] = tot > 0 ? den / tot : 0
+    if (!(coverage[i] >= minFrac - 1e-12 && den > 0)) { core[i] = NaN; total[i] = NaN; continue }
+    core[i] = Math.exp(num / den)
+    let ss = 0
+    let ns = 0
+    for (const a of sec) { const v = a[i]; if (!Number.isNaN(v)) { ss += v; ns++ } }
+    total[i] = core[i] * (0.9 + 0.1 * (ns > 0 ? ss / ns : 0))
   }
   return { core, total, coverage }
 }
@@ -197,6 +243,43 @@ export function filterCodes(e: EarthGrid, filters: HardFilter[]): { code: Uint8A
   return { code, unknown: [...unknown] }
 }
 
+/** Body candidate gate (contract v1.2 rule 8; profiles.json → defaults.candidate_gates.{body}). Clause thresholds and the
+ *  combining rule ("A || B || C || D") come from the data; missing aridity fails A and the AI part of D, other missing
+ *  inputs read as 0 (score/gates.py). Bodies without a gate pass everywhere. */
+export function candidateGate(e: EarthGrid, body: TargetBody, profiles: ProfilesFile): { pass: Uint8Array; unknown: string[] } {
+  const pass = new Uint8Array(e.n).fill(1)
+  const g = (profiles.defaults as { candidate_gates?: Record<string, Record<string, unknown>> }).candidate_gates?.[body]
+  if (!g) return { pass, unknown: [] }
+  const num = (k: string) => Number(g[k])
+  const col = (k: string, fill: number) => { const a = e.cols[k]; return (i: number) => (a && !Number.isNaN(a[i]) ? a[i] : fill) }
+  const ai = col('aridity_index', 9), f8 = col('barren_frac', 0), pf = col('permafrost_frac', 0), mo = col('moss_lichen_frac', 0), fl = col('geomorph_flags', 0)
+  const clauses: Record<string, (i: number) => boolean> = {
+    A: (i) => ai(i) <= num('ai_max'),
+    B: (i) => f8(i) >= num('f8_min'),
+    C: (i) => pf(i) >= num('pf_min') && f8(i) + mo(i) >= num('f8_moss_min'),
+    D: (i) => (Math.trunc(fl(i)) & num('d_flag_mask')) !== 0 && (ai(i) <= num('d_ai_max') || f8(i) >= num('d_f8_min')),
+  }
+  // rule: clause letters joined by || (any) and && (all), e.g. "A || B || C || D"
+  const rule = String(g.rule ?? Object.keys(clauses).join(' || '))
+  const terms = rule.split('||').map((t) => t.split('&&').map((x) => x.trim()))
+  const unknown = [...new Set(terms.flat().filter((x) => !clauses[x]))]
+  if (unknown.length) return { pass, unknown: [`${String(g.id ?? body)}: ${unknown.join(', ')}`] }
+  for (let i = 0; i < e.n; i++) pass[i] = terms.some((t) => t.every((x) => clauses[x](i))) ? 1 : 0
+  return { pass, unknown: [] }
+}
+
+/** Known analog cells (export/real.py): positives at their evaluation cell (coastal sites snapped to land, v1.2);
+ *  the first site listed for a cell names it. */
+export function knownCellsFrom(v: ValidationFile): Map<number, string> {
+  const m = new Map<number, string>()
+  for (const s of v.sites) {
+    if (s.kind !== 'positive') continue
+    const c = s.eval_cell_id ?? s.cell_id
+    if (c !== null && c !== undefined && !m.has(c)) m.set(c, s.name)
+  }
+  return m
+}
+
 export interface RunInput {
   earth: EarthGrid
   s: Partial<Record<FactorId, Float64Array>>
@@ -210,6 +293,8 @@ export interface RunInput {
   /** Build the candidate pool and the three variants (default true). The worker skips it when the shipped default-weight
    *  portfolio is used, and only needs the heat grid and thresholds. */
   withPortfolio?: boolean
+  /** target body (defaults to the target id prefix, as export/real.py does) */
+  body?: TargetBody
 }
 
 export interface RunOutput {
@@ -242,23 +327,26 @@ export function run(inp: RunInput): RunOutput {
   const d = profiles.defaults
   const theta = profile.theta ?? d.theta
   const { core, total, coverage } = aggregate(s, weights, e.n, minActiveFrac(profiles))
-  const { code, unknown } = filterCodes(e, activeFilters(profiles, profile))
-  // export/real.py: valid = finite S; filtered cells count as S = 0; insufficient_data cells are left out of every
-  // percentile, threshold and the pool (NaN in the ranking array)
+  const filters = activeFilters(profiles, profile)
+  const { code, unknown } = filterCodes(e, filters)
+  // Body candidate gate (contract v1.2 rule 8, Mars): checked after the hard filters, filterCode = filters.length + 1
+  const body = inp.body ?? (inp.targetId.split('_')[0] as TargetBody)
+  const gate = candidateGate(e, body, profiles)
+  if (gate.unknown.length) unknown.push(...gate.unknown)
+  // export/real.py run_target: mask = hard filters ∧ gate; valid = enough data; the ranking population is valid ∧ gate
+  // (gate failures leave the ranking; hard-filtered cells stay in it with S = 0); insufficient cells are NaN everywhere.
   const valid = new Uint8Array(e.n)
   const totalF = new Float64Array(e.n)
   const tfRank = new Float64Array(e.n)
-  const mx: number[] = []
-  const mw: number[] = []
   let nPass = 0
   let nInsufficient = 0
   for (let i = 0; i < e.n; i++) {
+    if (code[i] === 0 && !gate.pass[i]) code[i] = filters.length + 1
     if (!Number.isFinite(total[i])) { totalF[i] = NaN; tfRank[i] = NaN; nInsufficient++; continue }
     valid[i] = 1
-    if (code[i] === 0) { totalF[i] = total[i]; nPass++; if (total[i] > 0) { mx.push(total[i]); mw.push(e.areaW[i]) } }
-    tfRank[i] = totalF[i]
+    if (code[i] === 0) { totalF[i] = total[i]; nPass++ }
+    tfRank[i] = gate.pass[i] ? totalF[i] : NaN
   }
-  const median = mx.length ? weightedQuantile(mx, mw, [0.5])[0] : 0
   const pctR = weightedPctRank(tfRank, e.areaW, true)
   const pct = new Float64Array(e.n)
   for (let i = 0; i < e.n; i++) pct[i] = 100 * pctR[i]
@@ -267,19 +355,21 @@ export function run(inp: RunInput): RunOutput {
   const base = { thresholds, total: totalF, pct, code, valid, coverage, unknownFilters: unknown, nPass, nInsufficient }
   if (inp.withPortfolio === false) return { portfolio: null, ...base }
 
-  // candidate pool (export/real.py _pool): top-N per weighted factor among scorable cells passing the filters with
-  // 0 < S >= area-weighted median, then NMS
-  const ok: number[] = []
-  for (let i = 0; i < e.n; i++) if (code[i] === 0 && valid[i] && totalF[i] > 0 && totalF[i] >= median) ok.push(i)
+  // candidate pool (engine.candidate_indices + export/real.py _pool): eligible = passes filters and gate with enough
+  // data and S >= the area-weighted median S of eligible cells; per active factor the top N by a stable sort on
+  // s_F desc, S desc, cell index asc (a missing s_F never ranks); pool order S desc, cell index asc; then NMS.
+  const elig: number[] = []
+  const mx: number[] = []
+  const mw: number[] = []
+  for (let i = 0; i < e.n; i++) if (code[i] === 0 && valid[i]) { elig.push(i); mx.push(total[i]); mw.push(e.areaW[i]) }
+  const median = mx.length ? weightedQuantile(mx, mw, [0.5])[0] : 0
+  const ok = elig.filter((i) => total[i] >= median)
   const cand = new Set<number>()
   for (const [f, w] of Object.entries(weights)) {
     if (w <= 0) continue
     const sf = s[f as FactorId]
     if (!sf) continue // factor dropped for this target (contract §3.2.5)
-    // Ties are common (ordinal F3, categorical F6, F8 capped at 1.0). numpy's default argsort is unstable, so the Python
-    // reference picks an arbitrary subset of tied cells. We break ties deterministically: higher S first, then cell order.
-    const sv = (i: number) => (Number.isNaN(sf[i]) ? 0 : sf[i]) // np.nan_to_num in the reference sort key
-    const order = [...ok].sort((a, b) => sv(b) - sv(a) || totalF[b] - totalF[a] || a - b)
+    const order = ok.filter((i) => Number.isFinite(sf[i])).sort((a, b) => sf[b] - sf[a] || totalF[b] - totalF[a] || a - b)
     for (const i of order.slice(0, d.candidates_top_n_per_factor)) cand.add(i)
   }
   const pool = [...cand].sort((a, b) => totalF[b] - totalF[a] || a - b)

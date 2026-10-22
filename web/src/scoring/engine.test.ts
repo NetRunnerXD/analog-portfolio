@@ -5,12 +5,12 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { decodeGrid } from '../data'
 import type { FactorId, FactorsFile, GridManifest, Portfolio, ProfilesFile, SiteRef, TargetsFile, ValidationFile } from '../types/contract'
-import { buildVariants, clipTargets, factorScores, prepareEarth, run, type TargetValues } from './engine'
+import { knownCellsFrom, buildVariants, clipTargets, factorScores, prepareEarth, run, type ScoringConstants, type TargetValues } from './engine'
 import { gridContinentLookup } from './continent'
 
-// CI runs against the shipped mocks. Set PARITY_DATA to another data root (e.g. a read-only export of PR #11's
+// CI runs against the shipped real export (web/public/data, from the pipeline). Set PARITY_DATA to another data root (e.g. a read-only export of PR #11's
 // web/public/data) to check parity against a real pipeline run locally.
-const MOCK = process.env.PARITY_DATA ? resolve(process.env.PARITY_DATA) : resolve(__dirname, '../../public/data/mock')
+const MOCK = process.env.PARITY_DATA ? resolve(process.env.PARITY_DATA) : resolve(__dirname, '../../public/data')
 const json = <T,>(p: string): T => JSON.parse(readFileSync(resolve(MOCK, p), 'utf8')) as T
 const manifest = json<GridManifest>('earth_features.json')
 const bin = readFileSync(resolve(MOCK, manifest.binary))
@@ -21,10 +21,9 @@ const gridContinent = gridContinentLookup(manifest, columns)
 const factors = json<FactorsFile>('factors.json')
 const profiles = json<ProfilesFile>('profiles.json')
 const targets = json<TargetsFile>('targets.json')
+const sc = (targets as { scoring_constants?: ScoringConstants }).scoring_constants
 const validation = json<ValidationFile>('validation.json')
-const known = new Map<number, string>()
-const seen = new Set<number>()
-for (const v of validation.sites) { if (seen.has(v.cell_id)) continue; seen.add(v.cell_id); if (v.kind === 'positive') known.set(v.cell_id, v.name) }
+const known = knownCellsFrom(validation)
 
 // Pre-v1.1.1 export/mock.py mock_continent() boxes: only used if the grid has no continent column.
 function mockContinent(lat: number, lon: number): string {
@@ -50,9 +49,9 @@ describe('engine parity with the Python reference (mock grid, default weights)',
   it('targets.json t_star / gap match clipTargets', () => {
     for (const t of targets.targets) {
       if (!t.features?.F1?.value) continue
-      const clips = clipTargets(earth, tvOf(t.id), factors)
+      const clips = clipTargets(earth, tvOf(t.id), factors, sc)
       for (const [f, [ts, gap]] of Object.entries(clips) as [FactorId, [number, number]][]) {
-        close(ts, t.features[f]!.t_star!, 5.1e-5, `${t.id} ${f} t_star`) // exports round to 4 dp
+        close(ts, t.features[f]!.t_star!, 1e-12, `${t.id} ${f} t_star`) // v1.2: exported at full precision
         close(gap, t.features[f]!.gap!, 6e-4, `${t.id} ${f} gap`)
       }
     }
@@ -64,8 +63,8 @@ describe('engine parity with the Python reference (mock grid, default weights)',
       const target = targets.targets.find((t) => t.id === p.target_id)!
       const profile = profiles.profiles.find((x) => x.id === p.profile_id)!
       const tv = tvOf(target.id)
-      const s = factorScores(earth, tv, target.body, factors)
-      const out = run({ earth, s, clips: clipTargets(earth, tv, factors), targetId: target.id, profile, profiles, weights: profile.weights,
+      const s = factorScores(earth, tv, target.body, factors, sc)
+      const out = run({ earth, s, clips: clipTargets(earth, tv, factors, sc), targetId: target.id, profile, profiles, weights: profile.weights,
         knownCells: known, continentOf: (c, la, lo) => (gridContinent ? gridContinent(c) : mockContinent(la, lo)) })
       // per-site factor scores, S and percentile at every cell the reference exported
       const idx = new Map<number, number>()
@@ -75,18 +74,20 @@ describe('engine parity with the Python reference (mock grid, default weights)',
         const i = idx.get(r.cell_id)!
         for (const [f, v] of Object.entries(r.factor_scores)) {
           // the real exporter writes 0.0 for a factor dropped for the target (no target value); the engine leaves it out
-          if (!s[f as FactorId]) { expect(v, `${r.site_id} ${f} dropped`).toBe(0); continue }
+          if (!s[f as FactorId] || v === null) { expect(v === null || v === 0, `${r.site_id} ${f} dropped/missing`).toBe(true); if (s[f as FactorId]) expect(Number.isNaN(s[f as FactorId]![i]), `${r.site_id} ${f} NaN`).toBe(true); continue }
           close(s[f as FactorId]![i], v as number, 5.1e-5, `${r.site_id} ${f}`)
         }
         close(out.total[i], r.score, 5.1e-5, `${r.site_id} S`)
         close(out.pct[i], r.earth_percentile!, 5.1e-3, `${r.site_id} pct`)
+        const dc = (r as { data_coverage?: number }).data_coverage
+        if (dc !== undefined) close(out.coverage[i], dc, 5.1e-5, `${r.site_id} data_coverage`)
       }
-      for (const k of ['median', 'top5', 'top1'] as const) close(out.portfolio.earth_thresholds![k], p.earth_thresholds![k], 5.1e-5, k) // exports round to 4 dp
-      expect(out.portfolio.universe).toEqual(p.universe)
-      expect(out.portfolio.uncoverable).toEqual(p.uncoverable)
+      for (const k of ['median', 'top5', 'top1'] as const) close(out.portfolio!.earth_thresholds![k], p.earth_thresholds![k], 5.1e-5, k) // exports round to 4 dp
+      expect(out.portfolio!.universe).toEqual(p.universe)
+      expect(out.portfolio!.uncoverable).toEqual(p.uncoverable)
       // Variant invariants (contract v1.1 §4.1) on the JS output
       const theta = profile.theta
-      for (const v of out.portfolio.variants) {
+      for (const v of out.portfolio!.variants) {
         expect(v.sites.length).toBeLessThanOrEqual(profiles.defaults.portfolio_max_sites)
         for (const site of v.sites) {
           expect(site.covers).toEqual((Object.keys(profile.weights) as FactorId[]).filter((f) => profile.weights[f] > 0 && (site.factor_scores[f] ?? 0) >= theta))
@@ -112,15 +113,15 @@ describe('engine parity with the Python reference (mock grid, default weights)',
       const target = targets.targets.find((t) => t.id === p.target_id)!
       const profile = profiles.profiles.find((x) => x.id === p.profile_id)!
       const tv = tvOf(target.id)
-      const out = run({ earth, s: factorScores(earth, tv, target.body, factors), clips: clipTargets(earth, tv, factors), targetId: target.id, profile, profiles,
+      const out = run({ earth, s: factorScores(earth, tv, target.body, factors, sc), clips: clipTargets(earth, tv, factors, sc), targetId: target.id, profile, profiles,
         weights: profile.weights, knownCells: known, continentOf: (c, la, lo) => (gridContinent ? gridContinent(c) : mockContinent(la, lo)) })
-      expect(out.portfolio.top_cells!.map((x) => x.cell_id), `${file} top_cells`).toEqual(p.top_cells!.map((x) => x.cell_id))
+      expect(out.portfolio!.top_cells!.map((x) => x.cell_id), `${file} top_cells`).toEqual(p.top_cells!.map((x) => x.cell_id))
       for (const v of p.variants) {
-        const mine = out.portfolio.variants.find((x) => x.id === v.id)!
+        const mine = out.portfolio!.variants.find((x) => x.id === v.id)!
         expect(mine.sites.map((x) => x.cell_id), `${file} ${v.id}`).toEqual(v.sites.map((x) => x.cell_id))
       }
     }
-  })
+  }, 600_000)
 })
 
 // Spec v0.3.1: "Easiest to reach" is a hard filter (travel_time_min <= 360) applied BEFORE set cover, also for custom weights.
@@ -148,10 +149,10 @@ describe('easiest_to_reach: <= 6 h hard filter before set cover', () => {
     const profile = profiles.profiles[0]
     const weights = { F1: 10, F2: 10, F3: 30, F4: 0, F5: 20, F6: 10, F7: 10, F8: 0, F9: 10, F10: 0 } as Record<string, number>
     const tv = tvOf(t.id)
-    const out = run({ earth, s: factorScores(earth, tv, t.body, factors), clips: clipTargets(earth, tv, factors), targetId: t.id, profile, profiles, weights,
+    const out = run({ earth, s: factorScores(earth, tv, t.body, factors, sc), clips: clipTargets(earth, tv, factors, sc), targetId: t.id, profile, profiles, weights,
       knownCells: known, continentOf: (c, la, lo) => (gridContinent ? gridContinent(c) : mockContinent(la, lo)) })
-    const bm = out.portfolio.variants.find((v) => v.id === 'best_match')!
-    const ez = out.portfolio.variants.find((v) => v.id === 'easiest_to_reach')!
+    const bm = out.portfolio!.variants.find((v) => v.id === 'best_match')!
+    const ez = out.portfolio!.variants.find((v) => v.id === 'easiest_to_reach')!
     expect(ez.pool_size).toBeLessThanOrEqual(bm.pool_size)
     ez.sites.forEach((x) => expect(x.logistics!.travel_time_min!).toBeLessThanOrEqual(360))
   })

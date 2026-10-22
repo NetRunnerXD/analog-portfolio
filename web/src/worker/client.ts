@@ -1,3 +1,4 @@
+import type { ScoringConstants } from '../scoring/engine'
 // Main-thread wrapper around the scoring worker. One worker per app; requests resolve by reqId.
 import type { FactorsFile, GridManifest, ProfilesFile } from '../types/contract'
 import type { CellDetail, FromWorker, ScoreMsg, ScoredMsg, ToWorker } from './protocol'
@@ -11,7 +12,7 @@ export class ScorerClient {
   private readyP: Promise<number>
   onCrash?: (msg: string) => void
 
-  constructor(init: { manifest: GridManifest; buffer: ArrayBuffer; factors: FactorsFile; profiles: ProfilesFile; knownCells: [number, string][] }) {
+  constructor(init: { manifest: GridManifest; buffer: ArrayBuffer; factors: FactorsFile; profiles: ProfilesFile; knownCells: [number, string][]; constants?: ScoringConstants }) {
     this.w = new Worker(new URL('./scorer.worker.ts', import.meta.url), { type: 'module', name: 'scorer' })
     this.readyP = new Promise((resolve, reject) => {
       const onMsg = (ev: MessageEvent<FromWorker>) => {

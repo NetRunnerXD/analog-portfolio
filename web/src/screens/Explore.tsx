@@ -211,7 +211,10 @@ export default function Explore(p: Props) {
     return out
   }, [showPortfolio, vSites, portfolio, site, layers, knownSites, target.id, profile.id, custom])
 
-  const filters = useMemo(() => [...p.profiles.global_hard_filters, ...profile.hard_filters], [p.profiles, profile])
+  // the body's candidate gate (contract v1.2, Mars) is checked after the hard filters: filterCode = filters.length + 1
+  const gate = p.profiles.defaults.candidate_gates?.[target.body]
+  const filters = useMemo(() => [...p.profiles.global_hard_filters, ...profile.hard_filters,
+    ...(gate ? [{ id: gate.id, rule: gate.rule, reason: gate.ui_tooltip ?? gate.id, ui_short: gate.ui_short, ui_tooltip: gate.ui_tooltip }] : [])], [p.profiles, profile, gate])
   const minPct = Math.round(minActiveFrac(p.profiles) * 100)
   const filterText = useCallback((code: number) => {
     if (code === INSUFFICIENT_CODE) return `Not enough data to score (under ${minPct}% of what counts has Earth data here)`
@@ -325,7 +328,7 @@ export default function Explore(p: Props) {
                   onClick={() => setSheet((s) => (s === 'peek' ? 'half' : s === 'half' ? 'full' : 'peek'))}><span aria-hidden="true" /></button>
               )}
               {tabs}
-              <div id="tabpanel" role="tabpanel" aria-labelledby={tab === 'results' ? 'tab-results' : 'tab-gap'}>{tab === 'results' ? results : gapPanel}</div>
+              <div id="tabpanel" key={tab} className="tab-scroll" tabIndex={0} role="tabpanel" aria-labelledby={tab === 'results' ? 'tab-results' : 'tab-gap'}>{tab === 'results' ? results : gapPanel}</div>
             </aside>
           )}
         </>
