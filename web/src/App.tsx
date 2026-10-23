@@ -1,136 +1,144 @@
-import { useEffect, useMemo, useState } from 'react'
-import MapView from './components/MapView'
-import { DATA_ROOT, loadFactors, loadGaps, loadPortfolio, loadProfiles, loadTargets } from './data'
-import type { FactorsFile, GapsFile, Portfolio, ProfilesFile, SiteRef, Target } from './types/contract'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { DEFAULT_PURPOSE, DEFAULT_TARGET } from './copy'
+import { fetchGridRaw, loadFactors, loadGaps, loadProfiles, loadTargets, loadValidation } from './data'
+import { purposeName, targetShort } from './lib/format'
+import { readUrl, writeUrl, type UrlState } from './lib/url'
+import type { FactorsFile, GapsFile, ProfilesFile, TargetsFile, ValidationFile } from './types/contract'
+import { ScorerClient } from './worker/client'
+import { knownCellsFrom } from './scoring/engine'
+import Picker from './screens/Picker'
+import { ErrorState, Logo } from './components/ui'
 
-type Variant = Portfolio['variants'][number]['id']
+// Explore pulls in OpenLayers; Stub covers later screens. Both are split out of the entry chunk (a twin viewer route can follow the same pattern).
+const Explore = lazy(() => import('./screens/Explore'))
+const Stub = lazy(() => import('./screens/Stub'))
+
+interface Data { targets: TargetsFile; profiles: ProfilesFile; factors: FactorsFile; gaps: GapsFile; validation: ValidationFile }
 
 export default function App() {
-  const [targets, setTargets] = useState<Target[]>([])
-  const [profiles, setProfiles] = useState<ProfilesFile | null>(null)
-  const [factors, setFactors] = useState<FactorsFile | null>(null)
-  const [gaps, setGaps] = useState<GapsFile | null>(null)
-  const [targetId, setTargetId] = useState('moon_shackleton_connecting_ridge')
-  const [profileId, setProfileId] = useState('P3_habitat_eva_power')
-  const [variant, setVariant] = useState<Variant>('fidelity')
-  const [portfolio, setPortfolio] = useState<Portfolio | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [selected, setSelected] = useState<SiteRef | null>(null)
+  const [data, setData] = useState<Data | null>(null)
+  const [loadErr, setLoadErr] = useState<string | null>(null)
+  const [nonce, setNonce] = useState(0)
+  const [url, setUrl] = useState<UrlState>(readUrl)
+  const urlRef = useRef(url)
 
   useEffect(() => {
-    Promise.all([loadTargets(), loadProfiles(), loadFactors(), loadGaps()])
-      .then(([t, p, f, g]) => { setTargets(t.targets); setProfiles(p); setFactors(f); setGaps(g) })
-      .catch((e: Error) => setError(e.message))
+    let live = true
+    Promise.all([loadTargets(), loadProfiles(), loadFactors(), loadGaps(), loadValidation()])
+      .then(([targets, profiles, factors, gaps, validation]) => live && setData({ targets, profiles, factors, gaps, validation }))
+      .catch((e: unknown) => live && setLoadErr(String(e instanceof Error ? e.message : e)))
+    return () => { live = false }
+  }, [nonce])
+
+  /* scorer worker: decode the Earth grid once */
+  const [scorer, setScorer] = useState<ScorerClient | null>(null)
+  const [scorerError, setScorerError] = useState<string | null>(null)
+  const [nCells, setNCells] = useState<number | null>(null)
+  const [scorerNonce, setScorerNonce] = useState(0)
+  useEffect(() => {
+    if (!data) return
+    let live = true
+    let client: ScorerClient | null = null
+    fetchGridRaw('earth_features.json')
+      .then(({ manifest, buffer }) => {
+        if (!live) return
+        const knownCells: [number, string][] = [...knownCellsFrom(data.validation)]
+        client = new ScorerClient({ manifest, buffer, factors: data.factors, profiles: data.profiles, knownCells, constants: data.targets.scoring_constants })
+        client.onCrash = (m) => live && setScorerError(m)
+        return client.ready().then((n) => { if (live) { setNCells(n); setScorer(client) } })
+      })
+      .catch((e: unknown) => live && setScorerError(String(e instanceof Error ? e.message : e)))
+    return () => { live = false; client?.terminate(); setScorer(null) }
+  }, [data, scorerNonce])
+
+  /* URL state */
+  const update = useCallback((patch: Partial<UrlState>, replace = false) => {
+    const next = { ...urlRef.current, ...patch }
+    urlRef.current = next
+    setUrl(next)
+    writeUrl(next, replace)
+  }, [])
+  useEffect(() => {
+    const on = () => { const u = readUrl(); urlRef.current = u; setUrl(u) }
+    window.addEventListener('popstate', on)
+    return () => window.removeEventListener('popstate', on)
   }, [])
 
-  const target = targets.find((t) => t.id === targetId)
-  const profile = profiles?.profiles.find((p) => p.id === profileId)
-  const profileDisabled = !!(target && profile && !profile.bodies.includes(target.body))
+  const targets = useMemo(() => data?.targets.targets ?? [], [data])
+  const target = targets.find((t) => t.id === url.t) ?? targets.find((t) => t.id === DEFAULT_TARGET) ?? targets[0]
+  const profileOk = (id?: string) => data?.profiles.profiles.find((p) => p.id === id && target && p.bodies.includes(target.body))
+  const profile = profileOk(url.p) ?? profileOk(DEFAULT_PURPOSE) ?? data?.profiles.profiles.find((p) => target && p.bodies.includes(target.body))
+
+  const setTarget = (id: string) => {
+    const t = targets.find((x) => x.id === id)
+    const keepP = t && data?.profiles.profiles.find((p) => p.id === profile?.id)?.bodies.includes(t.body)
+    update({ t: id, p: keepP ? profile?.id : DEFAULT_PURPOSE, site: undefined }, url.view === 'picker')
+  }
+  const setPurpose = (id: string) => update({ p: id, site: undefined }, url.view === 'picker')
+
+  const [weightsReq, setWeightsReq] = useState(0)
+  const [weightsSeen, setWeightsSeen] = useState(0)
 
   useEffect(() => {
-    setPortfolio(null)
-    setSelected(null)
-    if (!target || profileDisabled) return
-    loadPortfolio(targetId, profileId)
-      .then((p) => { setPortfolio(p); setError(null) })
-      .catch(() => setError(`No portfolio yet for ${targetId} × ${profileId}${DATA_ROOT.includes('mock') ? ' (mock data covers 6 targets)' : ''}.`))
-  }, [targetId, profileId, target, profileDisabled])
+    const base = 'Analog Portfolio · Earth places to rehearse the Moon and Mars'
+    document.title = url.view === 'explore' && target && profile ? `${targetShort(target)} · ${purposeName(profile)} · Analog Portfolio` : base
+  }, [url.view, target, profile])
 
-  const factorName = useMemo(() => Object.fromEntries((factors?.factors ?? []).map((f) => [f.id, f.ui_label ?? f.name])), [factors])
-  const fmt = (v: unknown) => (v === null || v === undefined ? 'n/a' : Array.isArray(v) ? v.join('–') : String(v))
-  const sites = portfolio?.variants.find((v) => v.id === variant)?.sites ?? []
+  const body = url.view === 'explore' ? target?.body : undefined
+  const goHome = () => update({ view: 'picker', site: undefined, step: 'map' })
 
   return (
-    <div className="app">
-      <header>
-        <h1>Analog Portfolio</h1>
-        <p className="tagline">No place on Earth is the Moon. We find the smallest set of places that together are, and say exactly what Earth can't give you.</p>
-        {DATA_ROOT.includes('mock') && <span className="badge" title="Synthetic values in the contract shape">MOCK DATA</span>}
-      </header>
-
-      <section className="controls" aria-label="Mission inputs">
-        <label>
-          Target
-          <select value={targetId} onChange={(e) => setTargetId(e.target.value)}>
-            {(['moon', 'mars'] as const).map((b) => (
-              <optgroup key={b} label={b === 'moon' ? 'Moon (south pole)' : 'Mars'}>
-                {targets.filter((t) => t.body === b).map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-              </optgroup>
-            ))}
-          </select>
-        </label>
-        <label>
-          Mission purpose
-          <select value={profileId} onChange={(e) => setProfileId(e.target.value)}>
-            {profiles?.profiles.map((p) => (
-              <option key={p.id} value={p.id} disabled={!!target && !p.bodies.includes(target.body)}>{p.code} · {p.name}</option>
-            ))}
-          </select>
-        </label>
-        <label>
-          Variant
-          <select value={variant} onChange={(e) => setVariant(e.target.value as Variant)}>
-            <option value="fidelity">Highest fidelity</option>
-            <option value="balanced">Balanced</option>
-            <option value="accessible">Most accessible</option>
-          </select>
-        </label>
-      </section>
-
-      <main>
-        <MapView cells={portfolio?.top_cells ?? []} portfolio={sites} onSelect={setSelected} />
-        <aside>
-          {target && (
-            <div className="card">
-              <h2>{target.name}</h2>
-              <p className="muted">{target.body.toUpperCase()} · {target.anchor.lat.toFixed(2)}°, {target.anchor.lon.toFixed(2)}°E · <a href={target.anchor.source_url} target="_blank" rel="noreferrer">anchor source</a></p>
-              <p className="muted">{target.role}</p>
-            </div>
-          )}
-          {profileDisabled && profile && <p className="warn">{profile.disabled_for?.[target!.body] ?? 'Profile not available for this body.'}</p>}
-          {error && <p className="warn">{error}</p>}
-          {portfolio && (
-            <div className="card">
-              <h2>Portfolio ({sites.length} sites)</h2>
-              <ol className="portfolio">
-                {sites.map((s) => (
-                  <li key={s.site_id} onClick={() => setSelected(s)}>
-                    <strong>{s.name}</strong> <span className="muted">S = {s.score.toFixed(2)}</span>
-                    <div className="chips">{s.covers.map((f) => <span key={f} className="chip" title={factorName[f]}>{f}</span>)}</div>
-                  </li>
+    <>
+      <a className="skip-link" href="#main">Skip to content</a>
+      <header className="topbar">
+        <Logo body={body} onHome={goHome} />
+        {url.view === 'explore' && data && target && profile && (
+          <div className="context-pills">
+            <label className="pill">
+              <span className="sr-only">Target</span>
+              <span className={`shape shape-${target.body}`} aria-hidden="true" />
+              <select value={target.id} onChange={(e) => setTarget(e.target.value)}>
+                {(['moon', 'mars'] as const).map((b) => (
+                  <optgroup key={b} label={b === 'moon' ? 'Moon' : 'Mars'}>
+                    {targets.filter((t) => t.body === b).map((t) => <option key={t.id} value={t.id}>{targetShort(t)}</option>)}
+                  </optgroup>
                 ))}
-              </ol>
-              {portfolio.uncoverable.length > 0 && <p className="muted">No Earth site covers: {portfolio.uncoverable.map((f) => factorName[f]).join(', ')}</p>}
-            </div>
+              </select>
+            </label>
+            <label className="pill">
+              <span className="sr-only">Purpose</span>
+              <select value={profile.id} onChange={(e) => setPurpose(e.target.value)}>
+                {data.profiles.profiles.map((p) => <option key={p.id} value={p.id} disabled={!p.bodies.includes(target.body)} title={p.disabled_for?.[target.body]}>{purposeName(p)}{!p.bodies.includes(target.body) ? ' (Mars only)' : ''}</option>)}
+              </select>
+            </label>
+            <button type="button" className="pill pill-btn" onClick={() => setWeightsReq((n) => n + 1)}>{url.w ? 'Custom weights' : 'Adjust what counts'}</button>
+          </div>
+        )}
+        <nav className="topnav" aria-label="Main">
+          <a href="?view=explore" aria-current={url.view === 'explore' ? 'page' : undefined} onClick={(e) => { e.preventDefault(); update({ view: 'explore' }) }}>Explore</a>
+          <a href="?view=about" aria-current={url.view === 'about' ? 'page' : undefined} onClick={(e) => { e.preventDefault(); update({ view: 'about' }) }}>About</a>
+        </nav>
+      </header>
+      {loadErr ? (
+        <main id="main" className="stub"><ErrorState title="Couldn't load the data." body="Check your connection and try again." detail={loadErr} onRetry={() => { setLoadErr(null); setNonce((n) => n + 1) }} /></main>
+      ) : !data || !target || !profile ? (
+        <main id="main" className="stub" aria-busy="true"><p className="t-body muted2">Loading…</p></main>
+      ) : url.view === 'picker' ? (
+        <Picker targets={targets} profiles={data.profiles} targetId={target.id} purposeId={profile.id} onTarget={setTarget} onPurpose={setPurpose}
+          onGo={() => update({ view: 'explore', t: target.id, p: profile.id, step: 'map', site: undefined })}
+          onCustom={() => { setWeightsReq((n) => n + 1); update({ view: 'explore', t: target.id, p: profile.id, step: 'map', site: undefined }) }} />
+      ) : (
+        <Suspense fallback={<main id="main" className="stub" aria-busy="true"><p className="t-body muted2">Loading…</p></main>}>
+          {url.view === 'explore' ? (
+            <Explore target={target} profile={profile} profiles={data.profiles} factors={data.factors} gaps={data.gaps} validation={data.validation} earthRef={data.targets.earth_reference}
+              mock={!!data.targets.mock} scorer={scorer} scorerError={scorerError} nCells={nCells} url={url} update={update}
+              onRetryScorer={() => { setScorerError(null); setScorerNonce((n) => n + 1) }} onChangeTarget={() => update({ view: 'picker' })}
+              weightsReq={weightsReq} weightsSeen={weightsSeen} onWeightsSeen={setWeightsSeen} />
+          ) : (
+            <Stub view={url.view} onBack={goHome} />
           )}
-          {selected && (
-            <div className="card">
-              <h3>{selected.name}</h3>
-              {Object.entries(selected.factor_scores).map(([f, v]) => (
-                <div key={f} className="bar" title={factorName[f]}>
-                  <span>{f}</span>
-                  <div><i style={{ width: `${Math.round((v ?? 0) * 100)}%` }} /></div>
-                  <span>{(v ?? 0).toFixed(2)}</span>
-                </div>
-              ))}
-            </div>
-          )}
-          {gaps && target && (
-            <div className="card">
-              <h2>Fidelity gap: what Earth can't give you</h2>
-              {gaps.tiers.never_on_earth.gaps.filter((g) => g.values[target.body] !== undefined && g.values[target.body] !== null).map((g) => (
-                <details key={g.id}>
-                  <summary><strong>{g.label}</strong>: {fmt(g.values[target.body])} vs Earth {fmt(g.values.earth)} {g.values.unit}</summary>
-                  <p className="muted">{g.handling}</p>
-                  <p className="muted">Fill with: {g.example_facilities.map((f) => gaps.facilities[f]?.name ?? f).join('; ')}</p>
-                </details>
-              ))}
-              <p className="muted">Beyond Earth's range (scored up to Earth's extreme): {gaps.tiers.beyond_earth_range.gaps.map((g) => g.label).join(' · ')}</p>
-            </div>
-          )}
-        </aside>
-      </main>
-      <footer className="muted">NASA Space Apps 2026 · Data: NASA, USGS, ESA and partners (see Data sources) · Code Apache-2.0</footer>
-    </div>
+        </Suspense>
+      )}
+    </>
   )
 }

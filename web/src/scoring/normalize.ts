@@ -24,8 +24,10 @@ export function flagMatch(earthFlags: number, targetFlags: number): number {
   return want === 0 ? 0 : popcount(earthFlags & targetFlags) / want
 }
 
+/** Weighted geometric mean over factors with w > 0. Factors missing from `scores` (no target value) are dropped and the
+ * remaining weights renormalised (contract v1.1 §3.2.5, `geometric_mean_dropped` vectors). */
 export function geometricMean(scores: Record<string, number>, weights: Record<string, number>, floor = FLOOR): number {
-  const ws = Object.entries(weights).filter(([, w]) => w > 0)
+  const ws = Object.entries(weights).filter(([f, w]) => w > 0 && scores[f] !== undefined && scores[f] !== null)
   const wsum = ws.reduce((a, [, w]) => a + w, 0)
   if (wsum === 0) return 0
   return Math.exp(ws.reduce((acc, [f, w]) => acc + (w / wsum) * Math.log(Math.max(scores[f], floor)), 0))
