@@ -36,6 +36,20 @@ const cspMeta = (): Plugin => ({
 export default defineConfig({
   base: process.env.VITE_BASE ?? './',
   plugins: [react(), cspMeta()],
+  build: {
+    // Keep every chunk under Vite's 500 kB warning limit by splitting stable vendor code out of the app chunks
+    // (the Explore screen is already a lazy route). OpenLayers loads only with the map; React is shared.
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            { name: 'vendor-ol', test: /node_modules[\\/](ol|rbush|quickselect|earcut|color-.*|pbf)[\\/]/ },
+            { name: 'vendor-react', test: /node_modules[\\/](react|react-dom|scheduler)[\\/]/ },
+          ],
+        },
+      },
+    },
+  },
   server: { fs: { allow: ['..'] } },
   test: { include: ['src/**/*.test.ts'] },
 })
