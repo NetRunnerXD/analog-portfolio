@@ -4,10 +4,11 @@ import { accessText, band, cellEwKm, fmtLatLon, isAtLimit, placeName, makeDeltaF
 import type { GapRowData } from '../lib/gaps'
 import type { FactorText } from '../lib/factors'
 import { earthLimit, type EarthLimit } from '../lib/limits'
+import CoverageMatrix from './CoverageMatrix'
 import type { EarthReference, FactorId, FactorsFile, Portfolio, SiteRef, Target, VariantId } from '../types/contract'
 import { ALL_FACTORS, CORE_FACTORS, VARIANT_IDS } from '../types/contract'
 import type { CellDetail } from '../worker/protocol'
-import { AtLimitIcon, Banner, EmptyState, FlaskIcon, GapIcon, Icon, InfoPopover, SegmentedControl, ShieldIcon } from './ui'
+import { AtLimitIcon, Banner, EmptyState, FlaskIcon, GapIcon, Icon, InfoPopover, SegmentedControl, ShieldIcon, Tabs } from './ui'
 
 export interface Ctx {
   target: Target
@@ -106,8 +107,9 @@ export function TopRegionsPanel({ ctx, portfolio, stats, nLand, onOpen, onPortfo
 }
 
 /* ---------------------------------------------------------------- Portfolio */
-export function PortfolioPanel({ ctx, portfolio, variantId, onVariant, onOpen, selected, hovered, onHover }: {
+export function PortfolioPanel({ ctx, portfolio, variantId, onVariant, onOpen, selected, hovered, onHover, phone }: {
   ctx: Ctx
+  phone: boolean
   portfolio: Portfolio
   variantId: VariantId
   onVariant: (v: VariantId) => void
@@ -149,6 +151,7 @@ export function PortfolioPanel({ ctx, portfolio, variantId, onVariant, onOpen, s
         </ol>
       )}
       {ctx.needs.every((f) => covered.has(f)) && sites.length > 0 && <p className="t-small muted2">Every need Earth can meet is covered.</p>}
+      <CoverageMatrix sites={sites} needs={ctx.needs} theta={portfolio.theta} atLimit={(f) => isAtLimit(ctx.target, f)} ft={ctx.ft} phone={phone} />
     </div>
   )
 }
@@ -213,8 +216,14 @@ export function FidelityGapPanel({ rows }: { rows: GapRowData[] }) {
 }
 
 /* ---------------------------------------------------------------- Site card */
-export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCopy, headingRef }: {
+export type SiteTab = 'scores' | 'validation' | 'twin'
+export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCopy, headingRef, tab, onTab, validationTab, twinTab, onTwin }: {
   site: SiteRef
+  tab: SiteTab
+  onTab: (t: SiteTab) => void
+  validationTab: React.ReactNode
+  twinTab: React.ReactNode
+  onTwin: () => void
   n: number | null
   nTotal: number
   ctx: Ctx
@@ -255,6 +264,12 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
       </div>
       <RobustnessLine site={site} ctx={ctx} />
       <p className="summary t-body">{summarySentence(ctx.targetShort, ctx.weights, site.factor_scores, gapsT)}</p>
+      <Tabs label="Site details" idBase="sitecard" value={tab} onChange={onTab}
+        tabs={[{ id: 'scores', label: 'Scores' }, { id: 'validation', label: 'Validation' }, { id: 'twin', label: 'Twin view' }]} />
+      <div id="sitecard-panel" role="tabpanel" aria-labelledby={`sitecard-tab-${tab}`} className="tabpanel">
+      {tab === 'validation' && validationTab}
+      {tab === 'twin' && twinTab}
+      {tab === 'scores' && <>
       <div className="frow-head"><span className="overline">Each factor, 0–100 · sorted by weight</span><span className="overline">Weight</span></div>
       <ul className="factor-rows">
         {rows.map((f) => {
@@ -293,7 +308,10 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
         </button>
       )}
       {expanded && <p className="t-small muted2">Tie-breakers only nudge the score (up to 10%). Earth always differs a lot here.</p>}
+      </>}
+      </div>
       <div className="panel-actions row">
+        <button type="button" className="btn btn-secondary" onClick={onTwin}>Open twin view</button>
         <button type="button" className="btn btn-secondary" onClick={onCopy}>Copy share link</button>
       </div>
       <p className="t-small muted2">{accessText(site.logistics?.travel_time_min)}{site.logistics?.continent ? ` · ${site.logistics.continent}` : ''}</p>

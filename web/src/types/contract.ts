@@ -240,7 +240,26 @@ export interface ValidationSite {
 export interface ValidationFile {
   contract_version: string
   mock?: boolean
+  frozen_commit?: string | null
+  frozen_at?: string | null
   summary: Record<string, unknown>
   sites: ValidationSite[]
   new_candidates: unknown[]
 }
+
+export interface ProvenanceLayer {
+  id: string
+  body: 'earth' | 'moon' | 'mars' | string
+  factors?: string[]
+  dataset: string
+  provider: string
+  agency_group: 'nasa' | 'partner' | 'other' | string
+  url?: string | null
+  version?: string | null
+  accessed?: string | null
+  native_resolution?: string | null
+  license?: string | null
+  citation?: string | null
+  how_used?: string | null
+}
+export interface ProvenanceFile { contract_version: string; mock?: boolean; layers: ProvenanceLayer[]; pipeline?: { git_sha?: string | null; run_at?: string | null } }

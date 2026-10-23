@@ -2,7 +2,7 @@
 // Live scoring worker: decodes the Earth grid once, then re-scores every land cell for the active target, purpose and
 // weights with the TS port of the reference engine (src/scoring/engine.ts). Nothing here is hard-coded data.
 import { decodeGrid } from '../data'
-import { clipTargets, factorScores, NCELLS, prepareEarth, run, type EarthGrid, type RunOutput } from '../scoring/engine'
+import { aggregate, clipTargets, factorScores, NCELLS, prepareEarth, run, type EarthGrid, type RunOutput } from '../scoring/engine'
 import type { FactorId, FactorsFile, ProfilesFile } from '../types/contract'
 import { continentResolver, gridContinentLookup, type ContinentOf } from '../scoring/continent'
 import type { CellDetail, FromWorker, ToWorker } from './protocol'
@@ -15,6 +15,25 @@ let idxOf = new Map<number, number>()
 let gridContinent: ContinentOf | null = null
 const sCache = new Map<string, ReturnType<typeof factorScores>>()
 let last: { out: RunOutput; s: ReturnType<typeof factorScores> } | null = null
+
+function cellDetail(cellId: number): CellDetail {
+  const i = idxOf.get(cellId)
+  const row = Math.floor(cellId / 720)
+  const detail: CellDetail = {
+    cellId, inGrid: i !== undefined, lat: 89.75 - 0.5 * row, lon: -179.75 + 0.5 * (cellId % 720),
+    score: null, percentile: null, filterCode: 0, factorScores: {}, features: {},
+  }
+  if (i !== undefined && earth) {
+    for (const [k, v] of Object.entries(earth.cols)) detail.features[k] = Number.isNaN(v[i]) ? null : v[i]
+    if (last) {
+      detail.score = last.out.total[i]
+      detail.percentile = last.out.pct[i]
+      detail.filterCode = last.out.code[i]
+      for (const [f, arr] of Object.entries(last.s)) if (arr) detail.factorScores[f as FactorId] = arr[i]
+    }
+  }
+  return detail
+}
 
 const post = (m: FromWorker, transfer: Transferable[] = []) => (self as unknown as DedicatedWorkerGlobalScope).postMessage(m, transfer)
 
@@ -65,22 +84,29 @@ self.onmessage = (ev: MessageEvent<ToWorker>) => {
       return
     }
     if (m.type === 'cell') {
+      post({ type: 'cell', reqId: m.reqId, detail: cellDetail(m.cellId) })
+      return
+    }
+    if (m.type === 'cells') {
+      post({ type: 'cells', reqId: m.reqId, details: m.cellIds.map(cellDetail) })
+      return
+    }
+    if (m.type === 'twins') {
       const i = idxOf.get(m.cellId)
-      const row = Math.floor(m.cellId / 720)
-      const detail: CellDetail = {
-        cellId: m.cellId, inGrid: i !== undefined, lat: 89.75 - 0.5 * row, lon: -179.75 + 0.5 * (m.cellId % 720),
-        score: null, percentile: null, filterCode: 0, factorScores: {}, features: {},
-      }
-      if (i !== undefined) {
-        for (const [k, v] of Object.entries(earth.cols)) detail.features[k] = Number.isNaN(v[i]) ? null : v[i]
-        if (last) {
-          detail.score = last.out.total[i]
-          detail.percentile = last.out.pct[i]
-          detail.filterCode = last.out.code[i]
-          for (const [f, arr] of Object.entries(last.s)) if (arr) detail.factorScores[f as FactorId] = arr[i]
-        }
-      }
-      post({ type: 'cell', reqId: m.reqId, detail })
+      const features: Record<string, number | null> = {}
+      if (i === undefined) { post({ type: 'twins', reqId: m.reqId, inGrid: false, results: [], features }); return }
+      for (const [k, v] of Object.entries(earth.cols)) features[k] = Number.isNaN(v[i]) ? null : v[i]
+      const results = m.targets.map((t) => {
+        const key = `${t.id}|${JSON.stringify(t.values)}`
+        let s = sCache.get(key)
+        if (!s) { s = factorScores(earth!, t.values, t.body, factors!); sCache.set(key, s) }
+        // one-cell aggregate with the engine's own formula (weighted geometric mean + tie-breaker nudge)
+        const one: Partial<Record<FactorId, Float64Array>> = {}
+        const fs: Partial<Record<FactorId, number>> = {}
+        for (const [f, arr] of Object.entries(s)) if (arr) { one[f as FactorId] = Float64Array.of(arr[i]); fs[f as FactorId] = arr[i] }
+        return { targetId: t.id, score: aggregate(one, m.weights, 1).total[0], factorScores: fs }
+      })
+      post({ type: 'twins', reqId: m.reqId, inGrid: true, results, features })
     }
   } catch (e) {
     post({ type: 'error', reqId: 'reqId' in m ? m.reqId : undefined, message: e instanceof Error ? e.message : String(e) })
