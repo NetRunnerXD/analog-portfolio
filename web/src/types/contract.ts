@@ -25,6 +25,7 @@ export interface GridArray {
   source?: string
   /** categorical columns (contract v1.1.1 `continent`): {code: label}; 0/nodata = none */
   codes?: Record<string, string>
+  codes_note?: string
   /** alias accepted for older manifests: labels indexed by code */
   categories?: string[] | Record<string, string>
 }
@@ -33,8 +34,15 @@ export interface GridManifest {
   contract_version: string
   body: Body
   mock: boolean
-  grid: { resolution_deg: 0.5; ncols: 720; nrows: 360; lon_centre_first: -179.75; lat_centre_first: 89.75; row_order: 'north-to-south' }
+  /** 0.5° (Earth, Moon polar subset) or 1° global (Moon/Mars, contract v1.2: cell index = row·360 + col) */
+  grid:
+    | { resolution_deg: 0.5; ncols: 720; nrows: 360; lon_centre_first: -179.75; lat_centre_first: 89.75; row_order: 'north-to-south' }
+    | { resolution_deg: 1; ncols: 360; nrows: 180; lon_centre_first: -179.5; lat_centre_first: 89.5; row_order: 'north-to-south' }
   layout: 'sparse' | 'dense'
+  /** which cells a sparse grid holds, e.g. Moon polar |lat| >= 60° (v1.2) */
+  subset?: string
+  /** other manifests for the same body (v1.2) */
+  companions?: string[]
   n_cells: number
   binary: string
   byte_order: 'little'
@@ -85,6 +93,28 @@ export interface TargetsFile {
   body_context?: Partial<Record<TargetBody, Record<string, LitEntry>>>
   targets: Target[]
   earth_reference?: EarthReference | null
+  /** v1.2: full-precision Earth constants for the browser rescorer */
+  scoring_constants?: {
+    note?: string
+    earth_clip?: Partial<Record<FactorId, { feature: string; p0_5: number; p99_5: number }>>
+    range_norm?: { rule?: string; factors?: Partial<Record<FactorId, { feature: string; p01: number; p99: number; span: number }>> }
+    gates?: Record<string, { params?: string; inputs?: string[]; missing?: string }>
+    f7_note?: string
+  }
+}
+
+/** profiles.json → defaults.candidate_gates.{body} (contract v1.2 rule 8) */
+export interface CandidateGate {
+  id: string
+  applies_to?: string
+  rule: string
+  clauses?: Record<string, string>
+  ai_max: number; f8_min: number; pf_min: number; f8_moss_min: number; d_flag_mask: number; d_ai_max: number; d_f8_min: number
+  missing?: string
+  effect?: string
+  provenance?: string
+  ui_short?: string
+  ui_tooltip?: string
 }
 
 export interface HardFilter { id: string; rule: string; reason: string; ui_short?: string; ui_tooltip?: string }
@@ -115,6 +145,8 @@ export interface ProfilesFile {
     monte_carlo: { draws: number; dirichlet_alpha_scale: number; robust_top_frac: number; robust_min_freq: number; seed: number; rule?: string }
     secondary_factors?: string[]
     variants?: VariantDef[]
+    missing_data?: { earth_nan?: string; min_active_weight_frac: number; below_min?: string; target_null?: string }
+    candidate_gates?: Partial<Record<TargetBody, CandidateGate>>
     [k: string]: unknown
   }
   global_hard_filters: HardFilter[]
@@ -161,6 +193,8 @@ export interface SiteRef {
   score: number
   score_core?: number
   earth_percentile?: number
+  /** share of the active weight with Earth data in this cell (scored only if >= 0.7) */
+  data_coverage?: number
   factor_scores: Partial<Record<FactorId, number | null>>
   covers: FactorId[]
   gaps?: Partial<Record<FactorId, number>>
@@ -196,6 +230,8 @@ export interface Portfolio {
   universe: FactorId[]
   uncoverable: FactorId[]
   dropped_factors?: FactorId[]
+  /** v1.2: Earth cells flagged insufficient_data for this pair */
+  insufficient_cells?: number
   variants: PortfolioVariant[]
   top_cells?: SiteRef[]
   score_histogram?: { bins: number[]; counts: number[] }
@@ -235,12 +271,19 @@ export interface ValidationSite {
   citation_url: string
   kind: 'positive' | 'negative'
   cell_id: number
-  results: { target_id: string; profile_id: string; percentile: number; in_top5: boolean; in_top1: boolean }[]
+  /** v1.2: coastal sites snapped to the nearest >= 50% land cell within 1 cell */
+  eval_cell_id?: number
+  snapped?: boolean
+  snap_km?: number | null
+  results: { target_id: string; profile_id: string; percentile: number; in_top5: boolean; in_top1: boolean; status?: ValidationStatus }[]
 }
+export type ValidationStatus = 'scored' | 'gate_excluded' | 'land_filter_excluded' | 'hard_filter_excluded' | 'insufficient_data'
 export interface ValidationFile {
   contract_version: string
   mock?: boolean
   summary: Record<string, unknown>
+  frozen_commit?: string | null
+  method?: unknown
   sites: ValidationSite[]
   new_candidates: unknown[]
 }

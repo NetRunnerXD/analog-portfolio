@@ -2,7 +2,7 @@
 // Live scoring worker: decodes the Earth grid once, then re-scores every land cell for the active target, purpose and
 // weights with the TS port of the reference engine (src/scoring/engine.ts). Nothing here is hard-coded data.
 import { decodeGrid } from '../data'
-import { clipTargets, factorScores, INSUFFICIENT_CODE, NCELLS, prepareEarth, run, type EarthGrid, type RunOutput } from '../scoring/engine'
+import { type ScoringConstants, clipTargets, factorScores, INSUFFICIENT_CODE, NCELLS, prepareEarth, run, type EarthGrid, type RunOutput } from '../scoring/engine'
 import type { FactorId, FactorsFile, ProfilesFile } from '../types/contract'
 import { continentResolver, gridContinentLookup, type ContinentOf } from '../scoring/continent'
 import type { CellDetail, FromWorker, ToWorker } from './protocol'
@@ -11,6 +11,7 @@ let earth: EarthGrid | null = null
 let factors: FactorsFile | null = null
 let profiles: ProfilesFile | null = null
 let knownCells = new Map<number, string>()
+let constants: ScoringConstants | undefined
 let idxOf = new Map<number, number>()
 let gridContinent: ContinentOf | null = null
 type Scores = ReturnType<typeof factorScores>
@@ -41,6 +42,7 @@ self.onmessage = (ev: MessageEvent<ToWorker>) => {
       factors = m.factors
       profiles = m.profiles
       knownCells = new Map(m.knownCells)
+      constants = m.constants
       idxOf = new Map()
       earth.cellId.forEach((c, i) => idxOf.set(c, i))
       sCache.clear()
@@ -54,11 +56,11 @@ self.onmessage = (ev: MessageEvent<ToWorker>) => {
       if (!profile) throw new Error(`unknown profile ${m.profileId}`)
       const key = `${m.target.id}|${JSON.stringify(m.target.values)}`
       const e = earth, f = factors, tv = m.target.values
-      const { s, clips } = targetCache(key, () => ({ s: factorScores(e, tv, m.target.body, f), clips: clipTargets(e, tv, f) }))
+      const { s, clips } = targetCache(key, () => ({ s: factorScores(e, tv, m.target.body, f, constants), clips: clipTargets(e, tv, f, constants) }))
       const continentOf = continentResolver(gridContinent, new Map(m.continents))
       const out = run({
         earth, s, clips, targetId: m.target.id, profile, profiles, weights: m.weights,
-        knownCells, continentOf: (cid) => continentOf(cid), withPortfolio: m.withPortfolio,
+        knownCells, continentOf: (cid) => continentOf(cid), withPortfolio: m.withPortfolio, body: m.target.body,
       })
       last = { out, s }
       const heat = new Uint8Array(NCELLS).fill(255)

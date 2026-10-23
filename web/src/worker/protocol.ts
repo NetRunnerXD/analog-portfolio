@@ -1,7 +1,10 @@
+import type { ScoringConstants } from '../scoring/engine'
 import type { FactorId, FactorsFile, GridManifest, Portfolio, ProfilesFile, TargetBody } from '../types/contract'
 
 export interface InitMsg {
   type: 'init'
+  /** targets.json → scoring_constants (v1.2), full-precision clip and range bounds */
+  constants?: ScoringConstants
   manifest: GridManifest
   buffer: ArrayBuffer
   factors: FactorsFile
