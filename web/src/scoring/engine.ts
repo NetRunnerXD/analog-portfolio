@@ -97,6 +97,14 @@ export function clipTargets(e: EarthGrid, tv: TargetValues, f: FactorsFile, sc?:
   return out
 }
 
+/** F1/F2 range similarity max(0, 1 − |x − t*| / span). A degenerate span (≤ 0 or not finite, e.g. a constant column
+ *  in the shipped constants) scores 1 on an exact match and 0 otherwise; a missing Earth value stays NaN. */
+export function rangeSim(x: number, ts: number, span: number): number {
+  if (!Number.isFinite(x)) return NaN
+  if (!(span > 0) || !Number.isFinite(span)) return x === ts ? 1 : 0
+  return Math.max(0, 1 - Math.abs(x - ts) / span)
+}
+
 /** Area-weighted Earth P1 / P99 span of a column (F1/F2 range similarity, contract v1.2). */
 function rangeSpan(e: EarthGrid, col: string, id: FactorId, sc?: ScoringConstants): number {
   const k = sc?.range_norm?.factors?.[id]
@@ -142,7 +150,7 @@ export function factorScores(e: EarthGrid, tv: TargetValues, body: TargetBody, f
   for (const [id, k] of [['F1', 'ts_mean_k'], ['F2', 'dt_k']] as const) {
     if (t(id) === null) continue
     const x = col(k), ts = tstar(id), span = rangeSpan(e, k, id, sc)
-    s[id] = map((i) => Math.max(0, 1 - Math.abs(x[i] - ts) / span))
+    s[id] = map((i) => rangeSim(x[i], ts, span))
   }
   if (t('F5') !== null) { const x = col('relief_m'), ts = tstar('F5'); s.F5 = map((i) => ratio(x[i], ts)) }
   if (t('F3') !== null) { const x = col('ti_class'), tt = t('F3')!; s.F3 = map((i) => 1 - Math.abs(x[i] - tt) / 4) }
@@ -421,7 +429,7 @@ export function run(inp: RunInput): RunOutput {
       contract_version: profiles.contract_version, target_id: inp.targetId, profile_id: profile.id, weights, theta,
       universe, uncoverable: active.filter((f) => !universe.includes(f)),
       dropped_factors: CORE_FACTORS.filter((f) => (weights[f] ?? 0) > 0 && !s[f]), variants, top_cells: poolSites.slice(0, 25),
-      earth_thresholds: thresholds,
+      insufficient_cells: nInsufficient, earth_thresholds: thresholds,
     },
     ...base,
   }
