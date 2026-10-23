@@ -2,11 +2,17 @@
 import { CORE_FACTORS, VARIANT_IDS } from '../types/contract'
 import type { VariantId } from '../types/contract'
 
-export type View = 'picker' | 'explore' | 'about' | 'reverse' | 'story'
+export type View = 'picker' | 'explore' | 'about' | 'reverse' | 'story' | 'twin'
 export type Step = 'map' | 'portfolio'
-export interface UrlState { view: View; t?: string; p?: string; v: VariantId; step: Step; site?: string; w?: Record<string, number> }
+export interface UrlState {
+  view: View; t?: string; p?: string; v: VariantId; step: Step; site?: string; w?: Record<string, number>
+  /** reverse search: Natural Earth place id or "lat,lon"; body to compare with */
+  place?: string; body?: 'moon' | 'mars'
+  /** story step (1-based) */
+  s?: number
+}
 
-const VIEWS: View[] = ['picker', 'explore', 'about', 'reverse', 'story']
+const VIEWS: View[] = ['picker', 'explore', 'about', 'reverse', 'story', 'twin']
 
 export function parseWeights(s: string | null): Record<string, number> | undefined {
   if (!s) return undefined
@@ -23,7 +29,12 @@ export function readUrl(): UrlState {
   const q = new URLSearchParams(window.location.search)
   const view = (VIEWS as string[]).includes(q.get('view') ?? '') ? (q.get('view') as View) : 'picker'
   const v = (VARIANT_IDS as string[]).includes(q.get('v') ?? '') ? (q.get('v') as VariantId) : 'best_match'
-  return { view, t: q.get('t') ?? undefined, p: q.get('p') ?? undefined, v, step: q.get('step') === 'portfolio' ? 'portfolio' : 'map', site: q.get('site') ?? undefined, w: parseWeights(q.get('w')) }
+  const body = q.get('body')
+  const st = Number(q.get('s'))
+  return {
+    view, t: q.get('t') ?? undefined, p: q.get('p') ?? undefined, v, step: q.get('step') === 'portfolio' ? 'portfolio' : 'map', site: q.get('site') ?? undefined, w: parseWeights(q.get('w')),
+    place: q.get('place') ?? undefined, body: body === 'moon' || body === 'mars' ? body : undefined, s: Number.isInteger(st) && st > 0 ? st : undefined,
+  }
 }
 
 export function writeUrl(s: UrlState, replace = false) {
@@ -31,12 +42,17 @@ export function writeUrl(s: UrlState, replace = false) {
   if (s.view !== 'picker') q.set('view', s.view)
   if (s.t) q.set('t', s.t)
   if (s.p) q.set('p', s.p)
-  if (s.view === 'explore') {
+  if (s.view === 'explore' || s.view === 'twin') {
     if (s.v !== 'best_match') q.set('v', s.v)
     if (s.step === 'portfolio') q.set('step', 'portfolio')
     if (s.site) q.set('site', s.site)
     if (s.w) q.set('w', encodeWeights(s.w))
   }
+  if (s.view === 'reverse' || s.view === 'twin') {
+    if (s.place) q.set('place', s.place)
+    if (s.body) q.set('body', s.body)
+  }
+  if (s.view === 'story' && s.s && s.s > 1) q.set('s', String(s.s))
   const qs = q.toString()
   const url = `${window.location.pathname}${qs ? `?${qs}` : ''}`
   if (url === `${window.location.pathname}${window.location.search}`) return

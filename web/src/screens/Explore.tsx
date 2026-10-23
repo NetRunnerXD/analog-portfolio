@@ -12,10 +12,12 @@ import type { ScorerClient } from '../worker/client'
 import type { CellDetail, ScoredMsg } from '../worker/protocol'
 import { buildGapRows } from '../lib/gaps'
 import { makeFactorText } from '../lib/factors'
-import { FidelityGapPanel, PortfolioPanel, SiteCard, TopRegionsPanel, type Ctx } from '../components/panels'
+import { FidelityGapPanel, PortfolioPanel, SiteCard, TopRegionsPanel, type Ctx, type SiteTab } from '../components/panels'
 import { Banner, EmptyState, ErrorState, Toast } from '../components/ui'
 import WeightsSheet from '../components/WeightsSheet'
 import MapLegend from '../components/MapLegend'
+import ValidationTab from '../components/ValidationTab'
+import PairedFactors from '../components/PairedFactors'
 
 interface Props {
   target: Target
@@ -155,6 +157,8 @@ export default function Explore(p: Props) {
   }, [site?.site_id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [hovered, setHovered] = useState<string | null>(null)
+  const [siteTab, setSiteTab] = useState<SiteTab>('scores')
+  useEffect(() => { setSiteTab('scores') }, [site?.site_id])
   const [weightsOpen, setWeightsOpen] = useState(false)
   const { weightsReq, weightsSeen, onWeightsSeen } = p
   useEffect(() => { if (weightsReq > weightsSeen) { onWeightsSeen(weightsReq); setWeightsOpen(true) } }, [weightsReq, weightsSeen, onWeightsSeen])
@@ -246,9 +250,18 @@ export default function Explore(p: Props) {
       : <div className="panel-body" aria-busy="true"><p className="overline">{url.step === 'portfolio' ? 'Your Analog Portfolio' : 'Top regions'}</p><div className="skeleton h2" /><div className="skeleton" /><div className="skeleton" /><div className="skeleton" /><p className="t-small muted2">Scoring Earth's land…</p></div>
   } else if (site) {
     results = <SiteCard site={site} n={siteN >= 0 ? siteN + 1 : null} nTotal={vSites.length} ctx={ctx} detail={detail} headingRef={headingRef}
-      onBack={closeSite} backLabel={url.step === 'portfolio' ? 'Portfolio' : 'Top regions'} onCopy={copyLink} />
+      onBack={closeSite} backLabel={url.step === 'portfolio' ? 'Portfolio' : 'Top regions'} onCopy={copyLink}
+      tab={siteTab} onTab={setSiteTab} onTwin={() => update({ view: 'twin' })}
+      validationTab={<ValidationTab validation={p.validation} targetId={target.id} body={target.body} profileId={profile.id} ctx={ctx} site={site}
+        scorer={p.scorer} scoreKey={cur ? scoreKey : null} showOnMap={layers.known} onShowOnMap={(v) => setLayers((l) => ({ ...l, known: v }))} />}
+      twinTab={<div className="twin-compact">
+        <p className="t-small muted2">Site {siteN >= 0 ? `${siteN + 1} · ` : ''}{siteTitle(site)} ↔ {target.name}</p>
+        <PairedFactors target={target} factors={p.factors} ft={ft} factorScores={site.factor_scores} earthFeatures={detail?.features ?? null} caption="Side by side, factor by factor" compact />
+        <p className="t-small muted2">Same factors; gravity, air and radiation always differ.</p>
+        <button type="button" className="btn btn-primary" onClick={() => update({ view: 'twin' })}>Open twin view</button>
+      </div>} />
   } else if (url.step === 'portfolio') {
-    results = <PortfolioPanel ctx={ctx} portfolio={portfolio} variantId={variant?.id ?? 'best_match'} onVariant={onVariant} onOpen={openSite} selected={url.site ?? null} hovered={hovered} onHover={setHovered} />
+    results = <PortfolioPanel phone={bp === 'phone'} ctx={ctx} portfolio={portfolio} variantId={variant?.id ?? 'best_match'} onVariant={onVariant} onOpen={openSite} selected={url.site ?? null} hovered={hovered} onHover={setHovered} />
   } else {
     results = <TopRegionsPanel ctx={ctx} portfolio={portfolio} stats={stats} nLand={cur?.stats.nCells ?? p.nCells} onOpen={openSite}
       onPortfolio={() => update({ step: 'portfolio', site: undefined })} onWeights={() => setWeightsOpen(true)} hovered={hovered} onHover={setHovered} />

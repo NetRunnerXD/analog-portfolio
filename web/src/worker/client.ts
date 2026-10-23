@@ -1,6 +1,6 @@
 // Main-thread wrapper around the scoring worker. One worker per app; requests resolve by reqId.
 import type { FactorsFile, GridManifest, ProfilesFile } from '../types/contract'
-import type { CellDetail, FromWorker, ScoreMsg, ScoredMsg, ToWorker } from './protocol'
+import type { CellDetail, FromWorker, ScoreMsg, ScoredMsg, ToWorker, TwinsMsg, TwinsReplyMsg } from './protocol'
 
 type Pending = { resolve: (v: never) => void; reject: (e: Error) => void }
 
@@ -31,7 +31,7 @@ export class ScorerClient {
       const p = this.pending.get(m.reqId)
       if (!p) return
       this.pending.delete(m.reqId)
-      p.resolve((m.type === 'cell' ? m.detail : m) as never)
+      p.resolve((m.type === 'cell' ? m.detail : m.type === 'cells' ? m.details : m) as never)
     })
     this.w.addEventListener('error', (e) => {
       const msg = e.message || 'worker crashed'
@@ -58,6 +58,14 @@ export class ScorerClient {
 
   cell(cellId: number): Promise<CellDetail> {
     return this.req<CellDetail>({ type: 'cell', reqId: ++this.seq, cellId })
+  }
+
+  cells(cellIds: number[]): Promise<CellDetail[]> {
+    return this.req<CellDetail[]>({ type: 'cells', reqId: ++this.seq, cellIds })
+  }
+
+  twins(m: Omit<TwinsMsg, 'type' | 'reqId'>): Promise<TwinsReplyMsg> {
+    return this.req<TwinsReplyMsg>({ type: 'twins', reqId: ++this.seq, ...m })
   }
 
   terminate() { this.w.terminate() }

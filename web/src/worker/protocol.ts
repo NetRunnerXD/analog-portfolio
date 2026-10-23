@@ -20,7 +20,17 @@ export interface ScoreMsg {
   withPortfolio: boolean
 }
 export interface CellMsg { type: 'cell'; reqId: number; cellId: number }
-export type ToWorker = InitMsg | ScoreMsg | CellMsg
+/** Several cells at once from the last scoring run (validation analogs, honest-miss factors). */
+export interface CellsMsg { type: 'cells'; reqId: number; cellIds: number[] }
+/** Reverse search: score one Earth cell against several targets with the same formulas as forward search. */
+export interface TwinsMsg {
+  type: 'twins'
+  reqId: number
+  cellId: number
+  targets: { id: string; body: TargetBody; values: Partial<Record<FactorId, number | null>> }[]
+  weights: Record<string, number>
+}
+export type ToWorker = InitMsg | ScoreMsg | CellMsg | CellsMsg | TwinsMsg
 
 export interface ScoredMsg {
   type: 'scored'
@@ -44,6 +54,9 @@ export interface CellDetail {
   features: Record<string, number | null>
 }
 export interface CellReplyMsg { type: 'cell'; reqId: number; detail: CellDetail }
+export interface CellsReplyMsg { type: 'cells'; reqId: number; details: CellDetail[] }
+export interface TwinResult { targetId: string; score: number; factorScores: Partial<Record<FactorId, number>> }
+export interface TwinsReplyMsg { type: 'twins'; reqId: number; inGrid: boolean; results: TwinResult[]; features: Record<string, number | null> }
 export interface ReadyMsg { type: 'ready'; nCells: number; /** earth_features has a continent column */ gridContinent: boolean }
 export interface ErrorMsg { type: 'error'; reqId?: number; message: string }
-export type FromWorker = ScoredMsg | CellReplyMsg | ReadyMsg | ErrorMsg
+export type FromWorker = ScoredMsg | CellReplyMsg | CellsReplyMsg | TwinsReplyMsg | ReadyMsg | ErrorMsg

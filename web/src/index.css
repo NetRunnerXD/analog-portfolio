@@ -306,3 +306,63 @@ main { flex: 1; min-height: 0; }
 .chev.up { transform: rotate(45deg); margin-top: -3px; }
 /* warnings: neutral text + warning icon; magenta is reserved for Fidelity Gap content */
 .banner-warning .banner-icon { color: var(--color-status-warning); }
+
+/* ---------- coverage matrix (spec §8.4) */
+.matrix { display: flex; flex-direction: column; gap: var(--space-1); margin-top: var(--space-2); }
+.matrix-key { display: flex; align-items: center; gap: var(--space-1); flex-wrap: wrap; }
+.matrix-scroll { overflow-x: auto; border-radius: var(--radius-md); }
+.matrix-scroll:focus-visible { outline: 2px solid var(--color-accent-default); outline-offset: 2px; }
+.matrix table { border-collapse: separate; border-spacing: 0; width: 100%; }
+.matrix caption { text-align: left; padding-bottom: var(--space-1); }
+.matrix th, .matrix td { padding: 6px 4px; text-align: center; border-bottom: 1px solid var(--color-border-subtle); }
+.matrix thead th { color: var(--color-text-secondary); font-weight: 500; white-space: nowrap; }
+.matrix thead abbr { text-decoration: none; }
+.matrix tbody th { text-align: left; font-weight: 500; position: sticky; left: 0; background: var(--color-surface-1); max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.matrix .pin-glyph.sm { width: 20px; height: 20px; font-size: var(--type-micro-size); display: inline-grid; vertical-align: middle; }
+.matrix td.unc, .matrix th.unc { border-left: 1px dashed var(--color-gap-notCovered); border-right: 1px dashed var(--color-gap-notCovered); }
+.matrix .unc-foot { color: var(--color-text-secondary); white-space: nowrap; }
+.mk-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; background: var(--color-text-primary); vertical-align: middle; }
+.mk-half { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1.5px solid var(--color-text-primary); background: linear-gradient(90deg, var(--color-text-primary) 50%, transparent 50%); vertical-align: middle; }
+.mc.atLimit { color: var(--color-text-primary); }
+
+/* ---------- tabs (spec §8.1) */
+.tabs { display: flex; gap: var(--space-4); border-bottom: 1px solid var(--color-border-subtle); margin-top: var(--space-2); }
+.tabs button { min-height: 48px; border: 0; background: none; color: var(--color-text-secondary); font-family: var(--type-control-family); font-size: var(--type-control-size); font-weight: var(--type-control-weight); }
+.tabs button[aria-selected="true"] { color: var(--color-text-primary); box-shadow: inset 0 -3px 0 var(--color-accent-default); }
+.tabpanel { display: flex; flex-direction: column; gap: var(--space-3); }
+
+/* ---------- validation tab (spec §8.4 ValidationSummary) */
+.validation { display: flex; flex-direction: column; gap: var(--space-3); }
+.vstats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--space-2); margin: 0; }
+.vstats div { display: flex; flex-direction: column-reverse; gap: 2px; padding: var(--space-3); border-radius: var(--radius-md); background: var(--color-surface-2); }
+.vstats dd { margin: 0; }
+.tag-live { align-self: flex-start; color: var(--color-text-primary); }
+.vlist-head { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+.vlist-head label { display: inline-flex; align-items: center; gap: var(--space-1); min-height: 44px; }
+.vlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+.vlist li { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(56px, 1fr) auto; align-items: center; gap: var(--space-2); min-height: 32px; padding: 2px 0; }
+.vlist li.control .vname { color: var(--color-text-secondary); }
+.vname { overflow-wrap: anywhere; line-height: 1.25; }
+.vbar { position: relative; height: 8px; border-radius: 4px; background: var(--color-surface-3); }
+.vbar .v5 { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--color-text-secondary); }
+.vbar b { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border: 1.5px solid var(--color-map-markerStroke); background: var(--color-map-markerFill); }
+.vpct { text-align: right; white-space: nowrap; }
+.this-site { padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); background: var(--color-surface-2); }
+
+/* ---------- paired factors (spec §8.5 PairedFactorRow) */
+.paired { width: 100%; border-collapse: collapse; }
+.paired caption { text-align: left; padding-bottom: var(--space-1); }
+.paired th, .paired td { padding: 6px 4px; border-bottom: 1px solid var(--color-border-subtle); text-align: left; font-weight: 400; }
+.paired thead th { color: var(--color-text-secondary); font-size: var(--type-small-size); }
+.paired .num-col { text-align: right; overflow-wrap: break-word; }
+.paired.compact .num-col { hyphens: auto; font-family: inherit; font-variant-numeric: tabular-nums; }
+.paired.compact { table-layout: fixed; }
+.paired.compact th, .paired.compact td { padding: 6px 2px; }
+.paired.compact col.c-f { width: 31%; }
+.paired.compact col.c-m { width: 3.25rem; }
+.paired.compact .pmatch { display: table-cell; min-width: 0; text-align: right; }
+.paired.compact .pmatch .fbar { display: none; }
+.paired .pmatch { display: grid; grid-template-columns: 1fr 32px; align-items: center; gap: var(--space-2); min-width: 90px; }
+.paired .pmatch .fbar { position: relative; background: var(--color-surface-3); border-radius: 4px; }
+.paired .pmatch .num { text-align: right; }
+.twin-compact { display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }

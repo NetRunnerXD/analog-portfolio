@@ -1,0 +1,16 @@
+.about { padding: var(--space-6) var(--space-5) var(--space-8); }
+.about article { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: var(--space-5); }
+.about section { display: flex; flex-direction: column; gap: var(--space-2); }
+.about p, .about li { line-height: 1.55; }
+.about a { color: var(--color-accent-text); text-underline-offset: 3px; }
+.about-list { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: var(--space-1); }
+.credit-block { display: flex; flex-direction: column; gap: var(--space-1); }
+.table-scroll { overflow-x: auto; border: 1px solid var(--color-border-subtle); border-radius: var(--radius-md); }
+.table-scroll:focus-visible { outline: 2px solid var(--color-accent-default); outline-offset: 2px; }
+.about-table { width: 100%; border-collapse: collapse; font-size: var(--type-small-size); }
+.about-table th, .about-table td { text-align: left; vertical-align: top; padding: var(--space-2); border-bottom: 1px solid var(--color-border-subtle); }
+.about-table thead th { color: var(--color-text-secondary); font-weight: 500; }
+.about-table tbody th { font-weight: 500; min-width: 180px; }
+.about .block { display: block; }
+.about code { font-family: var(--type-num-family, monospace); }
+@media (max-width: 599px) { .about { padding: var(--space-4) var(--space-3) var(--space-6); } }
