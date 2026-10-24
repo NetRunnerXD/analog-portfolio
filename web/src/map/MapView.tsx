@@ -12,7 +12,7 @@ import { boundingExtent } from 'ol/extent'
 import type { MapBrowserEvent } from 'ol'
 import 'ol/ol.css'
 import { band, fmtLatLon } from '../lib/format'
-import { makeHeatLayer, gridCanvases, type HeatState } from './heat'
+import { makeHeatLayer, gridCanvases, INSUFFICIENT, type HeatState } from './heat'
 import { candidatePin, earthPin, knownPin } from './pins'
 import { T } from './tokens'
 import { measurePadding, offsetCenter } from './padding'
@@ -88,10 +88,11 @@ export default function MapView(p: Props) {
         const row = Math.min(Math.floor((90 - lat) * 2), 359)
         const cid = row * 720 + col
         const s = h.scores[cid]
-        if (s === 255) { setTip(null); return }
         const cLat = 89.75 - 0.5 * row
         const cLon = -179.75 + 0.5 * col
         const where = fmtLatLon(cLat, cLon, 2)
+        if (h.filter[cid] === INSUFFICIENT) { setTip({ lines: [props.current.filterText(INSUFFICIENT), where], x: e.pixel[0], y: e.pixel[1] }); return }
+        if (s === 255) { setTip(null); return }
         if (h.filter[cid] > 0) { setTip({ lines: [props.current.filterText(h.filter[cid]), where], x: e.pixel[0], y: e.pixel[1] }); return }
         const base = [`${s} / 100 · ${band(s)} match`, where]
         setTip({ lines: base, x: e.pixel[0], y: e.pixel[1] })
@@ -116,7 +117,7 @@ export default function MapView(p: Props) {
 
   // heat grid → canvases
   useEffect(() => {
-    if (!p.heat) { heatState.current.heat = null; heatState.current.mask = null }
+    if (!p.heat) { heatState.current.heat = null; heatState.current.mask = null; heatState.current.insuf = null }
     else Object.assign(heatState.current, gridCanvases(p.heat.scores, p.heat.filter))
     heatLayer.current.getSource()?.changed()
     const lyr = heatLayer.current

@@ -15,7 +15,7 @@ export const cellEwKm = (lat: number) => Math.round(55.6 * Math.cos((lat * Math.
 
 /** Access copy from travel_time_min (spec §8.4 SiteListCard / §11.3). */
 export function accessText(min: number | null | undefined): string {
-  if (min === null || min === undefined || !Number.isFinite(min)) return '> 2 days from a city of 50k+'
+  if (min === null || min === undefined || !Number.isFinite(min)) return 'travel time unknown'
   if (min < 60) return '< 1 h from a city of 50k+'
   const h = Math.round(min / 60)
   if (h <= 48) return `~${h} h from a city of 50k+`
@@ -48,6 +48,32 @@ export function siteTitle(s: Placeable): string {
   if (place) return place
   if (s.site_id.startsWith('cell_') || s.name.startsWith('Candidate cell')) return `Earth site at ${fmtLatLon(s.lat, s.lon, 1)}`
   return s.name
+}
+
+/**
+ * Titles that stay distinct within a list: when several sites share a title (e.g. five Antarctic cells all titled
+ * "Antarctica" because Antarctica has no admin-1 regions), each gets its cell centre appended: "Antarctica · 77.8°S 162.3°E".
+ */
+export function makeTitler(sites: Iterable<Placeable>): (s: Placeable) => string {
+  const count = new Map<string, Set<string>>()
+  for (const s of sites) { const t = siteTitle(s); if (!count.has(t)) count.set(t, new Set()); count.get(t)!.add(s.site_id) }
+  return (s) => {
+    const t = siteTitle(s)
+    return (count.get(t)?.size ?? 0) > 1 && !t.startsWith('Earth site at') ? `${t} · ${fmtLatLon(s.lat, s.lon, 1)}` : t
+  }
+}
+
+/** Share of the weighted needs with Earth data in this cell (contract §3.2.6), 0–1. Null/NaN factor scores are missing. */
+export function dataCoverage(fs: Partial<Record<FactorId, number | null>>, weights: Record<string, number>, needs: FactorId[]): number {
+  let all = 0
+  let present = 0
+  for (const f of needs) {
+    const w = weights[f] ?? 0
+    all += w
+    const v = fs[f]
+    if (v !== null && v !== undefined && !Number.isNaN(v)) present += w
+  }
+  return all > 0 ? present / all : 1
 }
 
 export const factorWeightActive = (weights: Record<string, number>, f: FactorId) => (weights[f] ?? 0) > 0

@@ -52,7 +52,7 @@
      ],
      "values": {
       "moon": "3e-15 bar (night)",
-      "mars": "6.36 mb (see beyond_earth_range)",
+      "mars": null,
       "earth": "1014 mb",
       "unit": "pressure",
       "source_urls": [
@@ -203,7 +203,7 @@
      ],
      "values": {
       "moon": "95–390 K at equator (ΔT ≈ 298 K from Diviner max 392.3 / min 94.3 K)",
-      "mars": "184–242 K (Viking 1 air)",
+      "mars": null,
       "earth": "283–293 K mean diurnal (NSSDC); Earth's maximum surface amplitude: not found as a citable value",
       "unit": "K",
       "source_urls": [
@@ -318,7 +318,7 @@
      ],
      "values": {
       "moon": "best ridge points sunlit ~89–96% of the time with the Sun near the horizon",
-      "mars": "latitude-driven",
+      "mars": null,
       "unit": "fraction of time sunlit",
       "source_urls": [
        "https://elib.dlr.de/94240/",
@@ -677,6 +677,6 @@
    "url": "https://ares.jsc.nasa.gov/projects/simulants/nu-lht.html"
   }
  },
- "contract_version": "1.1.1",
+ "contract_version": "1.2.0",
  "mock": false
 }

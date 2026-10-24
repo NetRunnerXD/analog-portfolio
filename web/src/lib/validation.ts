@@ -39,7 +39,7 @@ export function pairValidation(v: ValidationFile, targetId: string, body: Target
   const rows: AnalogRow[] = []
   for (const s of evaluated(v, body, profileId)) {
     let pct: number | undefined
-    if (live) pct = live.get(s.cell_id)
+    if (live) pct = live.get(s.eval_cell_id ?? s.cell_id)
     else pct = s.results.find((r) => r.target_id === targetId && r.profile_id === profileId)?.percentile
     if (pct === undefined || pct === null || Number.isNaN(pct)) continue
     rows.push({ name: analogName(s), cellId: s.cell_id, percentile: pct, isControl: s.kind === 'negative', inTop5: pct >= TOP5_PCT, inTop1: pct >= TOP1_PCT, site: s })

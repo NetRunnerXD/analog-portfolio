@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.1",
+ "contract_version": "1.2.0",
  "mock": true,
  "site_id": "death_valley_badwater_basin_california",
  "name": "Death Valley, Badwater Basin (California)",
@@ -35,7 +35,9 @@
   "builtup_frac": 0.0,
   "travel_time_min": 862.0,
   "airport_km": 48.0,
-  "continent": 5.0
+  "continent": 5.0,
+  "permafrost_frac": 0.104,
+  "moss_lichen_frac": 0.0
  },
  "drilldown": {},
  "best_for": [],
