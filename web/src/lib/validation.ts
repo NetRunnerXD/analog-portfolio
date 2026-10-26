@@ -3,15 +3,24 @@
 // every negative on every pair; in_top5 = percentile ≥ 95, in_top1 = percentile ≥ 99; rank AUC = Mann–Whitney with ties = ½).
 import type { TargetBody, ValidationFile, ValidationSite } from '../types/contract'
 
-export interface AnalogRow { name: string; cellId: number; percentile: number; isControl: boolean; inTop5: boolean; inTop1: boolean; site: ValidationSite }
+export type EvalStatus = NonNullable<ValidationSite['results'][number]['status']>
+export interface AnalogRow {
+  name: string; cellId: number; percentile: number; isControl: boolean; inTop5: boolean; inTop1: boolean; site: ValidationSite
+  /** scored, or why the evaluation was excluded. Excluded evaluations stay in every denominator as misses (contract v1.2). */
+  status: EvalStatus
+}
 export interface PairValidation {
   rows: AnalogRow[]
   total: number
   hit5: number
   hit1: number
   nControls: number
+  /** positives that were excluded (gate, land, hard filter, insufficient data) but still counted in `total` */
+  nExcluded: number
   auc: number | null
 }
+/** Live (custom-weight) result for one evaluation cell from the in-browser scorer. percentile null = insufficient data. */
+export interface LiveCell { percentile: number | null }
 
 export const TOP5_PCT = 95
 export const TOP1_PCT = 99
@@ -31,25 +40,51 @@ export function rankAuc(pos: number[], neg: number[]): number | null {
   return a / (pos.length * neg.length)
 }
 
+/** The cell the pipeline evaluates a site at (coastal sites are snapped to the nearest land cell). */
+export const evalCell = (s: ValidationSite) => s.eval_cell_id ?? s.cell_id
+
+export const STATUS_TEXT: Record<EvalStatus, string> = {
+  scored: '',
+  gate_excluded: 'fails the Mars gate',
+  land_filter_excluded: 'no land cell nearby',
+  hard_filter_excluded: 'fails a hard limit',
+  insufficient_data: 'not enough data',
+}
+
 /**
- * live: cell_id → percentile (0–100) from the in-browser scorer (custom weights). Without it the precomputed
- * validation.json results for this pair are used.
+ * Per target + purpose, with the pipeline's rules (export/real.py): every evaluation of the pair stays in the
+ * denominators; gate- and land-excluded evaluations count as percentile 0, hard-filter-excluded ones at the percentile of
+ * S = 0, insufficient-data ones at 0.
+ * live: eval cell → live result (custom weights). The gate and land filter don't depend on weights, so those statuses
+ * come from the file; the hard-filter percentile and the 70% data floor do, so they come from the live scorer.
  */
-export function pairValidation(v: ValidationFile, targetId: string, body: TargetBody, profileId: string, live?: Map<number, number>): PairValidation {
+export function pairValidation(v: ValidationFile, targetId: string, body: TargetBody, profileId: string, live?: Map<number, LiveCell>): PairValidation {
   const rows: AnalogRow[] = []
   for (const s of evaluated(v, body, profileId)) {
-    let pct: number | undefined
-    if (live) pct = live.get(s.eval_cell_id ?? s.cell_id)
-    else pct = s.results.find((r) => r.target_id === targetId && r.profile_id === profileId)?.percentile
-    if (pct === undefined || pct === null || Number.isNaN(pct)) continue
-    rows.push({ name: analogName(s), cellId: s.cell_id, percentile: pct, isControl: s.kind === 'negative', inTop5: pct >= TOP5_PCT, inTop1: pct >= TOP1_PCT, site: s })
+    const r = s.results.find((x) => x.target_id === targetId && x.profile_id === profileId)
+    if (!r) continue // not evaluated on this pair in this release
+    const fileStatus: EvalStatus = r.status ?? 'scored'
+    let status = fileStatus
+    let pct: number | null = r.percentile
+    if (live && fileStatus !== 'gate_excluded' && fileStatus !== 'land_filter_excluded') {
+      const l = live.get(evalCell(s))
+      if (!l) continue
+      if (l.percentile === null || Number.isNaN(l.percentile)) { status = 'insufficient_data'; pct = 0 }
+      else { pct = l.percentile; if (fileStatus === 'insufficient_data') status = 'scored' }
+    }
+    if (status !== 'scored' && status !== 'hard_filter_excluded') pct = 0
+    if (pct === null || Number.isNaN(pct)) pct = 0
+    const counts = status === 'scored'
+    rows.push({ name: analogName(s), cellId: evalCell(s), percentile: pct, isControl: s.kind === 'negative', status,
+      inTop5: counts && pct >= TOP5_PCT, inTop1: counts && pct >= TOP1_PCT, site: s })
   }
   rows.sort((a, b) => Number(a.isControl) - Number(b.isControl) || b.percentile - a.percentile)
   const pos = rows.filter((r) => !r.isControl)
   const neg = rows.filter((r) => r.isControl)
   return {
     rows, total: pos.length, hit5: pos.filter((r) => r.inTop5).length, hit1: pos.filter((r) => r.inTop1).length,
-    nControls: neg.length, auc: rankAuc(pos.map((r) => r.percentile), neg.map((r) => r.percentile)),
+    nControls: neg.length, nExcluded: pos.filter((r) => r.status !== 'scored').length,
+    auc: rankAuc(pos.map((r) => r.percentile), neg.map((r) => r.percentile)),
   }
 }
 
