@@ -65,6 +65,24 @@ export class PlanetGrids {
   }
 }
 
+/** Allocation-free lookup of one column (finest grid first) for per-pixel rendering. NaN = nodata or uncovered. */
+export function sampler(grids: PlanetGrids, column: string): (lat: number, lon: number) => number {
+  const gs = grids.grids.filter((g) => g.columns[column])
+  return (lat, lon) => {
+    for (const g of gs) {
+      const p = g.pos(cellIndexAt(g.manifest.grid, lat, lon))
+      if (p !== undefined) return g.columns[column][p]
+    }
+    return NaN
+  }
+}
+/** Finite min / max of a column across a body's grids. */
+export function columnRange(grids: PlanetGrids, column: string): [number, number] {
+  let lo = Infinity, hi = -Infinity
+  for (const g of grids.grids) for (const v of g.columns[column] ?? []) if (Number.isFinite(v)) { if (v < lo) lo = v; if (v > hi) hi = v }
+  return [lo, hi]
+}
+
 const cache = new Map<TargetBody, Promise<PlanetGrids>>()
 /** Fetch and decode {body}_grid.json and its companions once (lazy; nothing is bundled). */
 export function loadPlanetGrids(body: TargetBody): Promise<PlanetGrids> {

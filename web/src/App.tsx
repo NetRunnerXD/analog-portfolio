@@ -150,7 +150,7 @@ export default function App() {
           onCustom={() => { setWeightsReq((n) => n + 1); update({ view: 'explore', t: target.id, p: profile.id, step: 'map', site: undefined }) }} />
       ) : (
         <Suspense fallback={<main id="main" className="stub" aria-busy="true"><p className="t-body muted2">Loading…</p></main>}>
-          {url.view === 'explore' ? (
+          {url.view === 'explore' || url.view === 'twin' ? (
             <Explore target={target} profile={profile} profiles={data.profiles} factors={data.factors} gaps={data.gaps} validation={data.validation} earthRef={data.targets.earth_reference}
               mock={!!data.targets.mock} scorer={scorer} scorerError={scorerError} nCells={nCells} url={url} update={update}
               onRetryScorer={() => { setScorerError(null); setScorerNonce((n) => n + 1) }} onChangeTarget={() => update({ view: 'picker' })}

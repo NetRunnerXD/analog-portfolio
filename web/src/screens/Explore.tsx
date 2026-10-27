@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { VARIANT_UI } from '../copy'
 import { DataError, loadPortfolio } from '../data'
 import { fmtLatLon, hasScorableFeatures, makeTitler, makeValueFormatter, purposeName, targetShort, to100 } from '../lib/format'
@@ -19,6 +19,9 @@ import WeightsSheet from '../components/WeightsSheet'
 import MapLegend from '../components/MapLegend'
 import ValidationTab from '../components/ValidationTab'
 import PairedFactors from '../components/PairedFactors'
+
+// OpenLayers twin panes + imagery load only when the twin view opens
+const TwinViewer = lazy(() => import('../components/TwinViewer'))
 
 interface Props {
   target: Target
@@ -142,6 +145,10 @@ export default function Explore(p: Props) {
     return m
   }, [portfolio, vSites])
   const site = url.site ? allSites.get(url.site) ?? null : null
+  // a twin link to a site that isn't in this portfolio falls back to Explore
+  useEffect(() => {
+    if (url.view === 'twin' && pfReady && portfolio && !site) update({ view: 'explore', site: undefined }, true)
+  }, [url.view, pfReady, portfolio, site, update])
   const siteN = site ? vSites.findIndex((s) => s.site_id === site.site_id) : -1
   const [detail, setDetail] = useState<CellDetail | null>(null)
   useEffect(() => {
@@ -320,6 +327,22 @@ export default function Explore(p: Props) {
       {bp === 'tablet' && <button type="button" className="icon-btn drawer-close" aria-label="Hide results" onClick={() => setDrawer(false)}>×</button>}
     </div>
   )
+
+  if (url.view === 'twin') {
+    if (!site) {
+      return <main id="main" className="stub" aria-busy="true"><p className="t-body muted2">Loading…</p></main>
+    }
+    return (
+      <Suspense fallback={<main id="main" className="stub" aria-busy="true"><p className="t-body muted2">Loading the twin view…</p></main>}>
+        <TwinViewer earth={{ title: ctx.title(site), lat: site.lat, lon: site.lon }}
+          twin={{ body: target.body, title: target.name, lat: target.anchor.lat, lon: target.anchor.lon, radiusKm: target.sample_radius_km }}
+          earthR={earthRadiusKm(p.profiles.defaults) * 1000} header={`Site ${siteN >= 0 ? `${siteN + 1} · ` : ''}${ctx.title(site)} ↔ ${target.name}`}
+          onClose={() => update({ view: 'explore' })}>
+          <PairedFactors target={target} factors={p.factors} ft={ft} factorScores={site.factor_scores} earthFeatures={detail?.features ?? null} caption="Factor by factor" />
+        </TwinViewer>
+      </Suspense>
+    )
+  }
 
   return (
     <main id="main" className={`explore bp-${bp}`}>
