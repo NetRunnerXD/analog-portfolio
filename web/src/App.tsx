@@ -6,6 +6,7 @@ import { readUrl, writeUrl, type UrlState, type View } from './lib/url'
 import { makeFactorText } from './lib/factors'
 import type { FactorsFile, GapsFile, ProfilesFile, TargetsFile, ValidationFile } from './types/contract'
 import { ScorerClient } from './worker/client'
+import { knownCellsFrom } from './scoring/engine'
 import Picker from './screens/Picker'
 import { ErrorState, Logo } from './components/ui'
 
@@ -45,8 +46,8 @@ export default function App() {
     fetchGridRaw('earth_features.json')
       .then(({ manifest, buffer }) => {
         if (!live) return
-        const knownCells: [number, string][] = data.validation.sites.filter((s) => s.kind === 'positive').map((s) => [s.cell_id, s.name])
-        client = new ScorerClient({ manifest, buffer, factors: data.factors, profiles: data.profiles, knownCells })
+        const knownCells: [number, string][] = [...knownCellsFrom(data.validation)]
+        client = new ScorerClient({ manifest, buffer, factors: data.factors, profiles: data.profiles, knownCells, constants: data.targets.scoring_constants })
         client.onCrash = (m) => live && setScorerError(m)
         return client.ready().then((n) => { if (live) { setNCells(n); setScorer(client) } })
       })

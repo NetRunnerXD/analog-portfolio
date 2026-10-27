@@ -1,25 +1,26 @@
 import { useId, useState, type ReactNode } from 'react'
 
 const KEY = 'ap.legend'
-const PHONE = '(max-width: 599px)'
+// Below the wide breakpoint (1440 px) the legend starts collapsed so it doesn't cover pins (Project 1, real-data preview).
+const NARROW = '(max-width: 1439px)'
 
-/** Expanded unless the user collapsed it this session; phones start collapsed (spec v0.3.1 §8.3). */
+/** Expanded unless the user collapsed it this session; below 1440 px it starts collapsed (spec v0.3.1 §8.3 + Project 1). */
 function initialOpen(): boolean {
   try {
     const v = sessionStorage.getItem(KEY)
     if (v === 'open') return true
     if (v === 'closed') return false
   } catch { /* storage blocked: fall through */ }
-  return !(typeof matchMedia === 'function' && matchMedia(PHONE).matches)
+  return !(typeof matchMedia === 'function' && matchMedia(NARROW).matches)
 }
 
 /**
- * Map legend (spec v0.3.1 §8.3). Collapsible on Explore: expanded by default on desktop and tablet, collapsed on phones,
+ * Map legend (spec v0.3.1 §8.3). Collapsible on Explore: expanded by default at ≥ 1440 px, collapsed below (Project 1),
  * and the user's choice persists for the session. Collapsed it shows a 64 × 8 ramp chip ("0–100") and a "Legend" toggle
  * (aria-expanded, aria-controls). Story mode passes collapsible={false} so it always stays expanded. It is marked
  * data-map-obscures so map fit/fly-to padding keeps pins out from under it (measured live, so collapsing frees the space).
  */
-export default function MapLegend({ title, filterText, collapsible = true, children }: { title: string; filterText: string; collapsible?: boolean; children?: ReactNode }) {
+export default function MapLegend({ title, filterText, insufficientText, collapsible = true, children }: { title: string; filterText: string; insufficientText?: string; collapsible?: boolean; children?: ReactNode }) {
   const [open, setOpen] = useState(initialOpen)
   const id = useId()
   const expanded = !collapsible || open
@@ -44,6 +45,7 @@ export default function MapLegend({ title, filterText, collapsible = true, child
         <ul className="legend-items t-small">
           <li><i className="sw sw-nodata" aria-hidden="true" /> No data</li>
           <li><i className="sw sw-filter" aria-hidden="true" /> Filtered out ({filterText})</li>
+          {insufficientText && <li><i className="sw sw-insuf" aria-hidden="true" /> {insufficientText}</li>}
         </ul>
         {children}
       </div>

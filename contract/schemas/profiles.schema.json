@@ -155,6 +155,10 @@
         },
         "ties": {
           "type": "object"
+        },
+        "candidate_gates": {
+          "type": "object",
+          "description": "Body-level portfolio-candidate gates (contract v1.2)"
         }
       },
       "additionalProperties": false,

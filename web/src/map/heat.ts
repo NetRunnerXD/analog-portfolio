@@ -25,16 +25,24 @@ function makeCanvas(w: number, h: number): HTMLCanvasElement {
   return cv
 }
 
-/** scores: 0..100, 255 = not in grid. filter: >0 = filtered out. Returns [heatCanvas, filteredMaskCanvas]. */
-export function gridCanvases(scores: Uint8Array, filter: Uint8Array): { heat: HTMLCanvasElement; mask: HTMLCanvasElement } {
+/** Filter code for cells without enough data to score (matches INSUFFICIENT_CODE in scoring/engine.ts). */
+export const INSUFFICIENT = 255
+
+/** scores: 0..100, 255 = not in grid / no score. filter: >0 = filtered out, 255 = not enough data.
+ *  Returns the heat canvas, the filtered-cell mask and the insufficient-data mask. */
+export function gridCanvases(scores: Uint8Array, filter: Uint8Array): { heat: HTMLCanvasElement; mask: HTMLCanvasElement; insuf: HTMLCanvasElement } {
   const heat = makeCanvas(720, 360)
   const mask = makeCanvas(720, 360)
+  const insuf = makeCanvas(720, 360)
   const hc = heat.getContext('2d')!
   const mc = mask.getContext('2d')!
+  const ic = insuf.getContext('2d')!
   const hi = hc.createImageData(720, 360)
   const mi = mc.createImageData(720, 360)
+  const ii = ic.createImageData(720, 360)
   for (let i = 0; i < scores.length; i++) {
     const s = scores[i]
+    if (filter[i] === INSUFFICIENT) { ii.data[i * 4 + 3] = 255; continue }
     if (s === 255) continue
     const j = Math.round((Math.min(s, 100) / 100) * 255) * 4
     hi.data.set(LUT.subarray(j, j + 4), i * 4)
@@ -42,7 +50,20 @@ export function gridCanvases(scores: Uint8Array, filter: Uint8Array): { heat: HT
   }
   hc.putImageData(hi, 0, 0)
   mc.putImageData(mi, 0, 0)
-  return { heat, mask }
+  ic.putImageData(ii, 0, 0)
+  return { heat, mask, insuf }
+}
+
+/** "Not enough data": 1.5 px dots on a 6 px grid in the hatch colour, over the no-data land fill. */
+function dotTile(pixelRatio: number): HTMLCanvasElement {
+  const p = Math.round(6 * pixelRatio)
+  const cv = makeCanvas(p, p)
+  const ctx = cv.getContext('2d')!
+  ctx.fillStyle = T.hatch
+  ctx.beginPath()
+  ctx.arc(p / 2, p / 2, 0.9 * pixelRatio, 0, Math.PI * 2)
+  ctx.fill()
+  return cv
 }
 
 function hatchTile(pixelRatio: number): HTMLCanvasElement {
@@ -57,7 +78,7 @@ function hatchTile(pixelRatio: number): HTMLCanvasElement {
   return cv
 }
 
-export interface HeatState { heat: HTMLCanvasElement | null; mask: HTMLCanvasElement | null }
+export interface HeatState { heat: HTMLCanvasElement | null; mask: HTMLCanvasElement | null; insuf?: HTMLCanvasElement | null }
 
 export function makeHeatLayer(state: HeatState): ImageLayer<ImageCanvasSource> {
   const source = new ImageCanvasSource({
@@ -93,6 +114,17 @@ export function makeHeatLayer(state: HeatState): ImageLayer<ImageCanvasSource> {
       hcx.globalCompositeOperation = 'destination-in'
       draw(state.mask, hcx)
       ctx.drawImage(hatch, 0, 0)
+      if (state.insuf) {
+        const dots = makeCanvas(size[0], size[1])
+        const dcx = dots.getContext('2d')!
+        dcx.fillStyle = T.landNoData
+        dcx.fillRect(0, 0, size[0], size[1])
+        dcx.fillStyle = dcx.createPattern(dotTile(pixelRatio), 'repeat')!
+        dcx.fillRect(0, 0, size[0], size[1])
+        dcx.globalCompositeOperation = 'destination-in'
+        draw(state.insuf, dcx)
+        ctx.drawImage(dots, 0, 0)
+      }
       return cv
     },
   })

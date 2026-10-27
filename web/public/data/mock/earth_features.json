@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.1",
+ "contract_version": "1.2.0",
  "body": "earth",
  "mock": true,
  "grid": {
@@ -492,7 +492,45 @@
     "6": "Oceania",
     "7": "South America"
    }
+  },
+  {
+   "name": "permafrost_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 305324,
+   "length": 8252,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction (ESA CCI PFR; Mars gate clause C)",
+   "stats": {
+    "p005": 0.10893649189588246,
+    "p50": 1.0,
+    "p995": 1.0,
+    "min": 0.10018434727841168,
+    "max": 1.0
+   },
+   "source": "MOCK synthetic"
+  },
+  {
+   "name": "moss_lichen_frac",
+   "factor": null,
+   "dtype": "uint8",
+   "byte_offset": 313576,
+   "length": 8252,
+   "scale": 0.004,
+   "add_offset": 0,
+   "nodata": 255,
+   "units": "fraction of land (WorldCover moss & lichen; Mars gate clause C)",
+   "stats": {
+    "p005": 0.0,
+    "p50": 0.0,
+    "p995": 0.4,
+    "min": 0.0,
+    "max": 0.4
+   },
+   "source": "MOCK synthetic"
   }
  ],
- "generated_at": "2026-10-08T08:01:56+00:00"
+ "generated_at": "2026-10-12T17:07:58+00:00"
 }

@@ -23,7 +23,7 @@ export default function ValidationTab({ validation, targetId, body, profileId, c
   onShowOnMap: (v: boolean) => void
 }) {
   const [cells, setCells] = useState<{ key: string; byCell: Map<number, CellDetail> } | null>(null)
-  const cellIds = useMemo(() => [...new Set(validation.sites.map((s) => s.cell_id))], [validation])
+  const cellIds = useMemo(() => [...new Set(validation.sites.map((s) => s.eval_cell_id ?? s.cell_id))], [validation])
   useEffect(() => {
     if (!scorer || !scoreKey) return
     let live = true
@@ -47,7 +47,7 @@ export default function ValidationTab({ validation, targetId, body, profileId, c
     let bestLoss = -1
     for (const f of ctx.needs) {
       const s = d.factorScores[f]
-      if (s === undefined) continue
+      if (s === undefined || s === null) continue
       const loss = (ctx.weights[f] ?? 0) * (1 - s)
       if (loss > bestLoss) { bestLoss = loss; best = f }
     }

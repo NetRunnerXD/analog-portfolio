@@ -57,7 +57,7 @@ Earth is the search space (land only, roughly 70–90k cells). Global Moon and M
 ### 2.3 Aggregation
 
 1. **Earth-achievable clip.** For each factor, t* = clip(t, Earth P0.5, Earth P99.5). Score against t*, store `gap = |t − t*|` and show it next to the score.
-2. **Hard filters (per profile).** All profiles: land, not open water, built-up fraction < 50%. ISRU-ice: permafrost present or mean annual TS < 0 °C. Astrobiology: aridity index < 0.2 or a cold desert. Astrobiology is disabled for Moon targets and greyed out with a reason.
+2. **Hard filters (per profile).** All profiles: land, not open water, built-up fraction < 50%. ISRU-ice: permafrost present or mean annual TS < 0 °C. Mars targets (every profile, including Astrobiology; contract v1.2, research.md §8): the Mars gate, i.e. arid (AI ≤ 0.20), mostly bare ground (≥ 50%), a cold desert on permafrost, or an impact / young volcanic landscape that is not wet and green; it replaced the earlier Astrobiology-only aridity filter and was designed after the first validation run, before the freeze. Astrobiology is disabled for Moon targets and greyed out with a reason.
 3. **Core score.** Weighted geometric mean over F1–F10: `S_core = Π s_i^(w_i/Σw)`, with s floored at 0.01 so a zero produces a strongly low score rather than NaN. One terrible factor can't be hidden (ESI-style [R80]).
 4. **Secondary nudge.** `S = S_core × (0.9 + 0.1 × S_sec)`, where S_sec is the arithmetic mean of F11–F13. Capped factors can only break ties.
 5. **Per-factor breakdown** (bars plus gap numbers) for every cell. This is the "characterization" the challenge asks for.

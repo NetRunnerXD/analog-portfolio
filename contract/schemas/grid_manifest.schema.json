@@ -19,35 +19,72 @@
       "description": "true for mock/demo data that is not derived from real layers"
     },
     "grid": {
-      "type": "object",
-      "properties": {
-        "resolution_deg": {
-          "const": 0.5
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "resolution_deg": {
+              "const": 0.5
+            },
+            "ncols": {
+              "const": 720
+            },
+            "nrows": {
+              "const": 360
+            },
+            "lon_centre_first": {
+              "const": -179.75
+            },
+            "lat_centre_first": {
+              "const": 89.75
+            },
+            "row_order": {
+              "const": "north-to-south"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "resolution_deg",
+            "ncols",
+            "nrows",
+            "lon_centre_first",
+            "lat_centre_first",
+            "row_order"
+          ]
         },
-        "ncols": {
-          "const": 720
-        },
-        "nrows": {
-          "const": 360
-        },
-        "lon_centre_first": {
-          "const": -179.75
-        },
-        "lat_centre_first": {
-          "const": 89.75
-        },
-        "row_order": {
-          "const": "north-to-south"
+        {
+          "type": "object",
+          "properties": {
+            "resolution_deg": {
+              "const": 1.0
+            },
+            "ncols": {
+              "const": 360
+            },
+            "nrows": {
+              "const": 180
+            },
+            "lon_centre_first": {
+              "const": -179.5
+            },
+            "lat_centre_first": {
+              "const": 89.5
+            },
+            "row_order": {
+              "const": "north-to-south"
+            }
+          },
+          "additionalProperties": false,
+          "required": [
+            "resolution_deg",
+            "ncols",
+            "nrows",
+            "lon_centre_first",
+            "lat_centre_first",
+            "row_order"
+          ],
+          "description": "1 deg global grid for Moon/Mars (contract v1.2): cell index = row*360 + col"
         }
-      },
-      "additionalProperties": false,
-      "required": [
-        "resolution_deg",
-        "ncols",
-        "nrows",
-        "lon_centre_first",
-        "lat_centre_first",
-        "row_order"
       ]
     },
     "layout": {
@@ -168,6 +205,10 @@
               "type": "string"
             },
             "description": "Categorical code table (raw value -> label), e.g. continent"
+          },
+          "codes_note": {
+            "type": "string",
+            "description": "How the codes were assigned (e.g. Russia split at 60E)"
           }
         },
         "additionalProperties": false,
@@ -187,6 +228,17 @@
     },
     "generated_at": {
       "type": "string"
+    },
+    "subset": {
+      "type": "string",
+      "description": "Which cells a sparse grid holds, e.g. Moon polar |lat| >= 60 deg"
+    },
+    "companions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Other manifests for the same body"
     }
   },
   "additionalProperties": false,

@@ -1,5 +1,5 @@
 {
- "contract_version": "1.1.1",
+ "contract_version": "1.2.0",
  "mock": true,
  "site_id": "bockfjorden_sverrefjell_volcanic_centre_svalbard",
  "name": "Bockfjorden / Sverrefjell volcanic centre (Svalbard), AMASE",
@@ -35,7 +35,9 @@
   "builtup_frac": 0.0,
   "travel_time_min": 1882.0,
   "airport_km": 77.0,
-  "continent": 4.0
+  "continent": 4.0,
+  "permafrost_frac": 1.0,
+  "moss_lichen_frac": 0.0
  },
  "drilldown": {},
  "best_for": [],

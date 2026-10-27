@@ -1,7 +1,10 @@
+import type { ScoringConstants } from '../scoring/engine'
 import type { FactorId, FactorsFile, GridManifest, Portfolio, ProfilesFile, TargetBody } from '../types/contract'
 
 export interface InitMsg {
   type: 'init'
+  /** targets.json → scoring_constants (v1.2), full-precision clip and range bounds */
+  constants?: ScoringConstants
   manifest: GridManifest
   buffer: ArrayBuffer
   factors: FactorsFile
@@ -40,7 +43,7 @@ export interface ScoredMsg {
   /** 720×360: 0 = passes, i > 0 = 1-based index of the first failing hard filter */
   filter: Uint8Array
   portfolio: Portfolio | null
-  stats: { nCells: number; nPass: number; best: number; median: number; top5: number; top1: number; unknownFilters: string[]; ms: number }
+  stats: { nCells: number; nScorable: number; nInsufficient: number; nPass: number; best: number; median: number; top5: number; top1: number; unknownFilters: string[]; ms: number }
 }
 export interface CellDetail {
   cellId: number
@@ -49,13 +52,16 @@ export interface CellDetail {
   lon: number
   score: number | null
   percentile: number | null
+  /** 0 passes, 1..n = failing hard filter, INSUFFICIENT_CODE = not enough data to score */
   filterCode: number
-  factorScores: Partial<Record<FactorId, number>>
+  /** present share of the active weight (contract §3.2.6) */
+  coverage?: number
+  factorScores: Partial<Record<FactorId, number | null>>
   features: Record<string, number | null>
 }
 export interface CellReplyMsg { type: 'cell'; reqId: number; detail: CellDetail }
 export interface CellsReplyMsg { type: 'cells'; reqId: number; details: CellDetail[] }
-export interface TwinResult { targetId: string; score: number; factorScores: Partial<Record<FactorId, number>> }
+export interface TwinResult { targetId: string; /** null = insufficient data (< 70% of weight measured) */ score: number | null; factorScores: Partial<Record<FactorId, number>> }
 export interface TwinsReplyMsg { type: 'twins'; reqId: number; inGrid: boolean; results: TwinResult[]; features: Record<string, number | null> }
 export interface ReadyMsg { type: 'ready'; nCells: number; /** earth_features has a continent column */ gridContinent: boolean }
 export interface ErrorMsg { type: 'error'; reqId?: number; message: string }
