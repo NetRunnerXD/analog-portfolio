@@ -3,10 +3,10 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import type { FactorId, SiteRef, ValidationFile } from '../types/contract'
 import { coverageMatrix } from './matrix'
-import { pairValidation, rankAuc } from './validation'
+import { evalCell, pairValidation, rankAuc } from './validation'
 
-const MOCK = resolve(__dirname, '../../public/data/mock')
-const validation = JSON.parse(readFileSync(resolve(MOCK, 'validation.json'), 'utf8')) as ValidationFile
+const DATA = resolve(__dirname, '../../public/data')
+const validation = JSON.parse(readFileSync(resolve(DATA, 'validation.json'), 'utf8')) as ValidationFile
 const site = (id: string, fs: Partial<Record<FactorId, number>>) => ({ site_id: id, factor_scores: fs } as unknown as SiteRef)
 
 describe('coverage matrix', () => {
@@ -41,11 +41,35 @@ describe('validation per target + purpose', () => {
   })
   it('live percentiles override the file (custom weights)', () => {
     const t = 'moon_shackleton_connecting_ridge'
-    const live = new Map(validation.sites.map((s) => [s.cell_id, 99.5]))
+    const live = new Map(validation.sites.map((s) => [evalCell(s), { percentile: 99.5 }]))
     const pv = pairValidation(validation, t, 'moon', 'P3_habitat_eva_power', live)
-    expect(pv.hit5).toBe(pv.total)
-    expect(pv.hit1).toBe(pv.total)
-    expect(pv.auc).toBe(0.5)
+    const stuck = pv.rows.filter((r) => !r.isControl && (r.status === 'gate_excluded' || r.status === 'land_filter_excluded' || r.status === 'hard_filter_excluded')).length
+    expect(pv.hit5).toBe(pv.total - stuck)
+    expect(pv.hit1).toBe(pv.total - stuck)
+  })
+  it('excluded evaluations stay in the denominators (summary pct_top5 / n_evaluations)', () => {
+    const pairs = [...new Set(validation.sites.filter((s) => s.kind === 'positive').flatMap((s) => s.results.map((r) => `${r.target_id}|${r.profile_id}`)))]
+    let total = 0, hit5 = 0, excluded = 0
+    for (const k of pairs) {
+      const [t, p] = k.split('|')
+      const pv = pairValidation(validation, t, t.startsWith('moon') ? 'moon' : 'mars', p)
+      total += pv.total; hit5 += pv.hit5; excluded += pv.nExcluded
+    }
+    expect(total).toBe(validation.summary.n_evaluations)
+    expect(total - excluded).toBe(validation.summary.n_scored)
+    expect(Math.abs(hit5 / total - (validation.summary.pct_top5 as number))).toBeLessThan(6e-5)
+  })
+  it('live: gate-excluded stays at 0; insufficient data under custom weights becomes a miss', () => {
+    const mars = validation.sites.find((s) => s.results.some((r) => r.status === 'gate_excluded'))!
+    const r = mars.results.find((x) => x.status === 'gate_excluded')!
+    const body = r.target_id.startsWith('moon') ? 'moon' : 'mars'
+    const live = new Map(validation.sites.map((s) => [evalCell(s), { percentile: null as number | null }]))
+    const pv = pairValidation(validation, r.target_id, body, r.profile_id, live)
+    const row = pv.rows.find((x) => x.site === mars)!
+    expect(row.status).toBe('gate_excluded')
+    expect(row.percentile).toBe(0)
+    expect(pv.rows.filter((x) => x.status === 'insufficient_data').every((x) => x.percentile === 0 && !x.inTop5)).toBe(true)
+    expect(pv.total).toBe(validation.sites.filter((s) => s.kind === 'positive' && s.results.some((x) => x.target_id === r.target_id && x.profile_id === r.profile_id)).length)
   })
   it('rank AUC with ties', () => {
     expect(rankAuc([90, 80], [80, 10])).toBe((1 + 1 + 0.5 + 1) / 4)

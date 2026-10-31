@@ -352,6 +352,7 @@ main { flex: 1; min-height: 0; }
 .vbar .v5 { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--color-text-secondary); }
 .vbar b { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border: 1.5px solid var(--color-map-markerStroke); background: var(--color-map-markerFill); }
 .vpct { text-align: right; white-space: nowrap; }
+.vlist .vwhy { grid-column: 1 / -1; margin-top: -2px; }
 .this-site { padding: var(--space-2) var(--space-3); border-radius: var(--radius-md); background: var(--color-surface-2); }
 
 /* ---------- paired factors (spec §8.5 PairedFactorRow) */

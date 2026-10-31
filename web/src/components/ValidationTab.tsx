@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Ctx } from './panels'
-import { pairValidation, topPct, TOP5_PCT, type PairValidation } from '../lib/validation'
+import { evalCell, pairValidation, STATUS_TEXT, topPct, TOP5_PCT, type LiveCell, type PairValidation } from '../lib/validation'
 import type { FactorId, SiteRef, TargetBody, ValidationFile } from '../types/contract'
 import type { CellDetail } from '../worker/protocol'
 import type { ScorerClient } from '../worker/client'
@@ -23,7 +23,7 @@ export default function ValidationTab({ validation, targetId, body, profileId, c
   onShowOnMap: (v: boolean) => void
 }) {
   const [cells, setCells] = useState<{ key: string; byCell: Map<number, CellDetail> } | null>(null)
-  const cellIds = useMemo(() => [...new Set(validation.sites.map((s) => s.eval_cell_id ?? s.cell_id))], [validation])
+  const cellIds = useMemo(() => [...new Set(validation.sites.map(evalCell))], [validation])
   useEffect(() => {
     if (!scorer || !scoreKey) return
     let live = true
@@ -33,8 +33,8 @@ export default function ValidationTab({ validation, targetId, body, profileId, c
   const cur = cells && cells.key === scoreKey ? cells.byCell : null
   const livePct = useMemo(() => {
     if (!ctx.custom || !cur) return undefined
-    const m = new Map<number, number>()
-    for (const [c, d] of cur) if (d.inGrid && d.percentile !== null) m.set(c, d.percentile)
+    const m = new Map<number, LiveCell>()
+    for (const [c, d] of cur) if (d.inGrid) m.set(c, { percentile: d.percentile })
     return m
   }, [ctx.custom, cur])
   const pv: PairValidation | null = ctx.custom && !livePct ? null : pairValidation(validation, targetId, body, profileId, livePct)
@@ -62,7 +62,7 @@ export default function ValidationTab({ validation, targetId, body, profileId, c
         <div aria-busy="true"><div className="skeleton" /><div className="skeleton" /><p className="t-small muted2">Recalculating for your weights…</p></div>
       ) : (
         <>
-          <p className="t-small muted2">We fixed the weights before scoring, then checked where {pv.total} well-known analog sites landed for this target and purpose. The engine never saw this list.
+          <p className="t-small muted2">We fixed the weights before scoring, then checked where {pv.total} well-known analog sites landed (sites a filter excludes still count, as misses) for this target and purpose. The engine never saw this list.
             {validation.frozen_commit ? ` Weights frozen at commit ${validation.frozen_commit.slice(0, 7)}${validation.frozen_at ? ` (${validation.frozen_at})` : ''}.` : ''}</p>
           {ctx.custom && <p className="tag tag-live">Recalculated for your weights. The pre-registered result uses the default weights.</p>}
           {pv.total === 0 ? (
@@ -71,6 +71,7 @@ export default function ValidationTab({ validation, targetId, body, profileId, c
             <dl className="vstats">
               <div><dt className="t-small muted2">known analogs in the top 5%</dt><dd className="scoreLg num">{pv.hit5} of {pv.total}</dd></div>
               <div><dt className="t-small muted2">in the top 1%</dt><dd className="scoreLg num">{pv.hit1} of {pv.total}</dd></div>
+              {pv.nExcluded > 0 && <div><dt className="t-small muted2">excluded but counted as misses</dt><dd className="scoreLg num">{pv.nExcluded}</dd></div>}
               {pv.auc !== null && <div><dt className="t-small muted2">AUC vs {pv.nControls} non-analogs (1.0 = perfect, 0.5 = chance)</dt><dd className="scoreLg num">{pv.auc.toFixed(2)}</dd></div>}
             </dl>
           )}
@@ -82,14 +83,15 @@ export default function ValidationTab({ validation, targetId, body, profileId, c
           <ul className="vlist">
             {pv.rows.map((r) => (
               <li key={`${r.cellId}:${r.name}`} className={r.isControl ? 'control' : ''}
-                aria-label={`${r.name}${r.isControl ? ' (control)' : ''}: top ${topPct(r.percentile)} percent${r.inTop5 ? ', inside the top 5 percent' : ', outside the top 5 percent'}.`}>
+                aria-label={`${r.name}${r.isControl ? ' (control)' : ''}: ${r.status === 'scored' || r.status === 'hard_filter_excluded' ? `top ${topPct(r.percentile)} percent` : 'excluded'}${r.status !== 'scored' ? `, ${STATUS_TEXT[r.status]}, counted as a miss` : ''}${r.inTop5 ? ', inside the top 5 percent' : ', outside the top 5 percent'}.`}>
                 <span className="t-label vname" aria-hidden="true">{r.isControl ? <>{r.name} <span className="muted2">(control)</span></> : r.name}</span>
                 <span className="vbar" aria-hidden="true"><i className="v5" style={{ left: `${TOP5_PCT}%` }} /><b style={{ left: `${r.percentile}%` }} /></span>
-                <span className="num t-small vpct" aria-hidden="true">top {topPct(r.percentile)}%</span>
+                <span className="num t-small vpct" aria-hidden="true">{r.status === 'scored' || r.status === 'hard_filter_excluded' ? `top ${topPct(r.percentile)}%` : 'excluded'}</span>
+                {r.status !== 'scored' && <span className="t-small muted2 vwhy" aria-hidden="true">{STATUS_TEXT[r.status]} · counted as a miss</span>}
               </li>
             ))}
           </ul>
-          {pv.rows.filter((r) => !r.isControl && !r.inTop5).map((r) => {
+          {pv.rows.filter((r) => !r.isControl && !r.inTop5 && r.status === 'scored').map((r) => {
             const f = mainFactor(r.cellId)
             return f ? <p key={`miss:${r.cellId}:${r.name}`} className="t-small muted2">{r.name} lands outside the top 5% because {ctx.ft.label(f).toLowerCase()} differs. We report it rather than retune the weights.</p> : null
           })}
