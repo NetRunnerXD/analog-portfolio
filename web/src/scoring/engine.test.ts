@@ -5,7 +5,7 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { decodeGrid } from '../data'
 import type { FactorId, FactorsFile, GridManifest, Portfolio, ProfilesFile, SiteRef, TargetsFile, ValidationFile } from '../types/contract'
-import { knownCellsFrom, buildVariants, clipTargets, factorScores, prepareEarth, run, type ScoringConstants, type TargetValues } from './engine'
+import { knownCellsFrom, rangeSim, activeFilters, buildVariants, clipTargets, factorScores, prepareEarth, run, type ScoringConstants, type TargetValues } from './engine'
 import { gridContinentLookup } from './continent'
 
 // CI runs against the shipped real export (web/public/data, from the pipeline). Set PARITY_DATA to another data root (e.g. a read-only export of PR #11's
@@ -85,6 +85,19 @@ describe('engine parity with the Python reference (mock grid, default weights)',
       for (const k of ['median', 'top5', 'top1'] as const) close(out.portfolio!.earth_thresholds![k], p.earth_thresholds![k], 5.1e-5, k) // exports round to 4 dp
       expect(out.portfolio!.universe).toEqual(p.universe)
       expect(out.portfolio!.uncoverable).toEqual(p.uncoverable)
+      expect(out.portfolio!.dropped_factors ?? [], `${file} dropped_factors`).toEqual(p.dropped_factors ?? [])
+      if (p.insufficient_cells !== undefined) expect(out.portfolio!.insufficient_cells, `${file} insufficient_cells`).toBe(p.insufficient_cells)
+      // gate exclusion: every validation evaluation the pipeline marked gate_excluded fails the JS gate, and every
+      // scored one passes all filters (codes: 1..n hard filters, n + 1 the body gate)
+      const gateCode = activeFilters(profiles, profile).length + 1
+      for (const v of validation.sites) {
+        const r = v.results.find((x) => x.target_id === target.id && x.profile_id === profile.id)
+        const i = idx.get(v.eval_cell_id ?? v.cell_id)
+        if (!r || i === undefined) continue
+        if (r.status === 'gate_excluded') expect(out.code[i], `${v.name} gate_excluded`).toBe(gateCode)
+        if (r.status === 'scored') expect(out.code[i], `${v.name} scored`).toBe(0)
+        if (r.status === 'insufficient_data') expect(out.valid[i], `${v.name} insufficient`).toBe(0)
+      }
       // Variant invariants (contract v1.1 §4.1) on the JS output
       const theta = profile.theta
       for (const v of out.portfolio!.variants) {
@@ -125,6 +138,25 @@ describe('engine parity with the Python reference (mock grid, default weights)',
 })
 
 // Spec v0.3.1: "Easiest to reach" is a hard filter (travel_time_min <= 360) applied BEFORE set cover, also for custom weights.
+describe('parity guard', () => {
+  it('CI never widens the parity tolerances (PARITY_TOL_SCALE ≤ 1)', () => {
+    if (process.env.CI) expect(TOL_SCALE, 'PARITY_TOL_SCALE must not exceed 1 in CI').toBeLessThanOrEqual(1)
+    expect(Number.isFinite(TOL_SCALE)).toBe(true)
+  })
+})
+
+describe('F1/F2 range similarity edge cases', () => {
+  it('degenerate span: 1 on an exact match, else 0; missing stays missing', () => {
+    expect(rangeSim(200, 200, 0)).toBe(1)
+    expect(rangeSim(200, 201, 0)).toBe(0)
+    expect(rangeSim(200, 200, -5)).toBe(1)
+    expect(rangeSim(200, 150, Number.NaN)).toBe(0)
+    expect(Number.isNaN(rangeSim(Number.NaN, 200, 0))).toBe(true)
+    expect(rangeSim(250, 200, 100)).toBeCloseTo(0.5, 12)
+    expect(rangeSim(500, 200, 100)).toBe(0)
+  })
+})
+
 describe('easiest_to_reach: <= 6 h hard filter before set cover', () => {
   const mk = (id: string, tt: number | null, fs: Partial<Record<FactorId, number>>, score: number): SiteRef => ({
     site_id: id, name: id, lat: 0, lon: 0, cell_id: 0, score, score_core: score, earth_percentile: 99, factor_scores: fs, covers: [], gaps: {},

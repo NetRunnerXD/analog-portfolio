@@ -121,13 +121,15 @@ export default function Explore(p: Props) {
   const portfolio: Portfolio | null = custom ? livePortfolio : (pfData ?? (pf.status === 'missing' ? livePortfolio : null))
   const fromFile = !custom && !!pfData
   const dropped = new Set<FactorId>(portfolio?.dropped_factors ?? targetDropped(Object.fromEntries(CORE_FACTORS.map((f) => [f, target.features?.[f]?.value ?? null])), weights))
-  const needs = CORE_FACTORS.filter((f) => (weights[f] ?? 0) > 0 && !dropped.has(f)) as FactorId[]
+  const droppedKey = [...dropped].sort().join(',')
+  const needs = useMemo(() => CORE_FACTORS.filter((f) => (weights[f] ?? 0) > 0 && !droppedKey.split(',').includes(f)) as FactorId[], [weights, droppedKey])
   const pName = purposeName(profile)
   const tShort = targetShort(target)
   const ft = useMemo(() => makeFactorText(p.factors), [p.factors])
   const titleOf = useMemo(() => makeTitler([...(portfolio?.top_cells ?? []), ...(portfolio?.variants.flatMap((v) => v.sites) ?? [])]), [portfolio])
-  const ctx: Ctx = { title: titleOf, target, purposeName: pName, targetShort: tShort, weights, custom, needs, factors: p.factors, ft, robustnessAvailable: fromFile,
-    earthRef: p.earthRef ?? undefined, mc: pfData?.monte_carlo ?? p.profiles.defaults.monte_carlo }
+  const mc = pfData?.monte_carlo ?? p.profiles.defaults.monte_carlo
+  const ctx: Ctx = useMemo(() => ({ title: titleOf, target, purposeName: pName, targetShort: tShort, weights, custom, needs, factors: p.factors, ft, robustnessAvailable: fromFile,
+    earthRef: p.earthRef ?? undefined, mc }), [titleOf, target, pName, tShort, weights, custom, needs, p.factors, ft, fromFile, p.earthRef, mc])
   const variant = portfolio?.variants.find((v) => v.id === url.v && v.available) ?? portfolio?.variants.find((v) => v.id === 'best_match')
   const vSites = useMemo(() => variant?.sites ?? [], [variant])
 
@@ -220,7 +222,7 @@ export default function Explore(p: Props) {
       }
     }
     return out
-  }, [showPortfolio, vSites, portfolio, site, layers, knownSites, target.id, profile.id, custom])
+  }, [showPortfolio, vSites, portfolio, site, layers, knownSites, target.id, profile.id, custom, ctx])
 
   // the body's candidate gate (contract v1.2, Mars) is checked after the hard filters: filterCode = filters.length + 1
   const gate = p.profiles.defaults.candidate_gates?.[target.body]
