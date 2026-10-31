@@ -115,6 +115,30 @@ export function candidatePin(selected = false): Style {
   return st
 }
 
+/** Target pins (spec §3): Moon = circle Ø 24 px, Mars = diamond 30 px; a number inside for reverse-search twins. */
+export function bodyPin(body: 'moon' | 'mars', n?: number): Style {
+  const key = `body|${body}|${n ?? ''}`
+  const hit = cache.get(key)
+  if (hit) return hit
+  const S = (body === 'moon' ? 24 : 30) + 8
+  const { cv, ctx, r } = canvas(S, S)
+  const c = S / 2
+  const p = new Path2D()
+  if (body === 'moon') p.arc(c, c, 12, 0, Math.PI * 2)
+  else { p.moveTo(c, c - 15); p.lineTo(c + 15, c); p.lineTo(c, c + 15); p.lineTo(c - 15, c); p.closePath() }
+  outlined(ctx, p, body === 'moon' ? T.pinMoon : T.pinMars)
+  if (n !== undefined) {
+    ctx.fillStyle = T.ink
+    ctx.font = "600 13px 'JetBrains Mono', ui-monospace, monospace"
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(String(n), c, c + 0.5)
+  }
+  const st = new Style({ image: new Icon({ img: cv, size: [cv.width, cv.height], scale: 1 / r }), zIndex: 40 - (n ?? 0) })
+  cache.set(key, st)
+  return st
+}
+
 /** Small swatches for the legend / layer toggle (DOM canvases). */
 export function swatch(kind: 'earth' | 'known' | 'candidate'): HTMLCanvasElement {
   const st = kind === 'earth' ? earthPin(1) : kind === 'known' ? knownPin() : candidatePin()

@@ -10,7 +10,7 @@ Only the latest commit on `main` (and the site deployed from it) is supported. T
 - The offline Python data pipeline in `pipeline/` and the precomputed data it publishes to `web/public/data/`.
 - Repository configuration: GitHub Actions workflows, Dependabot config, security headers (`web/vite.config.ts` CSP meta, `web/public/_headers`, `web/vercel.json`).
 
-There is no backend, no user accounts, no cookies, and no server-side data collection. The only third-party origin the site contacts is NASA GIBS (`gibs.earthdata.nasa.gov`) for basemap tiles.
+There is no backend, no user accounts, no cookies, and no server-side data collection. The only third-party origins the site contacts are NASA GIBS (`gibs.earthdata.nasa.gov`) and NASA Solar System Treks (`trek.nasa.gov`), for imagery tiles in the twin viewer and story mode (images only; nothing is sent but the tile request).
 
 Out of scope: vulnerabilities in third-party services (GitHub, NASA GIBS, hosting providers), and issues that need a compromised user device or browser.
 

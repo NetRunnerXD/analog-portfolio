@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { cellSizeKm, circleRing, metresPerPixel, MOON_R, resolutionFor, scaleBar, spForward, spInverse, spScale } from './twin'
+import { cellSizeKm, circleRing, destination, metresPerPixel, MOON_R, resolutionFor, scaleBar, spForward, spInverse, spScale } from './twin'
 
 describe('Moon south polar stereographic', () => {
   it('maps the pole to the origin and round-trips', () => {
@@ -46,5 +46,32 @@ describe('same scale on both panes', () => {
     for (const p of ring) { const [x, y] = spForward(p); expect(Math.hypot(x - cx, y - cy) / spScale(-82.26)).toBeGreaterThan(14800); expect(Math.hypot(x - cx, y - cy) / spScale(-82.26)).toBeLessThan(15200) }
     expect(cellSizeKm(0, 6371008.8)).toEqual([56, 56])
     expect(cellSizeKm(60, 6371008.8)).toEqual([56, 28])
+  })
+})
+
+describe('oblique stereographic pane projection', () => {
+  it('is the identity at the anchor, round-trips, and keeps true scale near the centre on both axes', async () => {
+    const { obliqueStereo } = await import('./twin')
+    for (const [lat0, lon0, R] of [[-77.5, 162.0, 6371008.8], [-82.26, -54.58, MOON_R], [18.4, 77.5, 3396190], [64, -179.9, 6371008.8]]) {
+      const p = obliqueStereo(lat0, lon0, R)
+      expect(p.forward([lon0, lat0]).map(Math.abs).every((v) => v < 1e-6)).toBe(true)
+      for (const q of [[lon0 + 0.3, lat0 - 0.2], [lon0 - 1, lat0 + 0.5]]) {
+        const [lon, lat] = p.inverse(p.forward(q))
+        expect(lat).toBeCloseTo(q[1], 9)
+        expect(((lon - q[0] + 540) % 360) - 180).toBeCloseTo(0, 9)
+      }
+      // 1 km north and 1 km east of the anchor land ~1000 m up and right
+      const d = 1000
+      const n = p.forward(destination([lon0, lat0], d, 0, R))
+      const e = p.forward(destination([lon0, lat0], d, 90, R))
+      expect(n[0]).toBeCloseTo(0, 3); expect(n[1]).toBeCloseTo(d, 1)
+      expect(e[0]).toBeCloseTo(d, 1); expect(Math.abs(e[1])).toBeLessThan(0.1)
+    }
+  })
+  it('imagery: south-polar Moon mosaics below 60°S, one origin per service', async () => {
+    const { panePyramids, tileOrigins } = await import('./twin')
+    expect(panePyramids('moon', -89.4).map((p) => p.kind)).toEqual(['sp', 'sp'])
+    expect(panePyramids('moon', 10)[0].kind).toBe('deg')
+    expect(tileOrigins.sort()).toEqual(['https://gibs.earthdata.nasa.gov', 'https://trek.nasa.gov'])
   })
 })
