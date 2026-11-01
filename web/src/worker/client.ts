@@ -40,7 +40,7 @@ export class ScorerClient {
       this.pending.clear()
       this.onCrash?.(msg)
     })
-    const msg: ToWorker = { type: 'init', ...init }
+    const msg: ToWorker = { type: 'init', assetBase: new URL(import.meta.env.BASE_URL, window.location.href).href, ...init }
     this.w.postMessage(msg, [init.buffer])
   }
 

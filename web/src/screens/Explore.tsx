@@ -17,6 +17,7 @@ import { FidelityGapPanel, PortfolioPanel, SiteCard, TopRegionsPanel, type Ctx, 
 import { Banner, EmptyState, ErrorState, Toast } from '../components/ui'
 import WeightsSheet from '../components/WeightsSheet'
 import MapLegend from '../components/MapLegend'
+import type { HeatMode } from '../map/heat'
 import ValidationTab from '../components/ValidationTab'
 import PairedFactors from '../components/PairedFactors'
 
@@ -170,6 +171,8 @@ export default function Explore(p: Props) {
 
   const [hovered, setHovered] = useState<string | null>(null)
   const [siteTab, setSiteTab] = useState<SiteTab>('scores')
+  // heat colouring: rank within the current view by default (Project 1), 'Absolute' on request
+  const [heatMode, setHeatMode] = useState<HeatMode>('view')
   useEffect(() => { setSiteTab('scores') }, [site?.site_id])
   const [weightsOpen, setWeightsOpen] = useState(false)
   const { weightsReq, weightsSeen, onWeightsSeen } = p
@@ -296,7 +299,7 @@ export default function Explore(p: Props) {
   )
 
   const legend = (
-    <MapLegend title={`How ${target.body === 'moon' ? 'Moon' : 'Mars'}-like for this mission`} filterText={filters.map((f) => f.ui_short ?? f.id).join(' or ')}
+    <MapLegend title={`How ${target.body === 'moon' ? 'Moon' : 'Mars'}-like for this mission`} mode={heatMode} onMode={setHeatMode} filterText={filters.map((f) => f.ui_short ?? f.id).join(' or ')}
       insufficientText={cur && cur.stats.nInsufficient > 0 ? `Not enough data (under ${minPct}% of what counts)` : undefined}>
       <fieldset className="layer-toggle t-small">
         <legend className="sr-only">Map layers</legend>
@@ -309,7 +312,7 @@ export default function Explore(p: Props) {
   const map = (
     <section className="map-col" aria-label="Map">
       {banners}
-      <MapView heat={cur ? { scores: cur.heat, filter: cur.filter } : null} pins={pins} selectedId={url.site ?? null} hoveredId={hovered}
+      <MapView heatMode={heatMode} heat={cur ? { scores: cur.heat, filter: cur.filter } : null} pins={pins} selectedId={url.site ?? null} hoveredId={hovered}
         fitKey={showPortfolio ? `${scoreKey}|${variant?.id}` : undefined} ariaLabel={`Map of Earth's land coloured by match to ${tShort} for ${pName}`} describedBy="map-legend"
         filterText={filterText} closest={closest} onHoverPin={setHovered}
         onSelectPin={(id) => { const s = allSites.get(id); if (s) openSite(s) }}>

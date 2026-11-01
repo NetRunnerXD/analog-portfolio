@@ -6,6 +6,27 @@ import { type ScoringConstants, aggregate, clipTargets, minActiveFrac, factorSco
 import type { FactorId, FactorsFile, ProfilesFile } from '../types/contract'
 import { continentResolver, gridContinentLookup, type ContinentOf } from '../scoring/continent'
 import type { CellDetail, FromWorker, ToWorker } from './protocol'
+import { fetchRegions, type Regions } from '../lib/regions'
+import type { Portfolio, SiteRef } from '../types/contract'
+
+/** Country / admin-1 for live-built portfolios (lazy, once). */
+let regions: Promise<Regions | null> | null = null
+let assetBase = ''
+async function nameSites(pf: Portfolio | null) {
+  if (!pf || !earth) return
+  const e = earth
+  regions ??= fetchRegions(assetBase, e.cellId).catch(() => null)
+  const r = await regions
+  if (!r) return
+  const fill = (x: SiteRef) => {
+    const i = idxOf.get(x.cell_id)
+    if (i === undefined) return
+    x.country ??= r.country(i) ?? undefined
+    x.admin1 ??= r.admin1(i) ?? undefined
+  }
+  pf.top_cells?.forEach(fill)
+  pf.variants.forEach((v) => v.sites.forEach(fill))
+}
 
 let earth: EarthGrid | null = null
 let factors: FactorsFile | null = null
@@ -53,7 +74,7 @@ function cellDetail(cellId: number): CellDetail {
 
 const post = (m: FromWorker, transfer: Transferable[] = []) => (self as unknown as DedicatedWorkerGlobalScope).postMessage(m, transfer)
 
-self.onmessage = (ev: MessageEvent<ToWorker>) => {
+self.onmessage = async (ev: MessageEvent<ToWorker>) => {
   const m = ev.data
   try {
     if (m.type === 'init') {
@@ -64,6 +85,8 @@ self.onmessage = (ev: MessageEvent<ToWorker>) => {
       profiles = m.profiles
       knownCells = new Map(m.knownCells)
       constants = m.constants
+      assetBase = m.assetBase ?? ''
+      regions = null
       idxOf = new Map()
       earth.cellId.forEach((c, i) => idxOf.set(c, i))
       sCache.clear()
@@ -84,6 +107,7 @@ self.onmessage = (ev: MessageEvent<ToWorker>) => {
         knownCells, continentOf: (cid) => continentOf(cid), withPortfolio: m.withPortfolio, body: m.target.body,
       })
       last = { out, s }
+      await nameSites(out.portfolio)
       const heat = new Uint8Array(NCELLS).fill(255)
       const filter = new Uint8Array(NCELLS)
       let best = 0

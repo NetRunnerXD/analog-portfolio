@@ -372,3 +372,7 @@ main { flex: 1; min-height: 0; }
 .paired .pmatch .fbar { position: relative; background: var(--color-surface-3); border-radius: 4px; }
 .paired .pmatch .num { text-align: right; }
 .twin-compact { display: flex; flex-direction: column; gap: var(--space-3); align-items: flex-start; }
+.legend-mode { margin: 2px 0 4px; }
+.legend-mode button { min-height: 32px; font-size: var(--type-small-size); }
+.legend-note { margin: 0; max-width: 260px; }
+.sc-pick { display: block; }
