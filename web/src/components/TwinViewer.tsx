@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import 'ol/ol.css'
 import './twin.css'
 import { createPane, earthFootprint, radiusOf, targetFootprint, type Pane, type PaneBody } from '../map/twinPane'
-import { initialMpp, scaleBar } from '../lib/twin'
+import { initialMpp, panePyramids, scaleBar } from '../lib/twin'
 import { loadPlanetGrids } from '../lib/planetGrid'
 import { Banner } from './ui'
 
@@ -80,7 +80,7 @@ export default function TwinViewer({ earth, twin, earthR, header, onClose, child
 
   const bodyName = twin.body === 'moon' ? 'MOON' : 'MARS'
   const down = (b: PaneBody) => tiles[b].loaded === 0 && tiles[b].failed >= 2
-  const credit = twin.body === 'moon' ? (twin.lat <= -60 ? 'NASA Moon Trek · LRO WAC + LOLA' : 'NASA Moon Trek · LRO WAC') : 'NASA Mars Trek · MOLA hillshade'
+  const credit = panePyramids(twin.body, twin.lat).map((p) => p.credit).join(' + ')
   const bar = (r: number) => scaleBar(r, 120)
   return (
     <main id="main" className="twin-screen">

@@ -109,10 +109,12 @@ export const PYRAMIDS = {
   mars: { url: `${TREK}/Mars/EQ/Mars_MGS_MOLA_ClrShade_merge_global_463m/1.0.0/default/default028mm/{z}/{y}/{x}.jpg`, tileSize: 256, origin: [-180, 90], res0: 180 / 256, maxZ: 7, kind: 'deg', extent: [-180, -90, 180, 90], credit: 'NASA Mars Trek · MOLA hillshade' },
 } satisfies Record<string, TilePyramid>
 
-/** Imagery stack for a pane: Moon targets at or south of 60°S use the south-polar mosaics (no polar smear). */
+/** Imagery for a pane: Moon targets south of 60°S use a south-polar mosaic (no polar smear): LOLA hillshade (30 m)
+ *  where it exists (75°S and beyond), else the LRO WAC mosaic. */
 export function panePyramids(body: 'earth' | 'moon' | 'mars', lat: number): TilePyramid[] {
   if (body === 'earth') return [PYRAMIDS.earth]
   if (body === 'mars') return [PYRAMIDS.mars]
-  return lat <= -60 ? [PYRAMIDS.moonSpWac, PYRAMIDS.moonSpLola] : [PYRAMIDS.moonEq]
+  // one stack per pane: blending the two polar mosaics shows their different tile edges and no-data borders
+  return lat <= -75 ? [PYRAMIDS.moonSpLola] : lat <= -60 ? [PYRAMIDS.moonSpWac] : [PYRAMIDS.moonEq]
 }
 export const tileOrigins = [...new Set(Object.values(PYRAMIDS).map((p) => new URL(p.url.replace(/\{[xyz]\}/g, '0')).origin))]

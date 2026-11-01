@@ -70,7 +70,8 @@ describe('oblique stereographic pane projection', () => {
   })
   it('imagery: south-polar Moon mosaics below 60°S, one origin per service', async () => {
     const { panePyramids, tileOrigins } = await import('./twin')
-    expect(panePyramids('moon', -89.4).map((p) => p.kind)).toEqual(['sp', 'sp'])
+    expect(panePyramids('moon', -89.4).map((p) => p.credit)).toEqual(['NASA Moon Trek · LOLA'])
+    expect(panePyramids('moon', -70)[0].kind).toBe('sp')
     expect(panePyramids('moon', 10)[0].kind).toBe('deg')
     expect(tileOrigins.sort()).toEqual(['https://gibs.earthdata.nasa.gov', 'https://trek.nasa.gov'])
   })
