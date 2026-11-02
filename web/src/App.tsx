@@ -8,6 +8,8 @@ import type { FactorsFile, GapsFile, ProfilesFile, TargetsFile, ValidationFile }
 import { ScorerClient } from './worker/client'
 import { knownCellsFrom } from './scoring/engine'
 import Picker from './screens/Picker'
+import { storyScene } from './lib/story'
+import { earthRadiusKm } from './scoring/area'
 import { ErrorState, Logo } from './components/ui'
 
 // Explore pulls in OpenLayers; Stub covers later screens. Both are split out of the entry chunk (a twin viewer route can follow the same pattern).
@@ -15,6 +17,7 @@ const Explore = lazy(() => import('./screens/Explore'))
 const Stub = lazy(() => import('./screens/Stub'))
 const Reverse = lazy(() => import('./screens/Reverse'))
 const About = lazy(() => import('./screens/About'))
+const StoryPlayer = lazy(() => import('./components/StoryPlayer'))
 
 const NAV: [View, string][] = [['explore', 'Explore'], ['reverse', 'Reverse search'], ['story', 'Story'], ['about', 'About & data']]
 
@@ -24,8 +27,9 @@ export default function App() {
   const [data, setData] = useState<Data | null>(null)
   const [loadErr, setLoadErr] = useState<string | null>(null)
   const [nonce, setNonce] = useState(0)
-  const [url, setUrl] = useState<UrlState>(readUrl)
-  const urlRef = useRef(url)
+  const [rawUrl, setUrl] = useState<UrlState>(readUrl)
+  const [storyHalf, setStoryHalf] = useState(0)
+  const urlRef = useRef(rawUrl)
 
   useEffect(() => {
     let live = true
@@ -69,6 +73,14 @@ export default function App() {
     return () => window.removeEventListener('popstate', on)
   }, [])
 
+  const inStory = rawUrl.view === 'story'
+  const storyStep = Math.min(7, Math.max(1, rawUrl.s ?? 1))
+  const marsPurpose = data?.profiles.profiles.find((p) => p.id === DEFAULT_PURPOSE && p.bodies.includes('mars'))?.id ?? data?.profiles.profiles.find((p) => p.bodies.includes('mars'))?.id ?? DEFAULT_PURPOSE
+  const scene = inStory ? storyScene(storyStep, storyHalf, DEFAULT_PURPOSE, marsPurpose) : null
+  // In story mode the screens underneath follow the story's scene and must not write the URL.
+  const url: UrlState = scene ? { ...rawUrl, ...scene } : rawUrl
+  const noop = useCallback(() => {}, [])
+  const upd = inStory ? noop : update
   const targets = useMemo(() => data?.targets.targets ?? [], [data])
   const target = targets.find((t) => t.id === url.t) ?? targets.find((t) => t.id === DEFAULT_TARGET) ?? targets[0]
   const profileOk = (id?: string) => data?.profiles.profiles.find((p) => p.id === id && target && p.bodies.includes(target.body))
@@ -136,7 +148,7 @@ export default function App() {
         )}
         <nav className="topnav" aria-label="Main">
           {NAV.map(([v, label]) => (
-            <a key={v} href={`?view=${v}`} aria-current={url.view === v || (v === 'explore' && url.view === 'twin') ? 'page' : undefined}
+            <a key={v} href={`?view=${v}`} aria-current={rawUrl.view === v || (v === 'explore' && rawUrl.view === 'twin') ? 'page' : undefined}
               onClick={(e) => { e.preventDefault(); update({ view: v, ...(v === 'story' ? { s: undefined } : {}) }) }}>{label}</a>
           ))}
         </nav>
@@ -153,16 +165,23 @@ export default function App() {
         <Suspense fallback={<main id="main" className="stub" aria-busy="true"><p className="t-body muted2">Loading…</p></main>}>
           {url.view === 'explore' || url.view === 'twin' ? (
             <Explore target={target} profile={profile} profiles={data.profiles} factors={data.factors} gaps={data.gaps} validation={data.validation} earthRef={data.targets.earth_reference}
-              mock={!!data.targets.mock} scorer={scorer} scorerError={scorerError} nCells={nCells} url={url} update={update}
+              mock={!!data.targets.mock} scorer={scorer} scorerError={scorerError} nCells={nCells} url={url} update={upd}
               onRetryScorer={() => { setScorerError(null); setScorerNonce((n) => n + 1) }} onChangeTarget={() => update({ view: 'picker' })}
               weightsReq={weightsReq} weightsSeen={weightsSeen} onWeightsSeen={setWeightsSeen} />
           ) : url.view === 'about' ? (
             <About factors={data.factors} ft={ft!} profiles={data.profiles} validation={data.validation} mock={!!data.targets.mock} />
           ) : url.view === 'reverse' ? (
-            <Reverse profiles={data.profiles} factors={data.factors} ft={ft!} targets={targets} scorer={scorer} url={url} update={update} />
-          ) : (
+            <Reverse profiles={data.profiles} factors={data.factors} ft={ft!} targets={targets} scorer={scorer} url={url} update={upd} />
+          ) : url.view === 'story' ? null : (
             <Stub view={url.view} onBack={goHome} />
           )}
+        </Suspense>
+      )}
+      {inStory && data && (
+        <Suspense fallback={null}>
+          <StoryPlayer step={storyStep} onStep={(n) => update({ s: n }, true)} onHalf={setStoryHalf}
+            onExit={() => { setStoryHalf(0); update({ view: 'explore', s: undefined, t: DEFAULT_TARGET, p: DEFAULT_PURPOSE, step: 'map', site: undefined }) }}
+            targets={targets} purpose={DEFAULT_PURPOSE} validation={data.validation} earthR={earthRadiusKm(data.profiles.defaults) * 1000} />
         </Suspense>
       )}
     </>
