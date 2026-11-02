@@ -13,6 +13,7 @@ import { ErrorState, Logo } from './components/ui'
 // Explore pulls in OpenLayers; Stub covers later screens. Both are split out of the entry chunk (a twin viewer route can follow the same pattern).
 const Explore = lazy(() => import('./screens/Explore'))
 const Stub = lazy(() => import('./screens/Stub'))
+const Reverse = lazy(() => import('./screens/Reverse'))
 const About = lazy(() => import('./screens/About'))
 
 const NAV: [View, string][] = [['explore', 'Explore'], ['reverse', 'Reverse search'], ['story', 'Story'], ['about', 'About & data']]
@@ -157,6 +158,8 @@ export default function App() {
               weightsReq={weightsReq} weightsSeen={weightsSeen} onWeightsSeen={setWeightsSeen} />
           ) : url.view === 'about' ? (
             <About factors={data.factors} ft={ft!} profiles={data.profiles} validation={data.validation} mock={!!data.targets.mock} />
+          ) : url.view === 'reverse' ? (
+            <Reverse profiles={data.profiles} factors={data.factors} ft={ft!} targets={targets} scorer={scorer} url={url} update={update} />
           ) : (
             <Stub view={url.view} onBack={goHome} />
           )}

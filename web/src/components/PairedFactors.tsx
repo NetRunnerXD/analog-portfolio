@@ -5,8 +5,11 @@ import { FACTOR_UI } from '../copy'
 import { CORE_FACTORS, type FactorId, type FactorsFile, type Target } from '../types/contract'
 
 /** Spec §8.5 PairedFactorRow: Factor · Earth · {Moon | Mars} · Match, as a real table. Earth values come from the scorer. */
-export default function PairedFactors({ target, factors, ft, factorScores, earthFeatures, caption, compact }: {
-  target: Target
+export default function PairedFactors({ target, factors, ft, factorScores, earthFeatures, caption, compact, twinValues, body: bodyId }: {
+  /** a named target, or omit and pass twinValues + body for a Moon / Mars grid cell (reverse search) */
+  target?: Target
+  twinValues?: Partial<Record<FactorId, number | null>>
+  body?: 'moon' | 'mars'
   factors: FactorsFile
   ft: FactorText
   factorScores: Partial<Record<FactorId, number | null>>
@@ -16,7 +19,8 @@ export default function PairedFactors({ target, factors, ft, factorScores, earth
 }) {
   const fmt = useMemo(() => makeValueFormatter(factors), [factors])
   const featureOf = useMemo(() => Object.fromEntries(factors.factors.map((f) => [f.id, f.feature])), [factors])
-  const body = target.body === 'moon' ? 'Moon' : 'Mars'
+  const body = (target?.body ?? bodyId) === 'moon' ? 'Moon' : 'Mars'
+  const twinOf = (f: FactorId) => (twinValues ? twinValues[f] ?? null : target?.features?.[f]?.value)
   const rows = CORE_FACTORS.filter((f) => factorScores[f] !== undefined && factorScores[f] !== null)
   return (
     <table className={`paired ${compact ? 'compact' : ''}`}>
@@ -33,7 +37,7 @@ export default function PairedFactors({ target, factors, ft, factorScores, earth
             <tr key={f}>
               <th scope="row" className="t-small">{ft.label(f)}</th>
               <td className="num t-small num-col">{earthFeatures ? fmt(f, ex) : '…'}</td>
-              <td className="num t-small num-col">{fmt(f, target.features?.[f]?.value)}</td>
+              <td className="num t-small num-col">{fmt(f, twinOf(f))}</td>
               <td className="pmatch">
                 <span className="fbar" aria-hidden="true"><i className={`g-${FACTOR_UI[f].group}`} style={{ width: `${to100(s)}%` }} /></span>
                 <span className="num t-small">{to100(s)}<span className="sr-only"> out of 100</span></span>
