@@ -64,8 +64,27 @@ describe('continent column and place names (optional data)', () => {
     expect(siteTitle(base)).toBe('Earth site at 74.3°N 89.8°W')
     expect(siteTitle({ ...base, region: 'Nunavut', country: 'Canada' })).toBe('Nunavut, Canada')
     expect(siteTitle({ ...base, admin1: 'Nunavut', country: 'Canada' })).toBe('Nunavut, Canada')
-    expect(siteTitle({ ...base, country: 'Canada' })).toBe('Canada')
+    expect(siteTitle({ ...base, country: 'Canada' })).toBe('Canada · 74.3°N 89.8°W') // no admin-1: always add coordinates
     expect(siteTitle({ ...base, known_analog: 'Devon Island (HMP)', region: 'Nunavut', country: 'Canada' })).toBe('Devon Island (HMP)')
     expect(placeName({ region: 'Nunavut', country: 'Canada' })).toBe('Nunavut, Canada')
+  })
+})
+
+describe('access line', () => {
+  it('south of 60°S an unknown travel time reads as station access', async () => {
+    const { accessText } = await import('./format')
+    expect(accessText(null, -77.5)).toBe('reached via an Antarctic research station')
+    expect(accessText(null, 10)).toBe('travel time unknown')
+    expect(accessText(120, -77.5)).toBe('~2 h from a city of 50k+')
+  })
+})
+
+describe('portfolio pick order label', () => {
+  it('names the greedy order', async () => {
+    const { pickText } = await import('./format')
+    expect(pickText(1)).toBe('Picked 1st: covers the most needs')
+    expect(pickText(2)).toBe('Picked 2nd: adds the most needs not yet covered')
+    expect(pickText(3)).toMatch(/^Picked 3rd/)
+    expect(pickText(11)).toMatch(/^Picked 11th/)
   })
 })

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { FACTOR_UI, VARIANT_UI } from '../copy'
-import { accessText, band, cellEwKm, dataCoverage, fmtLatLon, isAtLimit, placeName, makeDeltaFormatter, makeValueFormatter, summarySentence, to100 } from '../lib/format'
+import { accessText, pickText, PICK_TIP, band, cellEwKm, dataCoverage, fmtLatLon, isAtLimit, placeName, makeDeltaFormatter, makeValueFormatter, summarySentence, to100 } from '../lib/format'
 import type { GapRowData } from '../lib/gaps'
 import type { FactorText } from '../lib/factors'
 import { earthLimit, type EarthLimit } from '../lib/limits'
@@ -180,11 +180,12 @@ function SiteListCard({ site, n, ctx, selected, hovered, onOpen, onHover }: { si
         </span>
         <span className="sc-score"><span className="scoreLg">{score}</span><span className="micro muted2"><span className="sr-only">out of</span> / 100</span><span className="t-small">{band(score)}</span></span>
       </span>
+      <span className="t-small muted2 sc-pick" title={PICK_TIP}>{pickText(n)}</span>
       <span className="chips">
         <span className="t-small muted2">Covers</span>
         {chips.map((f) => <FactorChip key={f} f={f} ft={ctx.ft} atLimit={isAtLimit(ctx.target, f)} />)}
       </span>
-      <span className="t-small sc-meta">{robust && <><ShieldIcon /> <strong>Robust</strong> · </>}{accessText(site.logistics?.travel_time_min)}</span>
+      <span className="t-small sc-meta">{robust && <><ShieldIcon /> <strong>Robust</strong> · </>}{accessText(site.logistics?.travel_time_min, site.lat)}</span>
       <span className="link-text t-small">Open details →</span>
     </button>
   )
@@ -328,7 +329,7 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
         <button type="button" className="btn btn-secondary" onClick={onTwin}>Open twin view</button>
         <button type="button" className="btn btn-secondary" onClick={onCopy}>Copy share link</button>
       </div>
-      <p className="t-small muted2">{accessText(site.logistics?.travel_time_min)}{site.logistics?.continent ? ` · ${site.logistics.continent}` : ''}</p>
+      <p className="t-small muted2">{accessText(site.logistics?.travel_time_min, site.lat)}{site.logistics?.continent ? ` · ${site.logistics.continent}` : ''}</p>
     </div>
   )
 }

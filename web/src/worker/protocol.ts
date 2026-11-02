@@ -3,6 +3,8 @@ import type { FactorId, FactorsFile, GridManifest, Portfolio, ProfilesFile, Targ
 
 export interface InitMsg {
   type: 'init'
+  /** absolute app base URL (the worker's own URL sits under assets/, so relative paths can't be resolved there) */
+  assetBase?: string
   /** targets.json → scoring_constants (v1.2), full-precision clip and range bounds */
   constants?: ScoringConstants
   manifest: GridManifest

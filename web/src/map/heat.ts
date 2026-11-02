@@ -25,12 +25,50 @@ function makeCanvas(w: number, h: number): HTMLCanvasElement {
   return cv
 }
 
+export type HeatMode = 'view' | 'absolute'
+
+/**
+ * "In this view" colouring: a 101-entry lookup score → cos(lat) area-weighted mid-rank percentile (0–100) of that score
+ * among the scorable, unfiltered land cells whose centres are inside `extent` (EPSG:4326, may extend past ±180°).
+ * Returns null when the view holds no such cell (then the absolute scale is used).
+ */
+export function viewLut(scores: Uint8Array, filter: Uint8Array, extent: number[]): Uint8Array | null {
+  const w = new Float64Array(101)
+  const [x0, y0, x1, y1] = extent
+  const wide = x1 - x0 >= 360
+  const r0 = Math.max(0, Math.floor((90 - Math.min(90, y1)) * 2))
+  const r1 = Math.min(359, Math.floor((90 - Math.max(-90, y0)) * 2))
+  for (let r = r0; r <= r1; r++) {
+    const lat = 89.75 - 0.5 * r
+    if (lat < y0 || lat > y1) continue
+    const cw = Math.cos((lat * Math.PI) / 180)
+    for (let c = 0; c < 720; c++) {
+      if (!wide) {
+        const lon = -179.75 + 0.5 * c
+        const k = Math.ceil((x0 - lon) / 360) // shift into [x0, x0 + 360)
+        if (lon + 360 * k > x1) continue
+      }
+      const i = r * 720 + c
+      const v = scores[i]
+      if (v === 255 || filter[i] !== 0) continue
+      w[Math.min(v, 100)] += cw
+    }
+  }
+  let tot = 0
+  for (const x of w) tot += x
+  if (!(tot > 0)) return null
+  const lut = new Uint8Array(101)
+  let below = 0
+  for (let v = 0; v <= 100; v++) { lut[v] = Math.round((100 * (below + 0.5 * w[v])) / tot); below += w[v] }
+  return lut
+}
+
 /** Filter code for cells without enough data to score (matches INSUFFICIENT_CODE in scoring/engine.ts). */
 export const INSUFFICIENT = 255
 
 /** scores: 0..100, 255 = not in grid / no score. filter: >0 = filtered out, 255 = not enough data.
  *  Returns the heat canvas, the filtered-cell mask and the insufficient-data mask. */
-export function gridCanvases(scores: Uint8Array, filter: Uint8Array): { heat: HTMLCanvasElement; mask: HTMLCanvasElement; insuf: HTMLCanvasElement } {
+export function gridCanvases(scores: Uint8Array, filter: Uint8Array, lut?: Uint8Array | null): { heat: HTMLCanvasElement; mask: HTMLCanvasElement; insuf: HTMLCanvasElement } {
   const heat = makeCanvas(720, 360)
   const mask = makeCanvas(720, 360)
   const insuf = makeCanvas(720, 360)
@@ -44,7 +82,8 @@ export function gridCanvases(scores: Uint8Array, filter: Uint8Array): { heat: HT
     const s = scores[i]
     if (filter[i] === INSUFFICIENT) { ii.data[i * 4 + 3] = 255; continue }
     if (s === 255) continue
-    const j = Math.round((Math.min(s, 100) / 100) * 255) * 4
+    const v = lut ? lut[Math.min(s, 100)] : Math.min(s, 100)
+    const j = Math.round((v / 100) * 255) * 4
     hi.data.set(LUT.subarray(j, j + 4), i * 4)
     if (filter[i] > 0) { mi.data[i * 4 + 3] = 255 }
   }

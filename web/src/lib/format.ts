@@ -14,8 +14,11 @@ export const fmtLatLon = (lat: number, lon: number, d = 2) => `${fmtLat(lat, d)}
 export const cellEwKm = (lat: number) => Math.round(55.6 * Math.cos((lat * Math.PI) / 180))
 
 /** Access copy from travel_time_min (spec §8.4 SiteListCard / §11.3). */
-export function accessText(min: number | null | undefined): string {
-  if (min === null || min === undefined || !Number.isFinite(min)) return 'travel time unknown'
+/** South of 60°S (the Antarctic Treaty area) there are no cities and no travel-time data: field access is by the
+ *  national research programmes' stations and logistics, so say that instead of "unknown". */
+export const ANTARCTIC_LAT = -60
+export function accessText(min: number | null | undefined, lat?: number): string {
+  if (min === null || min === undefined || !Number.isFinite(min)) return lat !== undefined && lat < ANTARCTIC_LAT ? 'reached via an Antarctic research station' : 'travel time unknown'
   if (min < 60) return '< 1 h from a city of 50k+'
   const h = Math.round(min / 60)
   if (h <= 48) return `~${h} h from a city of 50k+`
@@ -45,7 +48,8 @@ export function placeName(s: Partial<Placeable>): string | null {
 export function siteTitle(s: Placeable): string {
   if (s.known_analog) return s.known_analog
   const place = placeName(s)
-  if (place) return place
+  // a country alone (no admin-1 region, e.g. Antarctica) always gets the cell centre so sites stay tellable apart
+  if (place) return (s.region ?? s.admin1) ? place : `${place} · ${fmtLatLon(s.lat, s.lon, 1)}`
   if (s.site_id.startsWith('cell_') || s.name.startsWith('Candidate cell')) return `Earth site at ${fmtLatLon(s.lat, s.lon, 1)}`
   return s.name
 }
@@ -59,7 +63,8 @@ export function makeTitler(sites: Iterable<Placeable>): (s: Placeable) => string
   for (const s of sites) { const t = siteTitle(s); if (!count.has(t)) count.set(t, new Set()); count.get(t)!.add(s.site_id) }
   return (s) => {
     const t = siteTitle(s)
-    return (count.get(t)?.size ?? 0) > 1 && !t.startsWith('Earth site at') ? `${t} · ${fmtLatLon(s.lat, s.lon, 1)}` : t
+    const hasCoords = t.startsWith('Earth site at') || t.endsWith(fmtLatLon(s.lat, s.lon, 1))
+    return (count.get(t)?.size ?? 0) > 1 && !hasCoords ? `${t} · ${fmtLatLon(s.lat, s.lon, 1)}` : t
   }
 }
 
@@ -148,3 +153,9 @@ export const isAtLimit = (t: Target, f: FactorId) => {
   if (fv.value !== null && fv.value !== undefined && fv.t_star !== null && fv.t_star !== undefined) return Math.abs(fv.value - fv.t_star) > 1e-9
   return (fv.gap ?? 0) !== 0 // sign-agnostic: a gap is a shortfall either way
 }
+
+export const ordinal = (n: number) => `${n}${n % 100 >= 11 && n % 100 <= 13 ? 'th' : ['th', 'st', 'nd', 'rd'][n % 10] ?? 'th'}`
+/** Greedy set cover order (spec §8.4 portfolio): label it so the order doesn't read as a ranking by score. */
+export const pickText = (n: number) => `Picked ${ordinal(n)}: ${n === 1 ? 'covers the most needs' : 'adds the most needs not yet covered'}`
+export const PICK_TIP = 'Sites are picked one at a time (greedy set cover): each pick is the site that covers the most needs the earlier picks left uncovered. The order shows what each site adds, not which scores highest.'
+
