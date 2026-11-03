@@ -2,7 +2,7 @@
 // Live scoring worker: decodes the Earth grid once, then re-scores every land cell for the active target, purpose and
 // weights with the TS port of the reference engine (src/scoring/engine.ts). Nothing here is hard-coded data.
 import { decodeGrid } from '../data'
-import { type ScoringConstants, aggregate, clipTargets, minActiveFrac, factorScores, INSUFFICIENT_CODE, NCELLS, prepareEarth, run, type EarthGrid, type RunOutput } from '../scoring/engine'
+import { type ScoringConstants, candidateGate, aggregate, clipTargets, minActiveFrac, factorScores, INSUFFICIENT_CODE, NCELLS, prepareEarth, run, type EarthGrid, type RunOutput } from '../scoring/engine'
 import type { FactorId, FactorsFile, ProfilesFile } from '../types/contract'
 import { continentResolver, gridContinentLookup, type ContinentOf } from '../scoring/continent'
 import type { CellDetail, FromWorker, PlanetGridPayload, ToWorker } from './protocol'
@@ -15,6 +15,7 @@ import type { Portfolio, SiteRef } from '../types/contract'
 let regions: Promise<Regions | null> | null = null
 let assetBase = ''
 const planets = new Map<string, PlanetGridPayload>()
+const gateCache = new Map<string, Uint8Array>()
 const earthOnlyCache = new Map<string, Partial<Record<FactorId, Float64Array>>>()
 
 /** The point's own 0.5° land cell, else the nearest land cell among its 8 neighbours (validation snapping rule). */
@@ -162,7 +163,7 @@ self.onmessage = async (ev: MessageEvent<ToWorker>) => {
       const g = planets.get(m.body)
       if (!g) throw new Error(`no ${m.body} grid`)
       const hit = snapCell(m.lat, m.lon)
-      if (!hit) { post({ type: 'reverse', reqId: m.reqId, cellId: null, snapped: false, features: {}, twins: [] }); return }
+      if (!hit) { post({ type: 'reverse', reqId: m.reqId, cellId: null, snapped: false, gateFail: false, features: {}, twins: [] }); return }
       const e = earth
       let eo = earthOnlyCache.get(m.body)
       if (!eo) { eo = factorScores(e, {}, m.body, factors, constants); earthOnlyCache.set(m.body, eo) }
@@ -170,7 +171,9 @@ self.onmessage = async (ev: MessageEvent<ToWorker>) => {
       const tot = reverseTotals(r, m.weights, minActiveFrac(profiles))
       const features: Record<string, number | null> = {}
       for (const [k, v] of Object.entries(e.cols)) features[k] = Number.isNaN(v[hit.i]) ? null : v[hit.i]
-      post({ type: 'reverse', reqId: m.reqId, cellId: hit.cellId, snapped: hit.snapped, features, twins: topTwins(tot, r, g.lat, g.lon, g.radiusM, m.n) })
+      let gp = gateCache.get(m.body)
+      if (!gp) { gp = candidateGate(e, m.body, profiles!).pass; gateCache.set(m.body, gp) }
+      post({ type: 'reverse', reqId: m.reqId, cellId: hit.cellId, snapped: hit.snapped, gateFail: gp[hit.i] === 0, features, twins: topTwins(tot, r, g.lat, g.lon, g.radiusM, m.n) })
       return
     }
     if (m.type === 'twins') {

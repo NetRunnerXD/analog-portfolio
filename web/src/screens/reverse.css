@@ -10,3 +10,4 @@
 .rv-map { height: 300px; border-radius: 8px; overflow: hidden; background: var(--ocean, #0d1320); }
 .rv-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 @media (max-width: 760px) { .rv-grid { grid-template-columns: 1fr; } .rv-map { height: 220px; } }
+.rv-note { margin: 0; padding: 8px 12px; border-radius: 8px; border-left: 3px solid var(--warn, #f5b84b); background: var(--surface-2, #151a23); white-space: normal; }

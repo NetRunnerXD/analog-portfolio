@@ -17,8 +17,10 @@ export const cellEwKm = (lat: number) => Math.round(55.6 * Math.cos((lat * Math.
 /** South of 60°S (the Antarctic Treaty area) there are no cities and no travel-time data: field access is by the
  *  national research programmes' stations and logistics, so say that instead of "unknown". */
 export const ANTARCTIC_LAT = -60
+/** Approved by Project 1 on Oct 12, 2026 (design/factcheck.md, approved strings). Use verbatim. */
+export const ANTARCTIC_ACCESS = 'Access via Antarctic research stations only. No public travel time.'
 export function accessText(min: number | null | undefined, lat?: number): string {
-  if (min === null || min === undefined || !Number.isFinite(min)) return lat !== undefined && lat < ANTARCTIC_LAT ? 'reached via an Antarctic research station' : 'travel time unknown'
+  if (min === null || min === undefined || !Number.isFinite(min)) return lat !== undefined && lat < ANTARCTIC_LAT ? ANTARCTIC_ACCESS : 'travel time unknown'
   if (min < 60) return '< 1 h from a city of 50k+'
   const h = Math.round(min / 60)
   if (h <= 48) return `~${h} h from a city of 50k+`
@@ -159,3 +161,9 @@ export const ordinal = (n: number) => `${n}${n % 100 >= 11 && n % 100 <= 13 ? 't
 export const pickText = (n: number) => `Picked ${ordinal(n)}: ${n === 1 ? 'covers the most needs' : 'adds the most needs not yet covered'}`
 export const PICK_TIP = 'Sites are picked one at a time (greedy set cover): each pick is the site that covers the most needs the earlier picks left uncovered. The order shows what each site adds, not which scores highest.'
 
+
+/** A parsed http(s) URL, or null for anything else (malformed, javascript:, data:, …). Shared by every outbound link. */
+export function httpUrl(url: string | null | undefined): URL | null {
+  if (!url) return null
+  try { const u = new URL(url); return u.protocol === 'https:' || u.protocol === 'http:' ? u : null } catch { return null }
+}

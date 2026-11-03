@@ -117,4 +117,6 @@ export function panePyramids(body: 'earth' | 'moon' | 'mars', lat: number): Tile
   // one stack per pane: blending the two polar mosaics shows their different tile edges and no-data borders
   return lat <= -75 ? [PYRAMIDS.moonSpLola] : lat <= -60 ? [PYRAMIDS.moonSpWac] : [PYRAMIDS.moonEq]
 }
+/** CSP img-src path prefixes for every tile pyramid (kept in sync with the three CSP copies by src/csp.test.ts). */
+export const TILE_SOURCES = ['https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/', 'https://trek.nasa.gov/tiles/']
 export const tileOrigins = [...new Set(Object.values(PYRAMIDS).map((p) => new URL(p.url.replace(/\{[xyz]\}/g, '0')).origin))]

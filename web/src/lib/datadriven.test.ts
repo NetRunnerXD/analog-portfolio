@@ -73,7 +73,7 @@ describe('continent column and place names (optional data)', () => {
 describe('access line', () => {
   it('south of 60°S an unknown travel time reads as station access', async () => {
     const { accessText } = await import('./format')
-    expect(accessText(null, -77.5)).toBe('reached via an Antarctic research station')
+    expect(accessText(null, -77.5)).toBe('Access via Antarctic research stations only. No public travel time.')
     expect(accessText(null, 10)).toBe('travel time unknown')
     expect(accessText(120, -77.5)).toBe('~2 h from a city of 50k+')
   })

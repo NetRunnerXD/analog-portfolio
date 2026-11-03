@@ -37,7 +37,10 @@ export default function StoryPlayer({ step, onStep, onHalf, onExit, targets, pur
 
   useEffect(() => {
     const on = (e: KeyboardEvent) => {
-      if ((e.target as HTMLElement).closest('input, select, textarea')) return
+      const el = e.target as HTMLElement | null
+      if (el?.closest?.('input, select, textarea, [contenteditable="true"]')) return
+      // Space on a focused button / link / control activates that control, not play / pause.
+      if (e.key === ' ' && el?.closest?.('button, a[href], summary, [role="button"], [role="radio"], [role="checkbox"], [role="switch"], [role="tab"], [tabindex]:not([tabindex="-1"])')) return
       if (e.key === ' ') { e.preventDefault(); setPlaying((p) => !p) }
       else if (e.key === 'ArrowRight') { e.preventDefault(); go(step + 1) }
       else if (e.key === 'ArrowLeft') { e.preventDefault(); go(step - 1) }
@@ -48,17 +51,27 @@ export default function StoryPlayer({ step, onStep, onHalf, onExit, targets, pur
     return () => window.removeEventListener('keydown', on)
   }, [step, go, onExit])
 
-  // steps 1 and 2: Moon south pole and Earth from the twin-viewer pane (Trek / GIBS tiles)
+  // Steps 1 and 2: Moon south pole and Earth from the twin-viewer pane (Trek / GIBS tiles). The map is only built once
+  // the backdrop is actually on screen in a visible tab, in lite mode (1× pixel ratio, no controls) at a coarse scale.
   const el = useRef<HTMLDivElement>(null)
   useEffect(() => {
-    if (!el.current || (step !== 1 && step !== 2)) return
-    const t = targets.find((x) => x.id === STORY_MOON)
-    const w = el.current.clientWidth || 1440
+    const node = el.current
+    if (!node || (step !== 1 && step !== 2)) return
     let pane: Pane | null = null
-    pane = step === 1 && t
-      ? createPane({ target: el.current, body: 'moon', lat: t.anchor.lat, lon: t.anchor.lon, earthR, resolution: 160000 / w, footprint: [], pin: { body: 'moon' }, onTiles: () => {} })
-      : createPane({ target: el.current, body: 'earth', lat: 20, lon: 0, earthR, resolution: (2.4 * earthR) / (el.current.clientHeight || 900), footprint: [], onTiles: () => {} })
-    return () => pane?.dispose()
+    const build = () => {
+      if (pane || document.visibilityState !== 'visible') return
+      const t = targets.find((x) => x.id === STORY_MOON)
+      const w = node.clientWidth || 1440, h = node.clientHeight || 900
+      pane = step === 1 && t
+        ? createPane({ target: node, body: 'moon', lat: t.anchor.lat, lon: t.anchor.lon, earthR, resolution: 160000 / w, footprint: [], pin: { body: 'moon' }, onTiles: () => {}, lite: true, maxZ: 5 })
+        : createPane({ target: node, body: 'earth', lat: 20, lon: 0, earthR, resolution: (2.4 * earthR) / h, footprint: [], onTiles: () => {}, lite: true, maxZ: 1 })
+    }
+    let onScreen = false
+    const io = new IntersectionObserver((es) => { onScreen = es.some((e) => e.isIntersecting); if (onScreen) build() })
+    io.observe(node)
+    const vis = () => { if (onScreen) build() }
+    document.addEventListener('visibilitychange', vis)
+    return () => { io.disconnect(); document.removeEventListener('visibilitychange', vis); pane?.dispose() }
   }, [step, targets, earthR])
 
   const wide = typeof window !== 'undefined' && window.innerWidth / window.innerHeight > 1.7

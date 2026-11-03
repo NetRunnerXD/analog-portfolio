@@ -5,7 +5,7 @@ import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { decodeGrid } from '../data'
 import type { FactorId, FactorsFile, GridManifest, Portfolio, ProfilesFile, SiteRef, TargetsFile, ValidationFile } from '../types/contract'
-import { knownCellsFrom, rangeSim, activeFilters, buildVariants, clipTargets, factorScores, prepareEarth, run, type ScoringConstants, type TargetValues } from './engine'
+import { candidateGate, knownCellsFrom, rangeSim, activeFilters, buildVariants, clipTargets, factorScores, prepareEarth, run, type ScoringConstants, type TargetValues } from './engine'
 import { gridContinentLookup } from './continent'
 
 // CI runs against the shipped real export (web/public/data, from the pipeline). Set PARITY_DATA to another data root (e.g. a read-only export of PR #11's
@@ -87,6 +87,12 @@ describe('engine parity with the Python reference (mock grid, default weights)',
       expect(out.portfolio!.uncoverable).toEqual(p.uncoverable)
       expect(out.portfolio!.dropped_factors ?? [], `${file} dropped_factors`).toEqual(p.dropped_factors ?? [])
       if (p.insufficient_cells !== undefined) expect(out.portfolio!.insufficient_cells, `${file} insufficient_cells`).toBe(p.insufficient_cells)
+      // Body gate (contract v1.2 rule 8): every exported top cell and portfolio site, ours and the reference's, passes it.
+      const gate = candidateGate(earth, target.body, profiles)
+      expect(gate.unknown, `${file} gate rule`).toEqual([])
+      for (const r of [...refSites, ...(out.portfolio!.top_cells ?? []), ...out.portfolio!.variants.flatMap((v) => v.sites)]) {
+        expect(gate.pass[idx.get(r.cell_id)!], `${file} cell ${r.cell_id} fails the ${target.body} gate`).toBe(1)
+      }
       // gate exclusion: every validation evaluation the pipeline marked gate_excluded fails the JS gate, and every
       // scored one passes all filters (codes: 1..n hard filters, n + 1 the body gate)
       const gateCode = activeFilters(profiles, profile).length + 1

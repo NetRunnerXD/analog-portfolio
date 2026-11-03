@@ -74,6 +74,9 @@ export default function App() {
   }, [])
 
   const inStory = rawUrl.view === 'story'
+  // Where the user was before opening the story (Explore target, purpose, step, site, weights), restored on exit.
+  const preStory = useRef<UrlState | null>(null)
+  useEffect(() => { if (!inStory) preStory.current = rawUrl }, [inStory, rawUrl])
   const storyStep = Math.min(7, Math.max(1, rawUrl.s ?? 1))
   const marsPurpose = data?.profiles.profiles.find((p) => p.id === DEFAULT_PURPOSE && p.bodies.includes('mars'))?.id ?? data?.profiles.profiles.find((p) => p.bodies.includes('mars'))?.id ?? DEFAULT_PURPOSE
   const scene = inStory ? storyScene(storyStep, storyHalf, DEFAULT_PURPOSE, marsPurpose) : null
@@ -180,7 +183,11 @@ export default function App() {
       {inStory && data && (
         <Suspense fallback={null}>
           <StoryPlayer step={storyStep} onStep={(n) => update({ s: n }, true)} onHalf={setStoryHalf}
-            onExit={() => { setStoryHalf(0); update({ view: 'explore', s: undefined, t: DEFAULT_TARGET, p: DEFAULT_PURPOSE, step: 'map', site: undefined }) }}
+            onExit={() => {
+              setStoryHalf(0)
+              const back = preStory.current
+              update(back && back.view !== 'picker' ? { ...back, s: undefined } : { view: 'explore', s: undefined, t: DEFAULT_TARGET, p: DEFAULT_PURPOSE, step: 'map', site: undefined })
+            }}
             targets={targets} purpose={DEFAULT_PURPOSE} validation={data.validation} earthR={earthRadiusKm(data.profiles.defaults) * 1000} />
         </Suspense>
       )}

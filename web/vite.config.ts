@@ -5,14 +5,16 @@ import { defineConfig } from 'vitest/config'
 // Content-Security-Policy for the static build. Injected as a <meta> tag at build time only,
 // so `npm run dev` (which relies on inline <style>/HMR scripts) keeps working.
 // External origins allowed (img-src only): NASA GIBS WMTS and NASA Solar System Treks tiles, used by the lazily loaded
-// twin viewer and story mode (src/lib/twin.ts PYRAMIDS). Everything else (data, basemap, fonts) is same-origin.
+// twin viewer and story mode (src/lib/twin.ts PYRAMIDS), narrowed to the tile path prefixes (CSP Level 2+ path-level
+// sources; a trailing slash matches the prefix; Chrome, Firefox and Safari honour it in headers and <meta>; after a
+// redirect only the origin is checked; neither service redirects these tile URLs, checked Oct 13, 2026). Everything else (data, basemap, fonts) is same-origin.
 // Keep in sync with web/public/_headers and web/vercel.json (those add frame-ancestors,
 // which a <meta> CSP cannot set).
 export const CSP = [
   "default-src 'self'",
   "script-src 'self'",
   "style-src 'self'",
-  "img-src 'self' https://gibs.earthdata.nasa.gov https://trek.nasa.gov",
+  "img-src 'self' https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/ https://trek.nasa.gov/tiles/",
   "connect-src 'self'",
   "font-src 'self'",
   "worker-src 'self'",

@@ -1,7 +1,7 @@
 # Cloudflare Pages response headers (backup host). GitHub Pages ignores this file.
 # Keep the CSP in sync with web/vite.config.ts (meta CSP) and web/vercel.json.
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://gibs.earthdata.nasa.gov https://trek.nasa.gov; connect-src 'self'; font-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/ https://trek.nasa.gov/tiles/; connect-src 'self'; font-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()
