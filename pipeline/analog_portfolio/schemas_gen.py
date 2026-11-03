@@ -267,7 +267,12 @@ SCHEMAS["validation"] = obj({
                     **{k: obj({"sites": {"type": "array", "items": {"type": "string"}}, "n_evaluations": {"type": "integer"}},
                               required=["sites", "n_evaluations"])
                        for k in ("gate_excluded", "land_filter_excluded", "hard_filter_excluded")},
-                    "denominators_note": {"type": "string"}},
+                    "denominators_note": {"type": "string"},
+                    "headline_caveat": {"type": "string", "description": "Pooled headline mixes blind (Moon) and post-hoc (Mars) evaluations"},
+                    "by_body": obj({b: obj({"n_evaluations": {"type": "integer"}, "n_scored": {"type": "integer"},
+                                            "pct_top5": NUM01, "pct_top1": NUM01, "rank_auc": nullable(NUM01),
+                                            "blind": {"type": "boolean"}, "note": {"type": "string"}})
+                                    for b in ("moon", "mars")}, required=[])},
                    required=["n_known", "n_negative", "n_evaluations", "pct_top5", "pct_top1", "rank_auc"]),
     "sites": {"type": "array", "items": obj({
         # --- columns of docs/validation.csv (Researcher) ---
@@ -358,6 +363,7 @@ SCHEMAS["provenance"] = obj({
         "slope_baseline_m": nullable({"type": "number"}),
     }, required=["id", "body", "factors", "dataset", "provider", "agency_group", "url", "license", "how_used"])},
     "pipeline": obj({"git_sha": nullable({"type": "string"}), "run_at": {"type": "string"},
+                     "git_dirty": nullable({"type": "boolean", "description": "Uncommitted tracked changes outside web/public/data at run start"}),
                      "python": {"type": "string"}}, required=[]),
 }, required=["contract_version", "layers"], title="provenance.json")
 
