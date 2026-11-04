@@ -119,7 +119,7 @@ def earth_range(earth: dict[str, np.ndarray], col: str) -> tuple[float, float]:
             earth[key] = (0.0, 1.0)  # all-missing column: span 1 (every score NaN anyway)
         else:
             lo, hi = weighted_quantile(x, w, [0.01, 0.99])
-            earth[key] = (float(lo), float(hi)) if hi > lo else (float(lo), float(lo) + 1.0)
+            earth[key] = (float(lo), float(hi))  # P1 == P99 handled in range_sim (exact match only)
     return earth[key]
 
 
@@ -148,7 +148,10 @@ def factor_scores(earth: dict[str, np.ndarray], target_values: dict[str, float],
 
     def range_sim(col, fid):  # contract v1.2: F1/F2 range-normalised after the Earth clip; NaN x stays NaN
         lo, hi = earth_range(earth, col)
-        return np.maximum(0.0, 1.0 - np.abs(_col(earth, col) - tstar(fid)) / (hi - lo))
+        x = _col(earth, col)
+        if not hi > lo:  # degenerate span (P1 == P99): same rule as normalize.range_sim, 1 on exact match else 0
+            return np.where(np.isnan(x), np.nan, (x == tstar(fid)).astype(float))
+        return np.maximum(0.0, 1.0 - np.abs(x - tstar(fid)) / (hi - lo))
 
     for fid, col in (("F1", "ts_mean_k"), ("F2", "dt_k")):
         if tv(fid) is not None:

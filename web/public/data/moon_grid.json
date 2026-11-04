@@ -232,7 +232,7 @@
    "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8"
   }
  ],
- "generated_at": "2026-10-12T17:11:10+00:00",
+ "generated_at": "2026-10-12T17:23:55+00:00",
  "subset": "polar |lat| >= 60 deg at 0.5 deg (rows 0-59 and 300-359)",
  "companions": [
   "moon_grid_1deg.json"

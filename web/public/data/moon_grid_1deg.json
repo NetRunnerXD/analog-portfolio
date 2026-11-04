@@ -225,7 +225,7 @@
    "source": "data/grids (Project 1 / TAE extractions; see provenance.json), quantised uint8; 2x2 block mean / mode / OR"
   }
  ],
- "generated_at": "2026-10-12T17:11:10+00:00",
+ "generated_at": "2026-10-12T17:23:55+00:00",
  "subset": "global, 1 deg (cell index = row*360 + col)",
  "companions": [
   "moon_grid.json"

@@ -65,7 +65,7 @@ if __name__ == "__main__":
     main()
 
 
-def scoring_constants(earth: dict, profiles: dict) -> dict:
+def scoring_constants(earth: dict, profiles: dict, tvals: dict | None = None) -> dict:
     """Full-precision Earth constants the browser rescorer needs to mirror the pipeline exactly (targets.json ->
     scoring_constants). Computed from the SHIPPED (quantized, decoded) earth_features grid, as the pipeline scores it."""
     from ..contract import load
@@ -82,13 +82,24 @@ def scoring_constants(earth: dict, profiles: dict) -> dict:
     for fid, col in (("F1", "ts_mean_k"), ("F2", "dt_k")):
         lo, hi = earth_range(dict(earth), col)
         rng[fid] = dict(feature=col, p01=float(lo), p99=float(hi), span=float(hi - lo))
+    zero = {}
+    if tvals:  # review M3: share of land (cos-lat area) where the F1/F2 similarity is exactly 0 (-> the 0.01 floor)
+        from ..score.engine import factor_scores
+        for tid, tv in tvals.items():
+            sc = factor_scores(earth, tv, tid.split("_")[0])
+            zero[tid] = {f: round(float(aw[np.isfinite(sc[f]) & (sc[f] == 0)].sum() / aw.sum()), 4) for f in ("F1", "F2") if f in sc}
     g = profiles["defaults"].get("candidate_gates", {})
     return dict(
         note=("Full float64 precision. All quantiles are cos(lat) area-weighted over the cells of earth_features.bin as "
               "decoded (raw * scale + add_offset), midpoint (Hazen) interpolation of the weighted CDF, NaN skipped. "
               "Target values in features.*.value / t_star are unrounded; t_star = min(max(value, p0_5), p99_5)."),
         earth_clip=clip,
-        range_norm=dict(rule="s = max(0, 1 - |x - t_star| / (p99 - p01))", factors=rng),
+        range_norm=dict(rule="s = max(0, 1 - |x - t_star| / (p99 - p01)); if p99 == p01: 1 on exact match else 0",
+                        factors=rng, zero_share_of_land=zero,
+                        design_note=("Intended (review M3): t* is clipped to Earth's P0.5/P99.5, so for targets beyond Earth's "
+                                     "range every target rewards closeness to the same Earth extreme (F2 t* = P99.5 for all 18 "
+                                     "targets). Cells farther than one P1-P99 span from t* get s = 0 and hit the 0.01 floor of the "
+                                     "geometric mean; zero_share_of_land gives that share per target (cos(lat) area-weighted).")),
         gates={b: dict(params="profiles.json defaults.candidate_gates." + b,
                        inputs=["aridity_index", "barren_frac", "permafrost_frac", "moss_lichen_frac", "geomorph_flags"],
                        missing=v.get("missing")) for b, v in g.items()},

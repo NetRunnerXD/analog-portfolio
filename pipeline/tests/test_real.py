@@ -128,3 +128,67 @@ def test_targets_full_precision_and_scoring_constants():
         r = sc["range_norm"]["factors"][f]
         assert r["p99"] > r["p01"] and abs(r["span"] - (r["p99"] - r["p01"])) < 1e-9
     assert sc["gates"]["mars"]["inputs"][0] == "aridity_index"
+
+
+def test_range_sim_degenerate_span_engine_matches_scalar():
+    """Review L1: P1 == P99 -> 1 on an exact match, else 0, in both the engine and normalize.range_sim."""
+    from analog_portfolio.score import engine
+    from analog_portfolio.score.normalize import range_sim
+
+    n = 6
+    e = {"cell_id": np.arange(n) * 720 + 300, "ts_mean_k": np.array([250.0] * 5 + [np.nan]),
+         "dt_k": np.array([10.0, 10, 10, 10, 10, 10])}
+    lo, hi = engine.earth_range(e, "ts_mean_k")
+    assert lo == hi == 250.0
+    s = engine.factor_scores(e, {"F1": 250.0, "F2": 12.0}, "mars")
+    assert s["F1"][:5].tolist() == [1.0] * 5 and np.isnan(s["F1"][5])
+    assert s["F2"].tolist() == [1.0] * 6  # t* = 12 is clipped to Earth's P99.5 = 10 -> exact match
+    assert range_sim(250.0, 250.0, 250.0, 250.0) == 1.0 and range_sim(10.0, 12.0, 10.0, 10.0) == 0.0
+
+
+def test_gate_failing_cells_never_ranked_pooled_or_in_portfolios(monkeypatch):
+    """Review L5, end to end through real.run_target on a synthetic Earth: Mars-gate failures get percentile 0,
+    never reach the top-5% threshold population, the MC population, the candidate pool or any portfolio."""
+    from analog_portfolio.contract import load
+    from analog_portfolio.export import real
+    from analog_portfolio.grid import cell_centre
+    from analog_portfolio.score.engine import area_weights
+    from analog_portfolio.score.gates import candidate_gate
+
+    rng = np.random.default_rng(11)
+    n = 600
+    rows = rng.integers(40, 300, n); cols = rng.integers(0, 720, n)
+    cid = np.unique(rows * 720 + cols)[:400]; n = cid.size
+    wet = np.arange(n) % 2 == 0  # half the cells: humid, vegetated, no flags -> fail the gate
+    e = {"cell_id": cid.astype("int64"),
+         "ts_mean_k": rng.uniform(230, 300, n), "dt_k": rng.uniform(2, 30, n), "ti_class": rng.integers(1, 6, n).astype(float),
+         "slope_lt5_frac": rng.uniform(0, 1, n), "relief_m": rng.uniform(10, 3000, n), "lith_class": rng.integers(1, 16, n).astype(float),
+         "aridity_index": np.where(wet, rng.uniform(1.0, 4.0, n), rng.uniform(0.0, 0.2, n)),
+         "barren_frac": np.where(wet, rng.uniform(0, 0.05, n), rng.uniform(0.5, 1, n)),
+         "ice_index": rng.uniform(0, 1, n), "noon_sun_elev_deg": rng.uniform(0, 90, n),
+         "column_mass_gcm2": rng.uniform(300, 1040, n), "cutoff_rigidity_gv": rng.uniform(0, 15, n), "uv_index": rng.uniform(0, 15, n),
+         "geomorph_flags": np.where(wet, 16.0, 0.0), "permafrost_frac": np.zeros(n), "moss_lichen_frac": np.zeros(n),
+         "water_frac": np.zeros(n), "builtup_frac": np.zeros(n), "travel_time_min": rng.uniform(10, 900, n),
+         "airport_km": rng.uniform(5, 500, n), "continent": rng.integers(1, 8, n).astype(float)}
+    # make the wet cells the best matches on every factor except the gate inputs, so a leak would show up
+    e["slope_lt5_frac"][wet] = 0.97
+    profiles = load("profiles")
+    gate = candidate_gate(e, "mars", profiles)
+    assert not gate[wet].any() and gate[~wet].all()
+    ll = np.array([cell_centre(int(c)) for c in cid])
+    monkeypatch.setattr(real, "_CTX", dict(
+        earth=e, aw=area_weights(e), lat=ll[:, 0], lon=ll[:, 1],
+        tvals={"mars_test": {"F1": 220.0, "F2": 60.0, "F3": 2, "F4": 0.97, "F5": 800.0, "F6": 1, "F7": 0.0, "F8": 1.0,
+                             "F9": 0.5, "F10": 40.0, "F13": 1}},
+        profiles=profiles, validation=[], idx_of={int(c): i for i, c in enumerate(cid)}, known_cells={},
+        country=[None] * n, namer=lambda la, lo: (None, None), snaps=[], gates={"mars": gate, "moon": np.ones(n, bool)},
+        draws=60))
+    out = real.run_target("mars_test")
+    wet_ids = set(cid[wet].tolist())
+    assert out["portfolios"], "no Mars profile scored"
+    for pid, port in out["portfolios"].items():
+        assert port["earth_thresholds"]["top5"] is not None
+        sites = port["top_cells"] + [s for v in port["variants"] for s in v["sites"]]
+        assert sites, pid
+        assert not ({s["cell_id"] for s in sites} & wet_ids), f"{pid}: gate-failing cell in pool/portfolio"
+        assert all(s["earth_percentile"] > 0 for s in sites)

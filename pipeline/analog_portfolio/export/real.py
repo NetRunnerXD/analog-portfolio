@@ -49,6 +49,13 @@ NO_TARGET_NEEDED = {"F7": "directional: drier Earth cells score higher (no targe
                     "F12": "directional: higher UV scores higher (capped)"}
 _CTX: dict = {}
 FLOOR_COLS = ("water_frac", "builtup_frac")
+HEADLINE_CAVEAT = ("The pooled headline mixes blind and non-blind evaluations: the Mars results are NOT blind, because the "
+                   "Mars gate was designed (Researcher, research.md §8) after the first validation run using this same "
+                   "validation set (15 Mars-relevant analogs, 11 negative controls), before the freeze. Quote summary.by_body: "
+                   "the Moon figures are blind (no Moon rule was set using validation), the Mars figures are post hoc.")
+MOON_BLIND_NOTE = "Blind: weights and every Moon-side rule were fixed before the validation freeze without using validation results."
+MARS_POSTHOC_NOTE = ("Post hoc, not blind: the Mars gate was designed on these same analogs and negatives after the first "
+                     "validation run (before the freeze).")
 SIZE_BUDGET = 10_000_000  # bytes, all of web/public/data (incl. mock/)
 VALIDATION_METHOD = ("Blind rediscovery. Each validation site is scored at its own 0.5 deg cell if that cell is land "
                      "(water_frac < 0.5); otherwise it is snapped to the nearest >= 50% land cell within 1 cell (8 neighbours, "
@@ -62,7 +69,11 @@ VALIDATION_METHOD = ("Blind rediscovery. Each validation site is scored at its o
                      "volcanic flag with AI <= 0.50 or bare >= 0.10) was designed by Researcher (research.md §8) AFTER the first "
                      "validation run, using the 15 Mars-relevant analogs and 11 negative controls of this same validation set, "
                      "and BEFORE the freeze; it is therefore not a blind test for those sites. Rio Tinto is a known gate "
-                     "exception and is not whitelisted.")
+                     "exception and is not whitelisted. Quote summary.by_body: Moon metrics are blind, Mars metrics are post "
+                     "hoc; the pooled headline mixes the two. F1/F2 (intended design): the target is clipped to Earth's "
+                     "P0.5/P99.5 and closeness to that Earth extreme is rewarded; cells more than one Earth P1-P99 span away "
+                     "score 0 and hit the 0.01 floor (share of land per target: targets.json scoring_constants.range_norm."
+                     "zero_share_of_land).")
 GAP_CAVEATS = [
     dict(id="slope_resolution_mismatch", factors=["F4"],
          text=("Slope baselines differ: Earth slope comes from Copernicus GLO-90 read at ~360 m posting, Moon targets from "
@@ -265,10 +276,13 @@ def run_target(tid: str) -> dict:
     return out
 
 
+SORTED_KEYS = {"validation.json"}  # byte-reproducible regardless of dict build order (review L3)
+
+
 def _write(out_dir, name, obj):
     p = out_dir / name
     p.parent.mkdir(parents=True, exist_ok=True)
-    p.write_text(json.dumps(obj, separators=(",", ":"), ensure_ascii=False) + "\n")
+    p.write_text(json.dumps(obj, separators=(",", ":"), ensure_ascii=False, sort_keys=name in SORTED_KEYS) + "\n")
 
 
 def provenance_layers() -> list[dict]:
@@ -294,13 +308,36 @@ def provenance_layers() -> list[dict]:
     return layers
 
 
+C_GIT_DIRTY: bool | None = None
+
+
+def _git_dirty() -> bool | None:
+    """True if tracked files differ from HEAD outside web/public/data (the export's own output); None without git."""
+    r = subprocess.run(["git", "-C", str(REPO_ROOT), "status", "--porcelain", "--untracked-files=no", "--", ".",
+                        ":(exclude)web/public/data"], capture_output=True, text=True)
+    return None if r.returncode else bool(r.stdout.strip())
+
+
 def swap_dirs(new_dir, final_dir) -> None:
-    """Atomically exchange new_dir and final_dir (renameat2 RENAME_EXCHANGE via `mv --exchange`), then drop the old one."""
-    if final_dir.exists():
-        subprocess.run(["mv", "-T", "--exchange", str(new_dir), str(final_dir)], check=True)
-        shutil.rmtree(new_dir)  # now holds the previous contents
-    else:
+    """Swap new_dir into final_dir with two same-filesystem renames (POSIX rename(2) is atomic per call; works on
+    Linux, macOS and BSD, no GNU `mv --exchange`): final -> temp dir, new -> final, then drop the temp dir.
+    The window in which final_dir does not exist is the gap between the two renames (microseconds)."""
+    import tempfile
+    from pathlib import Path
+
+    new_dir, final_dir = Path(new_dir), Path(final_dir)
+    if not final_dir.exists():
         new_dir.rename(final_dir)
+        return
+    hold = Path(tempfile.mkdtemp(prefix=f".{final_dir.name}.old.", dir=final_dir.parent))
+    old = hold / final_dir.name
+    final_dir.rename(old)
+    try:
+        new_dir.rename(final_dir)
+    except BaseException:
+        old.rename(final_dir)  # roll back
+        raise
+    shutil.rmtree(hold)
 
 
 def validate_outputs(out_dir) -> None:
@@ -331,8 +368,14 @@ def main() -> None:
     ap.add_argument("--targets", default="")
     ap.add_argument("--frozen-commit", default=None, help="validation freeze SHA recorded in validation.frozen_commit")
     ap.add_argument("--no-swap", action="store_true", help="write straight into --out (no temp dir + atomic swap)")
+    ap.add_argument("--allow-dirty", action="store_true", help="allow --frozen-commit with uncommitted changes outside web/public/data")
     a = ap.parse_args()
     from pathlib import Path
+    global C_GIT_DIRTY
+    C_GIT_DIRTY = _git_dirty()  # checked BEFORE writing anything (the export itself dirties web/public/data)
+    if a.frozen_commit and C_GIT_DIRTY and not a.allow_dirty:
+        raise SystemExit("refusing --frozen-commit on a dirty tree (uncommitted changes outside web/public/data); "
+                         "commit first or pass --allow-dirty (recorded as provenance.pipeline.git_dirty)")
     final_dir = Path(a.out)
     if a.no_swap:
         out_dir = final_dir
@@ -399,7 +442,7 @@ def main() -> None:
                                 dropped_factors=target_dropped_factors(v), card=card))
     eref = earth_reference(earth, REAL_LABEL, "NASA POWER TS (F1) and hourly-LST TS_hh (F2) climatology on the 0.5 deg land grid")
     _write(out_dir, "targets.json", dict(rtargets, contract_version=CONTRACT_VERSION, mock=False, targets=out_targets, earth_reference=eref,
-                                          scoring_constants=scoring_constants(earth, profiles)))
+                                          scoring_constants=scoring_constants(earth, profiles, tvals)))
     _write(out_dir, "profiles.json", profiles)
     _write(out_dir, "factors.json", factors)
     _write(out_dir, "gaps.json", dict(rgaps, contract_version=CONTRACT_VERSION, mock=False, caveats=GAP_CAVEATS))
@@ -437,12 +480,27 @@ def main() -> None:
         if pp and nn:
             aucs.append(sum((x > y) + 0.5 * (x == y) for x in pp for y in nn) / (len(pp) * len(nn)))
     git_sha = subprocess.run(["git", "-C", str(REPO_ROOT), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip() or None
+    git_dirty = C_GIT_DIRTY
     keep = {"percentile", "in_top5", "in_top1", "target_id", "profile_id", "status"}
 
     def _excl(st):
         return dict(sites=sorted({validation[i]["name"] for i in range(len(validation)) if validation[i]["kind"] == "positive"
                                   for e in per_site[i] if e["status"] == st}),
                     n_evaluations=sum(e["status"] == st for e in pos))
+    def _metrics(body):
+        pb = [e for e in pos if e["target_id"].startswith(body + "_")]
+        au = []
+        for key in sorted({(e["target_id"], e["profile_id"]) for e in pb}):
+            pp = [e["percentile"] for e in pb if (e["target_id"], e["profile_id"]) == key]
+            nn = [e["percentile"] for i, v in enumerate(validation) if v["kind"] == "negative" for e in per_site[i]
+                  if (e["target_id"], e["profile_id"]) == key]
+            if pp and nn:
+                au.append(sum((x > y) + 0.5 * (x == y) for x in pp for y in nn) / (len(pp) * len(nn)))
+        n = max(len(pb), 1)
+        return dict(n_evaluations=len(pb), n_scored=sum(e["status"] == "scored" for e in pb),
+                    pct_top5=round(sum(e["in_top5"] for e in pb) / n, 4), pct_top1=round(sum(e["in_top1"] for e in pb) / n, 4),
+                    rank_auc=round(float(np.mean(au)), 4) if au else None, blind=body == "moon",
+                    note=MOON_BLIND_NOTE if body == "moon" else MARS_POSTHOC_NOTE)
     _write(out_dir, "validation.json", dict(
         contract_version=CONTRACT_VERSION, mock=False, frozen_commit=a.frozen_commit, source="docs/validation.csv",
         summary=dict(n_known=sum(v["kind"] == "positive" for v in validation), n_negative=sum(v["kind"] == "negative" for v in validation),
@@ -452,6 +510,8 @@ def main() -> None:
                      n_scored=sum(e["status"] == "scored" for e in pos),
                      gate_excluded=_excl("gate_excluded"), land_filter_excluded=_excl("land_filter_excluded"),
                      hard_filter_excluded=_excl("hard_filter_excluded"),
+                     by_body=dict(moon=_metrics("moon"), mars=_metrics("mars")),
+                     headline_caveat=HEADLINE_CAVEAT,
                      denominators_note=("Excluded evaluations stay in every denominator and count as misses (gate- and "
                                         "land-filter-excluded: percentile 0; hard-filter-excluded: percentile of S = 0)")),
         sites=[dict(v, cell_id=snaps[i][0], eval_cell_id=snaps[i][1] if snaps[i][1] is not None else snaps[i][0],
@@ -491,7 +551,7 @@ def main() -> None:
         _write(out_dir, f"sites/{sid}.json", c)
 
     _write(out_dir, "provenance.json", dict(contract_version=CONTRACT_VERSION, mock=False, layers=provenance_layers(),
-                                            pipeline=dict(git_sha=git_sha, run_at=dt.datetime.now().astimezone().isoformat(timespec="seconds"),
+                                            pipeline=dict(git_sha=git_sha, git_dirty=git_dirty, run_at=dt.datetime.now().astimezone().isoformat(timespec="seconds"),
                                                           python=platform.python_version())))
     # Moon / Mars grids: full 0.5 deg if the whole data folder stays <= 10 MB, else polar 0.5 deg + 1 deg (Moon), 1 deg (Mars)
     import tempfile
