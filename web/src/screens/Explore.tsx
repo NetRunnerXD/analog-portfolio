@@ -343,7 +343,7 @@ export default function Explore(p: Props) {
           twin={{ body: target.body, title: target.name, lat: target.anchor.lat, lon: target.anchor.lon, radiusKm: target.sample_radius_km }}
           earthR={earthRadiusKm(p.profiles.defaults) * 1000} header={`Site ${siteN >= 0 ? `${siteN + 1} · ` : ''}${ctx.title(site)} ↔ ${target.name}`}
           onClose={() => update({ view: 'explore' })}>
-          <PairedFactors target={target} factors={p.factors} ft={ft} factorScores={site.factor_scores} earthFeatures={detail?.features ?? null} caption="Factor by factor" />
+          <PairedFactors target={target} factors={p.factors} ft={ft} factorScores={site.factor_scores} earthFeatures={detail?.features ?? null} caption="Factor by factor" compact />
         </TwinViewer>
       </Suspense>
     )
