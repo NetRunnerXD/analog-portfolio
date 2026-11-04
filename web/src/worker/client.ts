@@ -1,7 +1,7 @@
 import type { ScoringConstants } from '../scoring/engine'
 // Main-thread wrapper around the scoring worker. One worker per app; requests resolve by reqId.
 import type { FactorsFile, GridManifest, ProfilesFile } from '../types/contract'
-import type { CellDetail, FromWorker, ScoreMsg, ScoredMsg, ToWorker } from './protocol'
+import type { CellDetail, FromWorker, PlanetGridPayload, ReverseMsg, ReverseReplyMsg, ScoreMsg, ScoredMsg, ToWorker, TwinsMsg, TwinsReplyMsg } from './protocol'
 
 type Pending = { resolve: (v: never) => void; reject: (e: Error) => void }
 
@@ -32,7 +32,7 @@ export class ScorerClient {
       const p = this.pending.get(m.reqId)
       if (!p) return
       this.pending.delete(m.reqId)
-      p.resolve((m.type === 'cell' ? m.detail : m) as never)
+      p.resolve((m.type === 'cell' ? m.detail : m.type === 'cells' ? m.details : m) as never)
     })
     this.w.addEventListener('error', (e) => {
       const msg = e.message || 'worker crashed'
@@ -40,7 +40,7 @@ export class ScorerClient {
       this.pending.clear()
       this.onCrash?.(msg)
     })
-    const msg: ToWorker = { type: 'init', ...init }
+    const msg: ToWorker = { type: 'init', assetBase: new URL(import.meta.env.BASE_URL, window.location.href).href, ...init }
     this.w.postMessage(msg, [init.buffer])
   }
 
@@ -59,6 +59,22 @@ export class ScorerClient {
 
   cell(cellId: number): Promise<CellDetail> {
     return this.req<CellDetail>({ type: 'cell', reqId: ++this.seq, cellId })
+  }
+
+  cells(cellIds: number[]): Promise<CellDetail[]> {
+    return this.req<CellDetail[]>({ type: 'cells', reqId: ++this.seq, cellIds })
+  }
+
+  private sentGrids = new Set<string>()
+  /** Reverse search; `grid` is posted only the first time for a body. */
+  reverse(m: Omit<ReverseMsg, 'type' | 'reqId' | 'grid'>, grid: () => PlanetGridPayload): Promise<ReverseReplyMsg> {
+    const first = !this.sentGrids.has(m.body)
+    this.sentGrids.add(m.body)
+    return this.req<ReverseReplyMsg>({ type: 'reverse', reqId: ++this.seq, ...m, ...(first ? { grid: grid() } : {}) })
+  }
+
+  twins(m: Omit<TwinsMsg, 'type' | 'reqId'>): Promise<TwinsReplyMsg> {
+    return this.req<TwinsReplyMsg>({ type: 'twins', reqId: ++this.seq, ...m })
   }
 
   terminate() { this.w.terminate() }

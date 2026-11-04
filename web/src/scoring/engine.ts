@@ -106,7 +106,7 @@ export function rangeSim(x: number, ts: number, span: number): number {
 }
 
 /** Area-weighted Earth P1 / P99 span of a column (F1/F2 range similarity, contract v1.2). */
-function rangeSpan(e: EarthGrid, col: string, id: FactorId, sc?: ScoringConstants): number {
+export function rangeSpan(e: EarthGrid, col: string, id: FactorId, sc?: ScoringConstants): number {
   const k = sc?.range_norm?.factors?.[id]
   if (k) return k.span
   const key = `range:${col}`

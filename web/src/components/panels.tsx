@@ -1,13 +1,14 @@
 import { useMemo, useState } from 'react'
 import { FACTOR_UI, VARIANT_UI } from '../copy'
-import { accessText, band, cellEwKm, dataCoverage, fmtLatLon, isAtLimit, placeName, makeDeltaFormatter, makeValueFormatter, summarySentence, to100 } from '../lib/format'
+import { accessText, httpUrl, pickText, PICK_TIP, band, cellEwKm, dataCoverage, fmtLatLon, isAtLimit, placeName, makeDeltaFormatter, makeValueFormatter, summarySentence, to100 } from '../lib/format'
 import type { GapRowData } from '../lib/gaps'
 import type { FactorText } from '../lib/factors'
 import { earthLimit, type EarthLimit } from '../lib/limits'
+import CoverageMatrix from './CoverageMatrix'
 import type { EarthReference, FactorId, FactorsFile, Portfolio, SiteRef, Target, VariantId } from '../types/contract'
 import { ALL_FACTORS, CORE_FACTORS, VARIANT_IDS } from '../types/contract'
 import type { CellDetail } from '../worker/protocol'
-import { AtLimitIcon, Banner, EmptyState, FlaskIcon, GapIcon, Icon, InfoPopover, SegmentedControl, ShieldIcon } from './ui'
+import { AtLimitIcon, Banner, EmptyState, FlaskIcon, GapIcon, Icon, InfoPopover, SegmentedControl, ShieldIcon, Tabs } from './ui'
 
 export interface Ctx {
   target: Target
@@ -31,8 +32,7 @@ export interface Ctx {
 
 /** Hostname for a source link; a malformed URL renders as plain text instead of crashing the panel. */
 function SourceLink({ url, sep }: { url: string; sep: boolean }) {
-  let host: string | null = null
-  try { const u = new URL(url); if (u.protocol === 'https:' || u.protocol === 'http:') host = u.hostname.replace(/^www\./, '') } catch { host = null }
+  const host = httpUrl(url)?.hostname.replace(/^www\./, '') ?? null
   return <>{sep ? ' · ' : ''}{host ? <a href={url} target="_blank" rel="noreferrer">{host}</a> : <span>{url}</span>}</>
 }
 
@@ -115,8 +115,9 @@ export function TopRegionsPanel({ ctx, portfolio, stats, nLand, onOpen, onPortfo
 }
 
 /* ---------------------------------------------------------------- Portfolio */
-export function PortfolioPanel({ ctx, portfolio, variantId, onVariant, onOpen, selected, hovered, onHover }: {
+export function PortfolioPanel({ ctx, portfolio, variantId, onVariant, onOpen, selected, hovered, onHover, phone }: {
   ctx: Ctx
+  phone: boolean
   portfolio: Portfolio
   variantId: VariantId
   onVariant: (v: VariantId) => void
@@ -158,6 +159,7 @@ export function PortfolioPanel({ ctx, portfolio, variantId, onVariant, onOpen, s
         </ol>
       )}
       {ctx.needs.every((f) => covered.has(f)) && sites.length > 0 && <p className="t-small muted2">Every need Earth can meet is covered.</p>}
+      <CoverageMatrix sites={sites} needs={ctx.needs} theta={portfolio.theta} atLimit={(f) => isAtLimit(ctx.target, f)} ft={ctx.ft} phone={phone} />
     </div>
   )
 }
@@ -177,11 +179,12 @@ function SiteListCard({ site, n, ctx, selected, hovered, onOpen, onHover }: { si
         </span>
         <span className="sc-score"><span className="scoreLg">{score}</span><span className="micro muted2"><span className="sr-only">out of</span> / 100</span><span className="t-small">{band(score)}</span></span>
       </span>
+      <span className="t-small muted2 sc-pick" title={PICK_TIP}>{pickText(n)}</span>
       <span className="chips">
         <span className="t-small muted2">Covers</span>
         {chips.map((f) => <FactorChip key={f} f={f} ft={ctx.ft} atLimit={isAtLimit(ctx.target, f)} />)}
       </span>
-      <span className="t-small sc-meta">{robust && <><ShieldIcon /> <strong>Robust</strong> · </>}{accessText(site.logistics?.travel_time_min)}</span>
+      <span className="t-small sc-meta">{robust && <><ShieldIcon /> <strong>Robust</strong> · </>}{accessText(site.logistics?.travel_time_min, site.lat)}</span>
       <span className="link-text t-small">Open details →</span>
     </button>
   )
@@ -222,8 +225,14 @@ export function FidelityGapPanel({ rows }: { rows: GapRowData[] }) {
 }
 
 /* ---------------------------------------------------------------- Site card */
-export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCopy, headingRef }: {
+export type SiteTab = 'scores' | 'validation' | 'twin'
+export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCopy, headingRef, tab, onTab, validationTab, twinTab, onTwin }: {
   site: SiteRef
+  tab: SiteTab
+  onTab: (t: SiteTab) => void
+  validationTab: React.ReactNode
+  twinTab: React.ReactNode
+  onTwin: () => void
   n: number | null
   nTotal: number
   ctx: Ctx
@@ -269,6 +278,12 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
         return missing.length > 0 && <p className="t-small muted2">No Earth data in this cell for {missing.map((f) => ctx.ft.label(f).toLowerCase()).join(', ')}. Scored on the other factors, with their weights rescaled.</p>
       })()}
       <p className="summary t-body">{summarySentence(ctx.targetShort, ctx.weights, site.factor_scores, gapsT)}</p>
+      <Tabs label="Site details" idBase="sitecard" value={tab} onChange={onTab}
+        tabs={[{ id: 'scores', label: 'Scores' }, { id: 'validation', label: 'Validation' }, { id: 'twin', label: 'Twin view' }]} />
+      <div id="sitecard-panel" role="tabpanel" aria-labelledby={`sitecard-tab-${tab}`} className="tabpanel">
+      {tab === 'validation' && validationTab}
+      {tab === 'twin' && twinTab}
+      {tab === 'scores' && <>
       <div className="frow-head"><span className="overline">Each factor, 0–100 · sorted by weight</span><span className="overline">Weight</span></div>
       <ul className="factor-rows">
         {rows.map((f) => {
@@ -307,10 +322,13 @@ export function SiteCard({ site, n, nTotal, ctx, detail, onBack, backLabel, onCo
         </button>
       )}
       {expanded && <p className="t-small muted2">Tie-breakers only nudge the score (up to 10%). Earth always differs a lot here.</p>}
+      </>}
+      </div>
       <div className="panel-actions row">
+        <button type="button" className="btn btn-secondary" onClick={onTwin}>Open twin view</button>
         <button type="button" className="btn btn-secondary" onClick={onCopy}>Copy share link</button>
       </div>
-      <p className="t-small muted2">{accessText(site.logistics?.travel_time_min)}{site.logistics?.continent ? ` · ${site.logistics.continent}` : ''}</p>
+      <p className="t-small muted2">{accessText(site.logistics?.travel_time_min, site.lat)}{site.logistics?.continent ? ` · ${site.logistics.continent}` : ''}</p>
     </div>
   )
 }

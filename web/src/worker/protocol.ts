@@ -3,6 +3,8 @@ import type { FactorId, FactorsFile, GridManifest, Portfolio, ProfilesFile, Targ
 
 export interface InitMsg {
   type: 'init'
+  /** absolute app base URL (the worker's own URL sits under assets/, so relative paths can't be resolved there) */
+  assetBase?: string
   /** targets.json → scoring_constants (v1.2), full-precision clip and range bounds */
   constants?: ScoringConstants
   manifest: GridManifest
@@ -23,7 +25,29 @@ export interface ScoreMsg {
   withPortfolio: boolean
 }
 export interface CellMsg { type: 'cell'; reqId: number; cellId: number }
-export type ToWorker = InitMsg | ScoreMsg | CellMsg
+/** Several cells at once from the last scoring run (validation analogs, honest-miss factors). */
+export interface CellsMsg { type: 'cells'; reqId: number; cellIds: number[] }
+/** Reverse search: score one Earth cell against several targets with the same formulas as forward search. */
+export interface TwinsMsg {
+  type: 'twins'
+  reqId: number
+  cellId: number
+  targets: { id: string; body: TargetBody; values: Partial<Record<FactorId, number | null>> }[]
+  weights: Record<string, number>
+}
+/** Reverse search against a whole Moon / Mars grid (spec §11.8): grid sent once per body, then cached in the worker. */
+export interface PlanetGridPayload { lat: Float64Array; lon: Float64Array; values: Partial<Record<FactorId, Float64Array>>; radiusM: number }
+export interface ReverseMsg {
+  type: 'reverse'
+  reqId: number
+  body: TargetBody
+  grid?: PlanetGridPayload
+  lat: number
+  lon: number
+  weights: Record<string, number>
+  n: number
+}
+export type ToWorker = InitMsg | ScoreMsg | CellMsg | CellsMsg | TwinsMsg | ReverseMsg
 
 export interface ScoredMsg {
   type: 'scored'
@@ -50,6 +74,20 @@ export interface CellDetail {
   features: Record<string, number | null>
 }
 export interface CellReplyMsg { type: 'cell'; reqId: number; detail: CellDetail }
+export interface CellsReplyMsg { type: 'cells'; reqId: number; details: CellDetail[] }
+export interface TwinResult { targetId: string; /** null = insufficient data (< 70% of weight measured) */ score: number | null; factorScores: Partial<Record<FactorId, number>> }
+export interface TwinsReplyMsg { type: 'twins'; reqId: number; inGrid: boolean; results: TwinResult[]; features: Record<string, number | null> }
 export interface ReadyMsg { type: 'ready'; nCells: number; /** earth_features has a continent column */ gridContinent: boolean }
 export interface ErrorMsg { type: 'error'; reqId?: number; message: string }
-export type FromWorker = ScoredMsg | CellReplyMsg | ReadyMsg | ErrorMsg
+export interface ReverseReplyMsg {
+  type: 'reverse'
+  reqId: number
+  /** the Earth cell scored (the point's own land cell, else the nearest land cell among its 8 neighbours); null = open water */
+  cellId: number | null
+  snapped: boolean
+  /** the Earth cell fails the body's candidate gate (Mars, contract v1.2 rule 8): forward search scores it 0 for this body */
+  gateFail: boolean
+  features: Record<string, number | null>
+  twins: { lat: number; lon: number; score: number; factorScores: Partial<Record<FactorId, number | null>> }[]
+}
+export type FromWorker = ScoredMsg | CellReplyMsg | CellsReplyMsg | TwinsReplyMsg | ReverseReplyMsg | ReadyMsg | ErrorMsg
