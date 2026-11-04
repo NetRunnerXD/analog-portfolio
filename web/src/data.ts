@@ -1,4 +1,4 @@
-import type { FactorsFile, GapsFile, GridManifest, Portfolio, ProfilesFile, TargetsFile, ValidationFile } from './types/contract'
+import type { FactorsFile, GapsFile, GridManifest, Portfolio, ProfilesFile, ProvenanceFile, TargetsFile, ValidationFile } from './types/contract'
 
 // Real assets live in data/ (the default, from the pipeline); mock assets (contract-shaped, synthetic) in data/mock/
 // (VITE_DATA_ROOT=data/mock/). Everything is fetched at runtime, never bundled.
@@ -27,6 +27,7 @@ export const loadProfiles = () => getJson<ProfilesFile>('profiles.json')
 export const loadFactors = () => getJson<FactorsFile>('factors.json')
 export const loadGaps = () => getJson<GapsFile>('gaps.json')
 export const loadValidation = () => getJson<ValidationFile>('validation.json')
+export const loadProvenance = () => getJson<ProvenanceFile>('provenance.json')
 export const loadPortfolio = (targetId: string, profileId: string) => getJson<Portfolio>(`portfolios/${targetId}_${profileId}.json`)
 
 const CTORS = { uint8: Uint8Array, uint16: Uint16Array, uint32: Uint32Array, int16: Int16Array, float32: Float32Array }

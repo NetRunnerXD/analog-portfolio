@@ -12,7 +12,7 @@ import { boundingExtent } from 'ol/extent'
 import type { MapBrowserEvent } from 'ol'
 import 'ol/ol.css'
 import { band, fmtLatLon } from '../lib/format'
-import { makeHeatLayer, gridCanvases, INSUFFICIENT, type HeatState } from './heat'
+import { makeHeatLayer, gridCanvases, INSUFFICIENT, viewLut, type HeatMode, type HeatState } from './heat'
 import { candidatePin, earthPin, knownPin } from './pins'
 import { T } from './tokens'
 import { measurePadding, offsetCenter } from './padding'
@@ -38,6 +38,8 @@ interface Props {
   onSelectPin?: (id: string) => void
   onHoverPin?: (id: string | null) => void
   showLabels?: boolean
+  /** 'view' (default): colour = percentile among the land on screen; 'absolute': the 0–100 score */
+  heatMode?: HeatMode
   children?: React.ReactNode
 }
 
@@ -55,6 +57,8 @@ export default function MapView(p: Props) {
   props.current = p
   const [tip, setTip] = useState<TooltipContent | null>(null)
   const [zoom, setZoom] = useState(HOME.zoom)
+  const [viewKey, setViewKey] = useState(0)
+  const lutRef = useRef<Uint8Array | null>(null)
 
   useEffect(() => {
     if (!el.current) return
@@ -94,7 +98,8 @@ export default function MapView(p: Props) {
         if (h.filter[cid] === INSUFFICIENT) { setTip({ lines: [props.current.filterText(INSUFFICIENT), where], x: e.pixel[0], y: e.pixel[1] }); return }
         if (s === 255) { setTip(null); return }
         if (h.filter[cid] > 0) { setTip({ lines: [props.current.filterText(h.filter[cid]), where], x: e.pixel[0], y: e.pixel[1] }); return }
-        const base = [`${s} / 100 · ${band(s)} match`, where]
+        const lut = (props.current.heatMode ?? 'view') === 'view' ? lutRef.current : null
+        const base = [`${s} / 100 · ${band(s)} match`, ...(lut ? [`higher than ${lut[Math.min(s, 100)]}% of the land in view`] : []), where]
         setTip({ lines: base, x: e.pixel[0], y: e.pixel[1] })
         props.current.closest?.(cid).then((c) => {
           if (c) setTip((t) => (t && t.x === e.pixel[0] && t.y === e.pixel[1] ? { ...t, lines: [...base, c] } : t))
@@ -112,13 +117,26 @@ export default function MapView(p: Props) {
     map.once('change:size', fitHome)
     fitHome()
     map.getView().on('change:resolution', () => setZoom(map.getView().getZoom() ?? HOME.zoom))
+    map.on('moveend', () => setViewKey((k) => k + 1))
     return () => { cancelAnimationFrame(raf); map.setTarget(undefined); mapRef.current = null }
   }, [])
+
+  // "In this view" colouring: re-rank whenever the view settles or the mode / scores change
+  const mode = p.heatMode ?? 'view'
+  useEffect(() => {
+    const map = mapRef.current
+    const ext = map?.getSize() ? map.getView().calculateExtent(map.getSize()) : null
+    const lut = mode === 'view' && p.heat && ext ? viewLut(p.heat.scores, p.heat.filter, ext) : null
+    const same = lut && lutRef.current && lut.every((v, i) => v === lutRef.current![i])
+    if (same || (!lut && !lutRef.current)) return
+    lutRef.current = lut
+    if (p.heat) { Object.assign(heatState.current, gridCanvases(p.heat.scores, p.heat.filter, lut)); heatLayer.current.getSource()?.changed() }
+  }, [mode, viewKey, p.heat])
 
   // heat grid → canvases
   useEffect(() => {
     if (!p.heat) { heatState.current.heat = null; heatState.current.mask = null; heatState.current.insuf = null }
-    else Object.assign(heatState.current, gridCanvases(p.heat.scores, p.heat.filter))
+    else Object.assign(heatState.current, gridCanvases(p.heat.scores, p.heat.filter, lutRef.current))
     heatLayer.current.getSource()?.changed()
     const lyr = heatLayer.current
     const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches

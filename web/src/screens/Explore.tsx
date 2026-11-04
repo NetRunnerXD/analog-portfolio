@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { VARIANT_UI } from '../copy'
 import { DataError, loadPortfolio } from '../data'
 import { fmtLatLon, hasScorableFeatures, makeTitler, makeValueFormatter, purposeName, targetShort, to100 } from '../lib/format'
@@ -13,10 +13,16 @@ import type { ScorerClient } from '../worker/client'
 import type { CellDetail, ScoredMsg } from '../worker/protocol'
 import { buildGapRows } from '../lib/gaps'
 import { makeFactorText } from '../lib/factors'
-import { FidelityGapPanel, PortfolioPanel, SiteCard, TopRegionsPanel, type Ctx } from '../components/panels'
+import { FidelityGapPanel, PortfolioPanel, SiteCard, TopRegionsPanel, type Ctx, type SiteTab } from '../components/panels'
 import { Banner, EmptyState, ErrorState, Toast } from '../components/ui'
 import WeightsSheet from '../components/WeightsSheet'
 import MapLegend from '../components/MapLegend'
+import type { HeatMode } from '../map/heat'
+import ValidationTab from '../components/ValidationTab'
+import PairedFactors from '../components/PairedFactors'
+
+// OpenLayers twin panes + imagery load only when the twin view opens
+const TwinViewer = lazy(() => import('../components/TwinViewer'))
 
 interface Props {
   target: Target
@@ -142,6 +148,10 @@ export default function Explore(p: Props) {
     return m
   }, [portfolio, vSites])
   const site = url.site ? allSites.get(url.site) ?? null : null
+  // a twin link to a site that isn't in this portfolio falls back to Explore
+  useEffect(() => {
+    if (url.view === 'twin' && pfReady && portfolio && !site) update({ view: 'explore', site: undefined }, true)
+  }, [url.view, pfReady, portfolio, site, update])
   const siteN = site ? vSites.findIndex((s) => s.site_id === site.site_id) : -1
   const [detail, setDetail] = useState<CellDetail | null>(null)
   useEffect(() => {
@@ -160,6 +170,10 @@ export default function Explore(p: Props) {
   }, [site?.site_id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const [hovered, setHovered] = useState<string | null>(null)
+  const [siteTab, setSiteTab] = useState<SiteTab>('scores')
+  // heat colouring: rank within the current view by default (Project 1), 'Absolute' on request
+  const [heatMode, setHeatMode] = useState<HeatMode>('view')
+  useEffect(() => { setSiteTab('scores') }, [site?.site_id])
   const [weightsOpen, setWeightsOpen] = useState(false)
   const { weightsReq, weightsSeen, onWeightsSeen } = p
   useEffect(() => { if (weightsReq > weightsSeen) { onWeightsSeen(weightsReq); setWeightsOpen(true) } }, [weightsReq, weightsSeen, onWeightsSeen])
@@ -256,9 +270,18 @@ export default function Explore(p: Props) {
       : <div className="panel-body" aria-busy="true"><p className="overline">{url.step === 'portfolio' ? 'Your Analog Portfolio' : 'Top regions'}</p><div className="skeleton h2" /><div className="skeleton" /><div className="skeleton" /><div className="skeleton" /><p className="t-small muted2">Scoring Earth's land…</p></div>
   } else if (site) {
     results = <SiteCard site={site} n={siteN >= 0 ? siteN + 1 : null} nTotal={vSites.length} ctx={ctx} detail={detail} headingRef={headingRef}
-      onBack={closeSite} backLabel={url.step === 'portfolio' ? 'Portfolio' : 'Top regions'} onCopy={copyLink} />
+      onBack={closeSite} backLabel={url.step === 'portfolio' ? 'Portfolio' : 'Top regions'} onCopy={copyLink}
+      tab={siteTab} onTab={setSiteTab} onTwin={() => update({ view: 'twin' })}
+      validationTab={<ValidationTab validation={p.validation} targetId={target.id} body={target.body} profileId={profile.id} ctx={ctx} site={site}
+        scorer={p.scorer} scoreKey={cur ? scoreKey : null} showOnMap={layers.known} onShowOnMap={(v) => setLayers((l) => ({ ...l, known: v }))} />}
+      twinTab={<div className="twin-compact">
+        <p className="t-small muted2">Site {siteN >= 0 ? `${siteN + 1} · ` : ''}{ctx.title(site)} ↔ {target.name}</p>
+        <PairedFactors target={target} factors={p.factors} ft={ft} factorScores={site.factor_scores} earthFeatures={detail?.features ?? null} caption="Side by side, factor by factor" compact />
+        <p className="t-small muted2">Same factors; gravity, air and radiation always differ.</p>
+        <button type="button" className="btn btn-primary" onClick={() => update({ view: 'twin' })}>Open twin view</button>
+      </div>} />
   } else if (url.step === 'portfolio') {
-    results = <PortfolioPanel ctx={ctx} portfolio={portfolio} variantId={variant?.id ?? 'best_match'} onVariant={onVariant} onOpen={openSite} selected={url.site ?? null} hovered={hovered} onHover={setHovered} />
+    results = <PortfolioPanel phone={bp === 'phone'} ctx={ctx} portfolio={portfolio} variantId={variant?.id ?? 'best_match'} onVariant={onVariant} onOpen={openSite} selected={url.site ?? null} hovered={hovered} onHover={setHovered} />
   } else {
     results = <TopRegionsPanel ctx={ctx} portfolio={portfolio} stats={stats} nLand={cur?.stats.nScorable ?? p.nCells} onOpen={openSite}
       onPortfolio={() => update({ step: 'portfolio', site: undefined })} onWeights={() => setWeightsOpen(true)} hovered={hovered} onHover={setHovered} />
@@ -276,7 +299,7 @@ export default function Explore(p: Props) {
   )
 
   const legend = (
-    <MapLegend title={`How ${target.body === 'moon' ? 'Moon' : 'Mars'}-like for this mission`} filterText={filters.map((f) => f.ui_short ?? f.id).join(' or ')}
+    <MapLegend title={`How ${target.body === 'moon' ? 'Moon' : 'Mars'}-like for this mission`} mode={heatMode} onMode={setHeatMode} filterText={filters.map((f) => f.ui_short ?? f.id).join(' or ')}
       insufficientText={cur && cur.stats.nInsufficient > 0 ? `Not enough data (under ${minPct}% of what counts)` : undefined}>
       <fieldset className="layer-toggle t-small">
         <legend className="sr-only">Map layers</legend>
@@ -289,7 +312,7 @@ export default function Explore(p: Props) {
   const map = (
     <section className="map-col" aria-label="Map">
       {banners}
-      <MapView heat={cur ? { scores: cur.heat, filter: cur.filter } : null} pins={pins} selectedId={url.site ?? null} hoveredId={hovered}
+      <MapView heatMode={heatMode} heat={cur ? { scores: cur.heat, filter: cur.filter } : null} pins={pins} selectedId={url.site ?? null} hoveredId={hovered}
         fitKey={showPortfolio ? `${scoreKey}|${variant?.id}` : undefined} ariaLabel={`Map of Earth's land coloured by match to ${tShort} for ${pName}`} describedBy="map-legend"
         filterText={filterText} closest={closest} onHoverPin={setHovered}
         onSelectPin={(id) => { const s = allSites.get(id); if (s) openSite(s) }}>
@@ -309,6 +332,22 @@ export default function Explore(p: Props) {
       {bp === 'tablet' && <button type="button" className="icon-btn drawer-close" aria-label="Hide results" onClick={() => setDrawer(false)}>×</button>}
     </div>
   )
+
+  if (url.view === 'twin') {
+    if (!site) {
+      return <main id="main" className="stub" aria-busy="true"><p className="t-body muted2">Loading…</p></main>
+    }
+    return (
+      <Suspense fallback={<main id="main" className="stub" aria-busy="true"><p className="t-body muted2">Loading the twin view…</p></main>}>
+        <TwinViewer earth={{ title: ctx.title(site), lat: site.lat, lon: site.lon }}
+          twin={{ body: target.body, title: target.name, lat: target.anchor.lat, lon: target.anchor.lon, radiusKm: target.sample_radius_km }}
+          earthR={earthRadiusKm(p.profiles.defaults) * 1000} header={`Site ${siteN >= 0 ? `${siteN + 1} · ` : ''}${ctx.title(site)} ↔ ${target.name}`}
+          onClose={() => update({ view: 'explore' })}>
+          <PairedFactors target={target} factors={p.factors} ft={ft} factorScores={site.factor_scores} earthFeatures={detail?.features ?? null} caption="Factor by factor" compact />
+        </TwinViewer>
+      </Suspense>
+    )
+  }
 
   return (
     <main id="main" className={`explore bp-${bp}`}>

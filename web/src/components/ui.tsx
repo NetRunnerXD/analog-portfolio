@@ -148,3 +148,30 @@ export function Toast({ message, tone = 'neutral', onDone }: { message: string; 
     </div>
   )
 }
+
+/** role="tablist" with automatic activation, arrows + Home/End, roving tabindex (spec §8.1 Tabs). */
+export function Tabs<T extends string>({ label, tabs, value, onChange, idBase }: {
+  label: string
+  tabs: { id: T; label: ReactNode }[]
+  value: T
+  onChange: (v: T) => void
+  idBase: string
+}) {
+  const refs = useRef<(HTMLButtonElement | null)[]>([])
+  const idx = Math.max(0, tabs.findIndex((t) => t.id === value))
+  const go = (i: number) => { const n = (i + tabs.length) % tabs.length; onChange(tabs[n].id); refs.current[n]?.focus() }
+  return (
+    <div className="tabs" role="tablist" aria-label={label}>
+      {tabs.map((t, i) => (
+        <button key={t.id} ref={(el) => { refs.current[i] = el }} type="button" role="tab" id={`${idBase}-tab-${t.id}`} aria-controls={`${idBase}-panel`}
+          aria-selected={t.id === value} tabIndex={t.id === value ? 0 : -1} onClick={() => onChange(t.id)}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowRight') { e.preventDefault(); go(idx + 1) }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx - 1) }
+            else if (e.key === 'Home') { e.preventDefault(); go(0) }
+            else if (e.key === 'End') { e.preventDefault(); go(tabs.length - 1) }
+          }}>{t.label}</button>
+      ))}
+    </div>
+  )
+}
