@@ -1,3 +1,4 @@
+import { validationHeadline } from './validationSummary'
 import type { Portfolio, ValidationFile } from '../types/contract'
 import type { UrlState } from './url'
 
@@ -34,12 +35,16 @@ export function portfolioCaption(p: Portfolio | null): string | null {
 }
 
 /** "{hit} of {total} famous analogs rediscovered in the top 5%" for one target / purpose pair. Excluded evaluations count as misses. */
-export function validationCaption(v: ValidationFile | null, targetId: string, profileId: string): string | null {
+/** Adds the per-body blind / post-hoc caveat from summary.by_body (Moon blind, Mars not). */
+export function validationCaption(v: ValidationFile | null, targetId: string, profileId: string, body: 'moon' | 'mars' = 'moon'): string | null {
   if (!v) return null
   let hit = 0, total = 0
   for (const s of v.sites) {
     if (s.kind !== 'positive') continue
     for (const r of s.results ?? []) if (r.target_id === targetId && r.profile_id === profileId) { total++; if (r.in_top5) hit++ }
   }
-  return total ? `${hit} of ${total} famous analogs rediscovered in the top 5%.` : null
+  if (!total) return null
+  const bm = validationHeadline(v).byBody.find((x) => x.body === body)?.m
+  const note = bm ? (bm.blind ? ' Blind test: the engine never saw them.' : ' Not blind: the Mars gate was designed using these analogs.') : ''
+  return `${hit} of ${total} famous analogs rediscovered in the top 5%.${note}`
 }

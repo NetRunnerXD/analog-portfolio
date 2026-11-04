@@ -59,6 +59,14 @@ function localProjection(body: PaneBody, lat: number, lon: number, R: number, py
   return local
 }
 
+/** Drop the imagery credit while the service is down (≥ 2 failures, nothing loaded); restore it once a tile arrives. */
+function creditWhileUp(src: XYZ, credit: string, t: { loaded: number; failed: number }) {
+  // Only touch the source when the state flips: setAttributions() fires a source change, which re-renders the layer.
+  const down = t.failed >= 2 && t.loaded === 0
+  if (down === !src.getAttributions()) return
+  src.setAttributions(down ? undefined : credit)
+}
+
 export interface PaneOptions {
   target: HTMLElement
   body: PaneBody
@@ -71,6 +79,10 @@ export interface PaneOptions {
   pin?: { body: 'moon' | 'mars'; n?: number }
   grids?: PlanetGrids | null
   onTiles: (state: { loaded: number; failed: number }) => void
+  /** story backdrop: 1× pixel ratio, no controls or interactions (far fewer tile requests) */
+  lite?: boolean
+  /** cap the tile zoom level (story backdrop) */
+  maxZ?: number
 }
 
 export interface Pane { map: OlMap; view: View; dispose(): void; setGrids(g: PlanetGrids | null): void }
@@ -82,13 +94,14 @@ export function createPane(o: PaneOptions): Pane {
   const st = obliqueStereo(o.lat, o.lon, R)
   const tiles = { loaded: 0, failed: 0 }
   const tileLayers = pyramids.map((py, i) => {
+    // maxZ (story backdrop): cap the zoom level; coarser tiles are upsampled, each level dropped is ~4× fewer tiles
     const src = new XYZ({
       url: py.url, projection: sourceProjection(o.body, py.kind, R), wrapX: false, interpolate: true, transition: 0,
-      tileGrid: new TileGrid({ origin: py.origin, extent: py.extent, tileSize: py.tileSize, resolutions: Array.from({ length: py.maxZ + 1 }, (_, z) => py.res0 / 2 ** z) }),
+      tileGrid: new TileGrid({ origin: py.origin, extent: py.extent, tileSize: py.tileSize, resolutions: Array.from({ length: Math.min(py.maxZ, o.maxZ ?? py.maxZ) + 1 }, (_, z) => py.res0 / 2 ** z) }),
       attributions: py.credit,
     })
-    src.on('tileloadend', () => { tiles.loaded++; o.onTiles({ ...tiles }) })
-    src.on('tileloaderror', () => { tiles.failed++; o.onTiles({ ...tiles }) })
+    src.on('tileloadend', () => { tiles.loaded++; creditWhileUp(src, py.credit, tiles); o.onTiles({ ...tiles }) })
+    src.on('tileloaderror', () => { tiles.failed++; creditWhileUp(src, py.credit, tiles); o.onTiles({ ...tiles }) })
     return new TileLayer({ source: src, opacity: i === 0 ? 1 : 0.55, properties: { id: `tiles-${i}` } })
   })
 
@@ -145,7 +158,9 @@ export function createPane(o: PaneOptions): Pane {
   layers.push(new VectorLayer({ source: overlay, properties: { id: 'overlay' } }))
 
   const view = new View({ projection: proj, center: [0, 0], resolution: o.resolution, minResolution: 2, maxResolution: 40000, extent: [-R, -R, R, R], constrainOnlyCenter: true, enableRotation: false, constrainResolution: false })
-  const map = new OlMap({ target: o.target, layers, view, controls: defaultControls({ zoom: true, rotate: false, attribution: true, attributionOptions: { collapsible: false } }) })
+  const map = new OlMap({ target: o.target, layers, view, ...(o.lite ? { pixelRatio: 1 } : {}),
+    controls: defaultControls({ zoom: !o.lite, rotate: false, attribution: true, attributionOptions: { collapsible: false } }) })
+  if (o.lite) map.getInteractions().clear()
   return {
     map, view,
     dispose: () => map.setTarget(undefined),
@@ -167,8 +182,8 @@ export function createGlobe(target: HTMLElement, body: 'moon' | 'mars', earthR: 
     url: py.url, projection: proj, wrapX: true, interpolate: true, attributions: py.credit,
     tileGrid: new TileGrid({ origin: py.origin, extent: py.extent, tileSize: py.tileSize, resolutions: Array.from({ length: py.maxZ + 1 }, (_, z) => py.res0 / 2 ** z) }),
   })
-  src.on('tileloadend', () => { tiles.loaded++; onTiles({ ...tiles }) })
-  src.on('tileloaderror', () => { tiles.failed++; onTiles({ ...tiles }) })
+  src.on('tileloadend', () => { tiles.loaded++; creditWhileUp(src, py.credit, tiles); onTiles({ ...tiles }) })
+  src.on('tileloaderror', () => { tiles.failed++; creditWhileUp(src, py.credit, tiles); onTiles({ ...tiles }) })
   const pins = new VectorSource()
   const map = new OlMap({
     target,

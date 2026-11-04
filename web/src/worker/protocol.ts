@@ -85,6 +85,8 @@ export interface ReverseReplyMsg {
   /** the Earth cell scored (the point's own land cell, else the nearest land cell among its 8 neighbours); null = open water */
   cellId: number | null
   snapped: boolean
+  /** the Earth cell fails the body's candidate gate (Mars, contract v1.2 rule 8): forward search scores it 0 for this body */
+  gateFail: boolean
   features: Record<string, number | null>
   twins: { lat: number; lon: number; score: number; factorScores: Partial<Record<FactorId, number | null>> }[]
 }

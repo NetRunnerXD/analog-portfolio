@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import { CSP } from '../vite.config'
-import { tileOrigins } from './lib/twin'
+import { PYRAMIDS, TILE_SOURCES } from './lib/twin'
 
 const root = resolve(__dirname, '..')
 const headers = readFileSync(resolve(root, 'public/_headers'), 'utf8').match(/Content-Security-Policy: (.+)/)![1].trim()
@@ -14,9 +14,11 @@ describe('CSP', () => {
     expect(headers).toBe(`${CSP}; frame-ancestors 'none'`)
     expect(vercel).toBe(headers)
   })
-  it('every imagery tile origin is allowed in img-src, and nowhere else', () => {
+  it('img-src lists only the tile path prefixes, and every tile URL falls under one; no other directive has an https source', () => {
     const img = CSP.split('; ').find((d) => d.startsWith('img-src'))!.split(' ')
-    for (const o of tileOrigins) expect(img).toContain(o)
+    expect(img.filter((x) => x.startsWith('https:'))).toEqual(TILE_SOURCES)
+    for (const s of TILE_SOURCES) expect(s.endsWith('/'), `${s} needs a trailing slash to match as a prefix`).toBe(true)
+    for (const p of Object.values(PYRAMIDS)) expect(TILE_SOURCES.some((s) => p.url.startsWith(s)), p.url).toBe(true)
     expect(CSP.split('; ').filter((d) => !d.startsWith('img-src')).join(' ')).not.toMatch(/https:/)
   })
 })

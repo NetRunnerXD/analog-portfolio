@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { FACTOR_UI, VARIANT_UI } from '../copy'
-import { accessText, pickText, PICK_TIP, band, cellEwKm, dataCoverage, fmtLatLon, isAtLimit, placeName, makeDeltaFormatter, makeValueFormatter, summarySentence, to100 } from '../lib/format'
+import { accessText, httpUrl, pickText, PICK_TIP, band, cellEwKm, dataCoverage, fmtLatLon, isAtLimit, placeName, makeDeltaFormatter, makeValueFormatter, summarySentence, to100 } from '../lib/format'
 import type { GapRowData } from '../lib/gaps'
 import type { FactorText } from '../lib/factors'
 import { earthLimit, type EarthLimit } from '../lib/limits'
@@ -32,8 +32,7 @@ export interface Ctx {
 
 /** Hostname for a source link; a malformed URL renders as plain text instead of crashing the panel. */
 function SourceLink({ url, sep }: { url: string; sep: boolean }) {
-  let host: string | null = null
-  try { const u = new URL(url); if (u.protocol === 'https:' || u.protocol === 'http:') host = u.hostname.replace(/^www\./, '') } catch { host = null }
+  const host = httpUrl(url)?.hostname.replace(/^www\./, '') ?? null
   return <>{sep ? ' · ' : ''}{host ? <a href={url} target="_blank" rel="noreferrer">{host}</a> : <span>{url}</span>}</>
 }
 

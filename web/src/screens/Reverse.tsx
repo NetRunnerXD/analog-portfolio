@@ -35,7 +35,7 @@ export default function Reverse({ profiles, factors, ft, targets, scorer, url, u
   const [twinN, setTwinN] = useState<number | null>(null)
   const input = useRef<HTMLInputElement>(null)
 
-  const getPlaces = () => { if (!places) loadPlaces().then(setPlaces, (e: Error) => setPlacesErr(e.message)) }
+  const getPlaces = () => { if (!places) { loadPlaces().then((x) => { setPlaces(x); setPlacesErr(null) }, (e: Error) => setPlacesErr(e.message)) } }
   useEffect(() => { if (url.place?.startsWith('ne:')) getPlaces() })
   const place = useMemo(() => parsePlace(url.place, places), [url.place, places])
   const matches = useMemo(() => (places ? searchPlaces(places, q) : []), [places, q])
@@ -43,6 +43,7 @@ export default function Reverse({ profiles, factors, ft, targets, scorer, url, u
   // Weights: the body's default purpose (same 10 factors and formulas as forward search).
   const prof = useMemo(() => profiles.profiles.find((p) => p.bodies.includes(body))!, [profiles, body])
   const Rkm = earthRadiusKm(profiles.defaults)
+  const gate = (profiles.defaults as { candidate_gates?: Record<string, { ui_short?: string; ui_tooltip?: string }> }).candidate_gates?.[body]
 
   useEffect(() => {
     let live = true
@@ -170,6 +171,7 @@ export default function Reverse({ profiles, factors, ft, targets, scorer, url, u
                 <p className="t-label muted2">Closest {Body} twin {CIRCLED[0]}</p>
                 <h2 className="t-h2">{twinTitle(top)}</h2>
                 <p className="t-body"><strong>How much like {place.title.split(',')[0]}: {to100(top.score)} / 100</strong></p>
+                {res?.gateFail && <p className="t-small rv-note" role="note">This place fails the {Body} gate ({gate?.ui_short ?? 'Mars-like ground only'}), so forward search scores it 0 for every {Body} target. {gate?.ui_tooltip ?? ''} The twins here still compare its measured factors.</p>}
                 {res?.snapped && <p className="t-small muted2">Your point is just off the land grid, so we used the nearest land cell.</p>}
                 {closest.length > 0 && <p className="t-body">Closest on {closest.join(' and ')}{furthest ? `. Furthest on ${furthest}.` : '.'}</p>}
                 {twins.length > 1 && <p className="t-small">Next closest: {twins.slice(1).map((t, k) => `${CIRCLED[k + 1]} ${twinTitle(t)} (${to100(t.score)})`).join(' · ')}</p>}

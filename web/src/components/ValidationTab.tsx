@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { Ctx } from './panels'
+import ValidationHeadline from './ValidationHeadline'
+import { validationHeadline } from '../lib/validationSummary'
 import { evalCell, pairValidation, STATUS_TEXT, topPct, TOP5_PCT, type LiveCell, type PairValidation } from '../lib/validation'
 import type { FactorId, SiteRef, TargetBody, ValidationFile } from '../types/contract'
 import type { CellDetail } from '../worker/protocol'
@@ -54,6 +56,8 @@ export default function ValidationTab({ validation, targetId, body, profileId, c
     return best
   }
 
+  const bm = validationHeadline(validation).byBody.find((x) => x.body === body)?.m
+  const bodyNote = bm ? (bm.blind ? `${body === 'moon' ? 'Moon' : 'Mars'} results are blind: the engine never saw them.` : `${body === 'moon' ? 'Moon' : 'Mars'} results are not blind: the dryness gate was designed using these ${body === 'moon' ? 'Moon' : 'Mars'} analogs and controls.`) : ''
   const sitePct = site.earth_percentile
   return (
     <div className="validation">
@@ -62,8 +66,9 @@ export default function ValidationTab({ validation, targetId, body, profileId, c
         <div aria-busy="true"><div className="skeleton" /><div className="skeleton" /><p className="t-small muted2">Recalculating for your weights…</p></div>
       ) : (
         <>
-          <p className="t-small muted2">We fixed the weights before scoring, then checked where {pv.total} well-known analog sites landed (sites a filter excludes still count, as misses) for this target and purpose. The engine never saw this list.
+          <p className="t-small muted2">We fixed the weights before scoring, then checked where {pv.total} well-known analog sites landed (sites a filter excludes still count, as misses) for this target and purpose. {bodyNote}
             {validation.frozen_commit ? ` Weights frozen at commit ${validation.frozen_commit.slice(0, 7)}${validation.frozen_at ? ` (${validation.frozen_at})` : ''}.` : ''}</p>
+          <ValidationHeadline validation={validation} compact />
           {ctx.custom && <p className="tag tag-live">Recalculated for your weights. The pre-registered result uses the default weights.</p>}
           {pv.total === 0 ? (
             <p className="t-small">No known analog in our list is tagged for this purpose on the {body === 'moon' ? 'Moon' : 'Mars'}, so there is nothing to check here yet.</p>

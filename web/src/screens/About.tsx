@@ -5,6 +5,8 @@ import type { FactorsFile, ProfilesFile, ProvenanceFile, ProvenanceLayer, Valida
 import { CORE_FACTORS, SECONDARY_FACTORS } from '../types/contract'
 import { AI_LOG_URL, APP_CREDITS, CAMPAIGN_SOURCES, PHYSICAL_SOURCES, PLANNED, SHORTCUTS, type Credit } from '../content/sources'
 import { purposeName } from '../lib/format'
+import ValidationHeadline from '../components/ValidationHeadline'
+import { httpUrl } from '../lib/format'
 import './about.css'
 
 const GROUPS: [string, string][] = [['nasa', 'NASA'], ['partner', 'Partner agencies (ESA, JAXA)'], ['other', 'Other']]
@@ -33,7 +35,7 @@ export default function About({ factors, ft, profiles, validation, mock }: { fac
             <li><strong>Purposes:</strong> {profiles.profiles.map((p) => purposeName(p)).join(' · ')}. Each one weights the factors differently; you can change the weights, and everything is recalculated in your browser.</li>
             <li><strong>Portfolio:</strong> a greedy set cover picks 2–{profiles.defaults.portfolio_max_sites} Earth sites so that together they cover every need (a factor with weight above 0) Earth can meet. A site covers a need when it scores {Math.round((profiles.defaults.theta) * 100)} or more on it.</li>
             <li><strong>Robustness:</strong> {mc.rule ?? `each site is re-tested under ${mc.draws.toLocaleString('en')} random weightings`}.</li>
-            <li><strong>Validation:</strong> {vs.n_known ?? '…'} well-known analog sites and {vs.n_negative ?? '…'} non-analog controls were kept out of the scoring, then we checked where they landed. The Validation tab of each site shows the result for your target and purpose.</li>
+            <li><strong>Validation:</strong> {vs.n_known ?? '…'} well-known analog sites and {vs.n_negative ?? '…'} non-analog controls, checked after the weights were frozen. <ValidationHeadline validation={validation} /> The Validation tab of each site shows the result for your target and purpose.</li>
             <li><strong>Fidelity gap:</strong> what no Earth site can give (gravity, vacuum, radiation, and anything beyond Earth's range), with the facility that fills it.</li>
           </ul>
         </section>
@@ -104,7 +106,7 @@ function ProvTable({ title, layers }: { title: string; layers: ProvenanceLayer[]
           <thead><tr><th scope="col">Dataset</th><th scope="col">Provider</th><th scope="col">Licence</th><th scope="col">Used for</th></tr></thead>
           <tbody>{layers.map((l) => (
             <tr key={l.id}>
-              <th scope="row">{l.url ? <a href={l.url} target="_blank" rel="noreferrer">{l.dataset}</a> : l.dataset}{l.version ? <span className="micro muted2"> v{l.version}</span> : null}{l.citation && l.citation !== 'n/a' ? <span className="t-small muted2 block">{l.citation}</span> : null}</th>
+              <th scope="row">{httpUrl(l.url) ? <a href={l.url ?? undefined} target="_blank" rel="noreferrer">{l.dataset}</a> : l.dataset}{l.version ? <span className="micro muted2"> v{l.version}</span> : null}{l.citation && l.citation !== 'n/a' ? <span className="t-small muted2 block">{l.citation}</span> : null}</th>
               <td>{l.provider}</td><td>{l.license ?? '—'}</td><td>{l.how_used ?? '—'}{l.factors?.length ? <span className="micro muted2 block">{l.factors.join(', ')}</span> : null}</td>
             </tr>
           ))}</tbody>
@@ -124,7 +126,7 @@ function CreditTable({ title, rows, planned }: { title: string; rows: Credit[]; 
           <thead><tr><th scope="col">Dataset</th><th scope="col">Provider</th><th scope="col">Licence / terms</th><th scope="col">Credit line</th></tr></thead>
           <tbody>{rows.map((c) => (
             <tr key={c.dataset}>
-              <th scope="row">{c.url ? <a href={c.url} target="_blank" rel="noreferrer">{c.dataset}</a> : c.dataset}</th>
+              <th scope="row">{httpUrl(c.url) ? <a href={c.url} target="_blank" rel="noreferrer">{c.dataset}</a> : c.dataset}</th>
               <td>{c.provider}</td>
               <td>{c.licence}{planned || !c.verified ? <span className="micro muted2 block">being confirmed</span> : null}</td>
               <td className="t-small">{c.attribution ?? '—'}</td>

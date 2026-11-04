@@ -4,9 +4,13 @@ import { fmtLatLon } from './format'
 export interface Place { ne_id: number; name: string; name_ascii: string; admin1: string | null; country: string; lat: number; lon: number; pop_max: number }
 let placesP: Promise<Place[]> | null = null
 export function loadPlaces(): Promise<Place[]> {
-  placesP ??= fetch(`${import.meta.env.BASE_URL}geo/places.json`).then(async (r) => { if (!r.ok) throw new Error(`places.json: HTTP ${r.status}`); return decodePlaces(await r.json()) })
-  placesP.catch(() => { placesP = null })
-  return placesP
+  if (placesP) return placesP
+  // Only a successful load is cached: a failure clears the slot so the next focus / call fetches again.
+  const p: Promise<Place[]> = fetch(`${import.meta.env.BASE_URL}geo/places.json`)
+    .then(async (r) => { if (!r.ok) throw new Error(`places.json: HTTP ${r.status}`); return decodePlaces(await r.json()) })
+    .catch((e: unknown) => { if (placesP === p) placesP = null; throw e })
+  placesP = p
+  return p
 }
 /** places.json is columnar: { fields: [...], rows: [[...]] } (scripts/build_places.py). */
 export function decodePlaces(f: { fields: string[]; rows: unknown[][] }): Place[] {

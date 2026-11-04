@@ -20,6 +20,6 @@ describe('story mode', () => {
     const pf = json<Portfolio>(`portfolios/${STORY_MOON}_P3_habitat_eva_power.json`)
     const v = pf.variants.find((x) => x.id === 'best_match')!
     expect(portfolioCaption(pf)).toBe(`${v.sites.length} site${v.sites.length === 1 ? '' : 's'} cover ${v.covers!.length} of ${pf.universe.length} needs.`)
-    expect(validationCaption(json<ValidationFile>('validation.json'), STORY_MOON, 'P3_habitat_eva_power')).toMatch(/^\d+ of \d+ famous analogs rediscovered in the top 5%\.$/)
+    expect(validationCaption(json<ValidationFile>('validation.json'), STORY_MOON, 'P3_habitat_eva_power')).toMatch(/^\d+ of \d+ famous analogs rediscovered in the top 5%\. Blind test: the engine never saw them\.$/)
   })
 })
