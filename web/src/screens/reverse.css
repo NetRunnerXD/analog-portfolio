@@ -1,0 +1,12 @@
+.reverse { padding: var(--s-6, 24px); max-width: 1280px; margin: 0 auto; display: grid; gap: var(--s-5, 20px); }
+.rv-controls { display: flex; flex-wrap: wrap; gap: var(--s-5, 20px); align-items: flex-end; }
+.rv-search { position: relative; flex: 1 1 320px; max-width: 480px; display: grid; gap: 6px; }
+.rv-search input { font: inherit; padding: 10px 12px; border-radius: 8px; border: 1px solid var(--line, #3a4150); background: var(--surface-2, #151a23); color: inherit; }
+.rv-list { position: absolute; top: 72px; left: 0; right: 0; z-index: 20; list-style: none; margin: 0; padding: 4px; border-radius: 8px; background: var(--surface-3, #1c2230); border: 1px solid var(--line, #3a4150); }
+.rv-list li { padding: 8px 10px; border-radius: 6px; cursor: pointer; }
+.rv-list li.on, .rv-list li:hover { background: var(--accent-weak, #23304a); }
+.rv-grid { display: grid; gap: var(--s-5, 20px); grid-template-columns: 1fr 1fr; }
+.rv-result { grid-column: 1 / -1; padding: var(--s-5, 20px); display: grid; gap: 8px; }
+.rv-map { height: 300px; border-radius: 8px; overflow: hidden; background: var(--ocean, #0d1320); }
+.rv-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 760px) { .rv-grid { grid-template-columns: 1fr; } .rv-map { height: 220px; } }

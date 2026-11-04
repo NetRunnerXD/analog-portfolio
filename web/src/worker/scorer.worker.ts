@@ -5,13 +5,37 @@ import { decodeGrid } from '../data'
 import { type ScoringConstants, aggregate, clipTargets, minActiveFrac, factorScores, INSUFFICIENT_CODE, NCELLS, prepareEarth, run, type EarthGrid, type RunOutput } from '../scoring/engine'
 import type { FactorId, FactorsFile, ProfilesFile } from '../types/contract'
 import { continentResolver, gridContinentLookup, type ContinentOf } from '../scoring/continent'
-import type { CellDetail, FromWorker, ToWorker } from './protocol'
+import type { CellDetail, FromWorker, PlanetGridPayload, ToWorker } from './protocol'
+import { reverseFactorScores, reverseTotals, topTwins } from '../scoring/reverse'
+import { earthRadiusKm, haversineKm } from '../scoring/area'
 import { fetchRegions, type Regions } from '../lib/regions'
 import type { Portfolio, SiteRef } from '../types/contract'
 
 /** Country / admin-1 for live-built portfolios (lazy, once). */
 let regions: Promise<Regions | null> | null = null
 let assetBase = ''
+const planets = new Map<string, PlanetGridPayload>()
+const earthOnlyCache = new Map<string, Partial<Record<FactorId, Float64Array>>>()
+
+/** The point's own 0.5° land cell, else the nearest land cell among its 8 neighbours (validation snapping rule). */
+function snapCell(lat: number, lon: number): { i: number; cellId: number; snapped: boolean } | null {
+  const row = Math.min(359, Math.max(0, Math.floor((90 - lat) * 2)))
+  const col = Math.min(719, Math.max(0, Math.floor((((lon + 180) % 360) + 360) % 360 * 2)))
+  const own = row * 720 + col
+  const io = idxOf.get(own)
+  if (io !== undefined) return { i: io, cellId: own, snapped: false }
+  let best: { i: number; cellId: number; d: number } | null = null
+  const R = earthRadiusKm(profiles!.defaults)
+  for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) {
+    const r = row + dr, c = (col + dc + 720) % 720
+    if ((!dr && !dc) || r < 0 || r > 359) continue
+    const i = idxOf.get(r * 720 + c)
+    if (i === undefined) continue
+    const d = haversineKm(lat, lon, 89.75 - 0.5 * r, -179.75 + 0.5 * c, R)
+    if (!best || d < best.d) best = { i, cellId: r * 720 + c, d }
+  }
+  return best ? { i: best.i, cellId: best.cellId, snapped: true } : null
+}
 async function nameSites(pf: Portfolio | null) {
   if (!pf || !earth) return
   const e = earth
@@ -131,6 +155,22 @@ self.onmessage = async (ev: MessageEvent<ToWorker>) => {
     }
     if (m.type === 'cells') {
       post({ type: 'cells', reqId: m.reqId, details: m.cellIds.map(cellDetail) })
+      return
+    }
+    if (m.type === 'reverse') {
+      if (m.grid) planets.set(m.body, m.grid)
+      const g = planets.get(m.body)
+      if (!g) throw new Error(`no ${m.body} grid`)
+      const hit = snapCell(m.lat, m.lon)
+      if (!hit) { post({ type: 'reverse', reqId: m.reqId, cellId: null, snapped: false, features: {}, twins: [] }); return }
+      const e = earth
+      let eo = earthOnlyCache.get(m.body)
+      if (!eo) { eo = factorScores(e, {}, m.body, factors, constants); earthOnlyCache.set(m.body, eo) }
+      const r = reverseFactorScores(e, hit.i, eo, g.values, g.lat.length, factors, constants)
+      const tot = reverseTotals(r, m.weights, minActiveFrac(profiles))
+      const features: Record<string, number | null> = {}
+      for (const [k, v] of Object.entries(e.cols)) features[k] = Number.isNaN(v[hit.i]) ? null : v[hit.i]
+      post({ type: 'reverse', reqId: m.reqId, cellId: hit.cellId, snapped: hit.snapped, features, twins: topTwins(tot, r, g.lat, g.lon, g.radiusM, m.n) })
       return
     }
     if (m.type === 'twins') {

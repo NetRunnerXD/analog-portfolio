@@ -19,9 +19,9 @@ import Projection from 'ol/proj/Projection'
 import { addCoordinateTransforms, addProjection, get as getProjection } from 'ol/proj'
 import { defaults as defaultControls } from 'ol/control/defaults'
 import { Fill, Stroke, Style } from 'ol/style'
-import { cellRing, circleRing, MARS_R, MOON_R, obliqueStereo, panePyramids, spForward, spInverse, spScale, type TilePyramid } from '../lib/twin'
+import { cellRing, circleRing, MARS_R, MOON_R, obliqueStereo, panePyramids, PYRAMIDS, spForward, spInverse, spScale, type TilePyramid } from '../lib/twin'
 import { sampler, columnRange, type PlanetGrids } from '../lib/planetGrid'
-import { bodyPin } from './pins'
+import { bodyPin, knownPin } from './pins'
 import { T } from './tokens'
 
 export type PaneBody = 'earth' | 'moon' | 'mars'
@@ -156,3 +156,55 @@ export function createPane(o: PaneOptions): Pane {
 /** Footprint rings in lon/lat: the scored 0.5° Earth cell, or a target's sampling disc. */
 export const earthFootprint = (lat: number, lon: number) => cellRing(lat, lon)
 export const targetFootprint = (lat: number, lon: number, radiusKm: number, R: number) => circleRing([lon, lat], radiusKm * 1000, R)
+
+/** Whole-body map in the imagery's own geographic grid (reverse search): EQ tiles over the grid relief, numbered pins. */
+export function createGlobe(target: HTMLElement, body: 'moon' | 'mars', earthR: number, onTiles: (s: { loaded: number; failed: number }) => void) {
+  const R = radiusOf(body, earthR)
+  const py = body === 'moon' ? PYRAMIDS.moonEq : PYRAMIDS.mars
+  const proj = sourceProjection(body, 'deg', R)
+  const tiles = { loaded: 0, failed: 0 }
+  const src = new XYZ({
+    url: py.url, projection: proj, wrapX: true, interpolate: true, attributions: py.credit,
+    tileGrid: new TileGrid({ origin: py.origin, extent: py.extent, tileSize: py.tileSize, resolutions: Array.from({ length: py.maxZ + 1 }, (_, z) => py.res0 / 2 ** z) }),
+  })
+  src.on('tileloadend', () => { tiles.loaded++; onTiles({ ...tiles }) })
+  src.on('tileloaderror', () => { tiles.failed++; onTiles({ ...tiles }) })
+  const pins = new VectorSource()
+  const map = new OlMap({
+    target,
+    layers: [new TileLayer({ source: src }), new VectorLayer({ source: pins })],
+    view: new View({ projection: proj, center: [0, 0], zoom: 0, extent: [-180, -90, 180, 90], constrainOnlyCenter: true, enableRotation: false, showFullExtent: true }),
+    controls: defaultControls({ zoom: true, rotate: false, attribution: true, attributionOptions: { collapsible: false } }),
+  })
+  map.getView().fit([-180, -90, 180, 90])
+  return {
+    map,
+    setPins(list: { lat: number; lon: number; n: number }[]) {
+      pins.clear()
+      for (const p of list) { const f = new Feature(new Point([p.lon, p.lat])); f.setStyle(bodyPin(body, p.n)); pins.addFeature(f) }
+    },
+    dispose: () => map.setTarget(undefined),
+  }
+}
+
+/** Small Earth locator for reverse search: Natural Earth land, one pin, click to pick a point. */
+export function createLocator(target: HTMLElement, onPick: (lat: number, lon: number) => void) {
+  const land = new VectorSource({ url: `${import.meta.env.BASE_URL}basemap/ne_50m_land.json`, format: new GeoJSON() })
+  const pin = new VectorSource()
+  const map = new OlMap({
+    target,
+    layers: [new VectorLayer({ source: land, style: new Style({ fill: new Fill({ color: T.landNoData }), stroke: new Stroke({ color: T.coastline, width: 0.8 }) }) }), new VectorLayer({ source: pin })],
+    view: new View({ projection: 'EPSG:4326', center: [0, 15], zoom: 0, extent: [-180, -90, 180, 90], constrainOnlyCenter: true, enableRotation: false }),
+    controls: defaultControls({ zoom: true, rotate: false, attribution: false }),
+  })
+  map.getView().fit([-180, -60, 180, 80])
+  map.on('singleclick', (e) => { const [lon, lat] = e.coordinate; onPick(lat, lon) })
+  return {
+    setPin(lat: number, lon: number) {
+      pin.clear()
+      const f = new Feature(new Point([lon, lat])); f.setStyle(knownPin(true)); pin.addFeature(f)
+      map.getView().animate({ center: [lon, lat], duration: matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 300 })
+    },
+    dispose: () => map.setTarget(undefined),
+  }
+}
